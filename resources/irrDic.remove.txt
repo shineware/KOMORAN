@@ -1,0 +1,533 @@
+key : ㄴㅡㄴ
+remove : ㅇㅡㄴ
+
+key : ㄴㅡㄴ
+remove : ㄴ
+
+key : ㄴㅡㄴ
+remove : ㅇㅣ/VCP ㄹㅏㄴㅡㄴ
+
+key : ㄹㅡㄹ
+remove : ㅇㅡㄹ
+
+key : ㄹㅏ
+remove : ㅇㅣ
+
+key : ㄹㅏ
+remove : ㄹㅏㄱㅗ
+
+key : ㅎㅐ
+remove : ㅈㅓㅁ/NNG ㅎㅏ/XSA ㅇㅏ
+
+key : ㅎㅐㅅㅓ
+remove : ㅈㅓㅁ/NNG ㅎㅏ/XSA ㅇㅏㅅㅓ
+
+key : ㅎㅏㄴ
+remove : ㅎㅏㄴㅈㅗㄱㅡㅁ/NNG .
+
+key : ㅎㅏㄴ
+remove : ㅎㅏㄴㅅㅏㅇㅓㅂ/NNG ]
+
+key : ㅎㅏㄴ
+remove : ㅎㅏㄴㅊㅏ/NNG ㄹㅡㄹ
+
+key : ㅎㅏㄴ
+remove : ㅎㅏㄴㅁㅜㄴㅎㅏㄱ/NNG "
+
+key : ㅎㅏㄴ
+remove : ㅎㅏ
+
+key : ㅎㅏㄴ
+remove : ㅎㅏ
+
+key : ㅎㅏㄴ
+remove : ㅈㅓㅁ/NNG ㅎㅏ/XSA ㄴ
+
+key : ㅇㅣ
+remove : ㅇㅣㄹ
+
+key : ㄷㅏ
+remove : ㄷㅏㄱㅗ
+
+key : ㅁㅗㅅ
+remove : ㅁㅗㅅㅎㅏ
+
+key : ㅇㅡㄴ
+remove : ㄴ
+
+key : ㅈㅕ
+remove : ㅇㅓ
+
+key : ㅇㅣ
+remove : ㅇㅢ
+
+key : ㄹㅗ
+remove : ㅇㅣ
+
+key : ㄷㅗ
+remove : ㄴㅡㄴ
+
+key : ㅇㅡㄹ
+remove : ㅇㅡㄴ
+
+key : ㅇㅡㄹ
+remove : ㄹㅡㄹ
+
+key : ㅇㅡㄹ
+remove : ㄹ
+
+key : ㅇㅔ
+remove : ㄹㅡㄹ
+
+key : ㄷㅏ
+remove : ㄷㅏㄹ
+
+key : ㅇㅣㄴ
+remove : ㅇㅣ
+
+key : ㅇㅣㄴ
+remove : ㅈㅓㅁ/NNG ㅇㅣ/VCP ㄴ
+
+key : ㅇㅣㄴ
+remove : ㅈㅣㄱ/NNG ㅇㅣ/VCP ㄴ
+
+key : ㅇㅣㄴ
+remove : ㄴㅡㄴ/JX ㅇㅣ/VCP ᆫ
+
+key : ㅇㅣㄴ
+remove : ᆫ
+
+key : ㅇㅣㄴ
+remove : ㅈㅓㅁ/NNG ㅇㅣ/VCP ᆫ
+
+key : ㅁㅏ
+remove : ㅇㅏ/EC ㅁㅏㄹ
+
+key : ㅇㅔ
+remove : ㅇㅔㅅㅓ
+
+key : ㅇㅔ
+remove : ㅇㅢ
+
+key : ㅇㅔ
+remove : ㄲㅔ/XSN ㄹㅗ
+
+key : ㅇㅔ
+remove : ㄷㅔ
+
+key : ㅇㅔ
+remove : ㅇㅣ/NP ㅇㅔ
+
+key : ㄹㅡㄹ
+remove : ㅇㅔ
+
+key : ㄹㅡㄹ
+remove : ᆯ
+
+key : ㅇㅡㄴ
+remove : ᆫ
+
+key : ㅇㅡㄴ
+remove : ㄴㅡㄴ
+
+key : ㄱㅔ
+remove : ᆫ
+
+key : ㄱㅔ
+remove : ㄱㅓㅅ/NNB ㅇㅣ/VCP ㅇㅓ
+
+key : ㄱㅔ
+remove : ㄱㅔㅆ
+
+key : ㄱㅔ
+remove : ᆯㄱㅔ
+
+key : ㄱㅔ
+remove : ㄱㅓㄱㅣ
+
+key : ㅇㅡㄹ
+remove : ᆯ
+
+key : ㄹㅏ
+remove : ㅇㅏ
+
+key : ㄹㅏ
+remove : ㄹㅗ
+
+key : ㄹㅏ
+remove : ᆯㄹㅏ
+
+key : ㅇㅘ
+remove : ㄱㅘ
+
+key : ㄱㅘ
+remove : ㅇㅘ
+
+key : ㄱㅗ
+remove : ㄱㅗㄹ
+
+key : ㄱㅗ
+remove : ㄹㅏㄱㅗ
+
+key : ㄱㅗ
+remove : ㅁㅕㄴ
+
+key : ㄱㅗ
+remove : ㅇㅣ/VCP ㄹㅏㄱㅗ
+
+key : ㄱㅗ
+remove : ㄷㅗ
+
+key : ㄱㅗ
+remove : ㄱㅘ
+
+key : ㄱㅗ
+remove : ᆯㄱㅗ
+
+key : ㅇㅕ
+remove : ㅇㅑ
+
+key : ㅇㅕ
+remove : ㅇㅣ/VCP ㅇㅑ
+
+key : ㅇㅕ
+remove : ㅇㅏ
+
+key : ㅇㅕ
+remove : ㅇㅏ/EC ㅇㅣ
+
+key : ㅇㅕ
+remove : ㅇㅕㄹ
+
+key : ㅇㅕ
+remove : ㅇㅓ
+
+key : ㅇㅕ
+remove : ㅇㅕㄲ
+
+key : ㄷㅗ
+remove : ㄷㅗㄹ
+
+key : ㄷㅗ
+remove : ㄱㅗ
+
+key : ㄷㅗ
+remove : ㄷㅗㅅㅣ
+
+key : ㅅㅏㅇ
+remove : ㅃㅜㄴ
+
+key : ㅁㅕㄴ
+remove : ㅁㅕㅇ
+
+key : ㅁㅕㄴ
+remove : ㄱㅗ
+
+key : ㄱㅝㄴ
+remove : /
+
+key : ㅇㅗ
+remove : ㅅㅗ
+
+key : ㅇㅗ
+remove : ㅇㅛ
+
+key : ㄷㅗ
+remove : ㄷㅗㄹ
+
+key : ㄷㅗ
+remove : ㄱㅗ
+
+key : ㄷㅗ
+remove : ㄷㅗㅅㅣ
+
+key : ㄷㅡㄴ
+remove : ㄷㅡㄹ
+
+key : ㄴㅐ
+remove : ㄴㅏ/NP ㅇㅣ
+
+key : ㄴㅐ
+remove : ㅇㅓ/EC ㄴㅐ/VX ㅇㅓ
+
+key : ㄴㅐ
+remove : ㄴㅏ
+
+key : ㄴㅐ
+remove : ㅇㅏ/EC ㄴㅐ/VX ㅇㅓ
+
+key : ㄴㅡㄴ
+remove : ㄴㅡㄹ
+
+key : ㄴㅡㄴ
+remove : ᆫ
+
+key : ㅁㅏㄴ
+remove : ㅁㅏㄹ
+
+key : ㅁㅜㄹ
+remove : ㅁㅜㄹ/VV ᆯ
+
+key : ㅅㅓㅅㅓㄹ
+remove : ㅅㅗㅅㅓㄹ
+
+key : ㅇㅕㅆ
+remove : ㅇㅏㅆ
+
+key : ㅇㅕㅆ
+remove : ㅇㅓㅆ
+
+key : ㅇㅣㄹ
+remove : ㅇㅣ
+
+key : ㅇㅣㄹ
+remove : ㄱㅗㅇㅎㅠㅇㅣㄹ
+
+key : ㅇㅣㄹ
+remove : ᆯ
+
+key : ㅇㅣㄹ
+remove : ㅇㅣㄹ/VV ᆯ
+
+key : ㅎㅏㄴ
+remove : (/SS ㄷㅐㅂㅜㄱ/NNG )/SS ㅎㅏ/XSV ᆫ
+
+key : ㅎㅏㄴ
+remove : '/SS ㅎㅏ/XSA ᆫ
+
+key : ㅎㅏㄴ
+remove : ㅈㅓㅁ/NNG ㅎㅏ/XSA ᆫ
+
+key : ㅎㅏㄴ
+remove : ㅎㅏ/XSA ㅈㅣ/EC ᆫ
+
+key : ㅎㅏㄴ
+remove : ㅇㅏ/EC ㅎㅏ/VX ᆫ
+
+key : ㅈㅣㅇㅟ
+remove : ㅈㅜㅇㅟ
+
+key : ㄷㅏ
+remove : ㅇㅣ/VCP ㄷㅏ/EC ㅇㅣ
+
+key : ㄷㅏ
+remove : ㅇㅣ
+
+key : ㄷㅏ
+remove : ㅇㅏㄷㅏ
+
+key : ㄷㅏ
+remove : ㅇㅓ/EC ㄷㅏㄹ
+
+key : ㄷㅏ
+remove : ㅇㅓㄷㅏ
+
+key : ㄷㅏ
+remove : ㄷㅏㅎ
+
+key : ㄷㅡㄹ
+remove : ㄹㅡㄹ
+
+key : ㄷㅡㄹ
+remove : ㄷㅡㄹㅇㅣ
+
+key : ㄷㅡㄹ
+remove : ㄷㅡㄹ/VX ᆯ
+
+key : ㄷㅡㄹ
+remove : ㄷㅡㄹ/VV ᆯ
+
+key : ㅇㅢ
+remove : ㅇㅡㄹ
+
+key : ㅇㅢ
+remove : ㄹㅗ
+
+key : ㅇㅡ
+remove : ㅇㅡㅅㅣ
+
+key : ㅇㅡ
+remove : ㅇㅢ
+
+key : ㄱㅗ
+remove : ㄴㅡㄴ
+
+key : ㅇㅕㅆㄷㅏ
+remove : ㅇㅣ
+
+key : ㅇㅕㅆㄷㅏ
+remove : ㅇㅏㅆ/EP ㄷㅏ/EF 79/SN )
+
+key : ㅇㅣ
+remove : ㅇㅣㅆ
+
+key : ㅁㅗㅅㅎㅐㅆ
+remove : ㅎㅏ/VX ㅇㅏㅆ
+
+key : ㅇㅔㄴ
+remove : ㅇㅔ
+
+key : ㅈㅕ
+remove : ㅈㅣㅅ/VV ㅇㅓ
+
+key : ㅈㅕ
+remove : ㅇㅓ/EC ㅈㅣ/VX ㅇㅓ
+
+key : ㅈㅕ
+remove : ㅇㅏ/EC ㅈㅣ/VX ㅇㅓ
+
+key : ㅈㅕ
+remove : ㅈㅣ
+
+key : ㅎㅏㅁ
+remove : ㅎㅏ
+
+key : ㄷㅏ.
+remove : ㅇㅣ/VCP ㄷㅏ/EF ..
+
+key : ㅎㅏㄹ
+remove : ㅎㅏ/XSV ᆫ
+
+key : ㅎㅏㄹ
+remove : ㅎㅏ
+
+key : ㅎㅏㄹ
+remove : ㅇㅏ/EC ㅎㅏ/VX ᆯ
+
+key : ㅇㅡㅁ
+remove : ᄆ
+
+key : ㅇㅣㄴㄱㅏ
+remove : ㅇㅣ/VCP ᆫㄱㅏ/EF ㅇㅣ
+
+key : ㅇㅣㄴㄱㅏ
+remove : ㅇㅣ
+
+key : ㅇㅣㄴㄱㅏ
+remove : ㅇㅣ/VCP ᆫㄱㅏ
+
+key : ㅇㅔㅅㅓ
+remove : ㅇㅓㅅㅓ
+
+key : ㅈㅓ
+remove : ㅈㅓㅅ
+
+key : ㅈㅓ
+remove : ㅈㅓㄹ
+
+key : ㅅㅣㅋㅣㄴ
+remove : ㅅㅣㅋㅣ
+
+key : ㅇㅣㄹㅈㅣ
+remove : ㅇㅣ/VCP ᆯㅈㅣ/EC ㅇㅣ
+
+key : ㅇㅣㄹㅈㅣ
+remove : ㅇㅣ/VCP ᆫㅈㅣ
+
+key : ㅈㅗㄴ
+remove : ㅈㅗㅎ/VA ㅇㅡㄴ
+
+key : ㅈㅗㄴ
+remove : ㅈㅗㅎ/VA ᆫ
+
+key : ㅇㅏ
+remove : ㄷㅡㄹ
+
+key : ㅇㅏ
+remove : ㅇㅘ
+
+key : ㅇㅑ
+remove : ㅇㅏ
+
+key : ㅇㅑ
+remove : ㅇㅕ
+
+key : ㅇㅑ
+remove : ㅇㅓㅇㅑ/EC ㅎㅏ
+
+key : ㅇㅑ
+remove : ㅇㅓㅇㅑ
+
+key : ㅇㅑ
+remove : ㅇㅏㅇㅑ
+
+key : ㅇㅖㅋㅓㄴㄷㅐ
+remove : ㅇㅖㅋㅓㄴㄷㅔ
+
+key : ㄴㅑ
+remove : ㄴㅑㄴㅡㄴ
+
+key : ㄴㅏㄴ
+remove : ㄴㅡㄴ
+
+key : ㄹㅕ
+remove : ㅇㅓ
+
+key : ㄹㅓ
+remove : ㅇㅓ
+
+key : ㄹㅏㄴ
+remove : ㅇㅣ/VCP ᆫ
+
+key : ㅂㅗㅇㅣㄴ
+remove : ㅇㅓ/EC ㅂㅗㅇㅣ/VV ᆫ
+
+key : ㅂㅗㅇㅣㄴ
+remove : ㅂㅗㅇㅣ
+
+key : ㅅㅓ
+remove : ㅇㅣ/VCP ㅇㅓㅅㅓ
+
+key : ㅅㅓ
+remove : ㅇㅏㅅㅓ/EC ㅇㅣ
+
+key : ㅅㅓ
+remove : ㅇㅓㅅㅓ
+
+key : ㅅㅓ
+remove : ㅇㅓㅅㅓ/EC ㅇㅣ
+
+key : ㅅㅓ
+remove : ㅇㅏㅅㅓ
+
+key : ㅇㅕㅈㅕ
+remove : ㅇㅕㄱㅣ/VV ㅇㅓ
+
+key : ㅇㅕㅈㅕ
+remove : ㅇㅓ/EC ㅈㅣ/VX ㅇㅓ
+
+key : ㅇㅕㅈㅕ
+remove : ㅇㅏ/EC ㅈㅣ/VX ㅇㅓ
+
+key : ㅇㅕㅈㅣㄴ
+remove : ㅇㅏ/EC ㅈㅣ/VX ᆫ
+
+key : ㅇㅕㅈㅣㄴ
+remove : ㅇㅓ/EC ㅈㅣ/VX ᆫ
+
+key : ㅇㅕㅈㅕㅆ
+remove : ㅇㅏ/EC ㅈㅣ/VX ㅇㅓㅆ
+
+key : ㅂㅗㄷㅏㄷㅗ
+remove : ㅂㅗㄷㅏ/JKB ㄴㅡㄴ
+
+key : ㄴ
+remove : ㅅㅣ/EP ㄴ
+
+key : ㅈㅗㄴ
+remove : ㅈㅗㅎ/VA ㄴ
+
+key : ㅈㅏ
+remove : ㅅㅣ/EP ㅈㅏ
+
+key : ㅈㅏ
+remove : ㅇㅣ/VCP ㅈㅏ
+
+key : ㅈㅜㅅㅕㅇㅛ
+remove : ㅇㅓ/EC ㅈㅜ/VX ㅅㅣ/EP ㅇㅓㅇㅛ
+
+key : ㅈㅣ
+remove : ㅇㅣ/VCP ㅈㅣ
+
+key : ㄱㅏㅈㅣ
+remove : ㄲㅏㅈㅣ
