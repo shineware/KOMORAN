@@ -23,12 +23,12 @@ import java.util.List;
 import kr.co.shineware.ds.aho_corasick.AhoCorasickDictionary;
 import kr.co.shineware.nlp.komoran.interfaces.FileAccessible;
 import kr.co.shineware.nlp.komoran.interfaces.UnitParser;
+import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
-import kr.co.shineware.util.common.model.Pair;
 
 public class Observation implements FileAccessible{
 
-	private AhoCorasickDictionary<List<Pair<Integer,Double>>> observation;
+	private AhoCorasickDictionary<List<ScoredTag>> observation;
 	private UnitParser parser;
 	
 	public Observation(){
@@ -40,27 +40,27 @@ public class Observation implements FileAccessible{
 		this.parser = new KoreanUnitParser();
 	}
 
-	public void put(String word, int id, double observationScore) {
+	public void put(String word, String tag, int tagId, double observationScore) {
 		String koreanUnits = parser.parse(word);
-		List<Pair<Integer,Double>> posIdScorePairList = this.observation.getValue(koreanUnits);
-		if(posIdScorePairList == null){
-			posIdScorePairList = new ArrayList<>();
-			posIdScorePairList.add(new Pair<Integer, Double>(id, observationScore));
+		List<ScoredTag> scoredTagList = this.observation.getValue(koreanUnits);
+		if(scoredTagList == null){
+			scoredTagList = new ArrayList<>();
+			scoredTagList.add(new ScoredTag(tag, tagId, observationScore));
 		}else{
 			int i=0;
-			for(i=0;i<posIdScorePairList.size();i++){
-				if(posIdScorePairList.get(i).getFirst() == id){
+			for(i=0;i<scoredTagList.size();i++){
+				if(scoredTagList.get(i).getTagId() == tagId){
 					break;
 				}
 			}
-			if(posIdScorePairList.size() == i){
-				posIdScorePairList.add(new Pair<Integer, Double>(id, observationScore));
+			if(scoredTagList.size() == i){
+				scoredTagList.add(new ScoredTag(tag, tagId, observationScore));
 			}
 		}
-		this.observation.put(koreanUnits, posIdScorePairList);
+		this.observation.put(koreanUnits, scoredTagList);
 	}
 	
-	public AhoCorasickDictionary<List<Pair<Integer,Double>>> getTrieDictionary(){
+	public AhoCorasickDictionary<List<ScoredTag>> getTrieDictionary(){
 		return observation;
 	}
 

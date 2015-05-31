@@ -30,6 +30,7 @@ import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.corpus.model.Dictionary;
 import kr.co.shineware.nlp.komoran.corpus.model.Grammar;
+import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularTrie;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
@@ -148,10 +149,10 @@ public class ModelBuilder {
 			}
 			
 			//관측 확률
-			List<Pair<Integer,Double>> posScoreList = this.observation.getTrieDictionary().getValue(morph);
-			for (Pair<Integer, Double> pair : posScoreList) {
-				if(pair.getFirst() == posId){
-					score += pair.getSecond();
+			List<ScoredTag> scoredTagList = this.observation.getTrieDictionary().getValue(morph);
+			for (ScoredTag scoredTag: scoredTagList) {
+				if(scoredTag.getTagId() == posId){
+					score += scoredTag.getScore();
 					break;
 				}
 			}
@@ -215,7 +216,7 @@ public class ModelBuilder {
 				int totalPosTf = totalPrevPOSTf.get(posTf.getKey());
 				double observationScore = (double)posTf.getValue()/totalPosTf;
 				observationScore = Math.log10(observationScore);
-				this.observation.put(word,this.table.getId(posTf.getKey()),observationScore);
+				this.observation.put(word,posTf.getKey(),this.table.getId(posTf.getKey()),observationScore);
 			}
 		}
 	}
