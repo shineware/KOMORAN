@@ -1,9 +1,8 @@
 package kr.co.shineware.nlp.komoran.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
-public class Tag extends ArrayList<String> implements Serializable{
+public class Tag implements Serializable{
 	/**
 	 * 
 	 */

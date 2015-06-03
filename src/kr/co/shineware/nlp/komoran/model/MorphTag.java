@@ -10,6 +10,7 @@ public class MorphTag extends Tag{
 	
 	public MorphTag(String morph, String tag, int tagId){
 		super(tag, tagId);
+		this.morph = morph;
 	}
 
 	public String getMorph() {

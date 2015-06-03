@@ -28,7 +28,7 @@ public class Komoran {
 			return null;
 		}
 		
-		this.lattice = new Lattice(); 
+		this.lattice = new Lattice(this.resources);
 
 		//자소 단위로 분할
 		String jasoUnits = unitParser.parse(in);
@@ -56,7 +56,11 @@ public class Komoran {
 				}
 			}
 		}
-
+		
+		this.lattice.setLastIdx(jasoUnits.length());
+		this.lattice.appendEndNode();
+//		this.lattice.printLattice();
+		this.lattice.findPath();
 		return null;
 	}
 
