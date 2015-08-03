@@ -22,12 +22,18 @@ public class LatticeNode {
 	}
 	
 	public LatticeNode(int beginIdx, int endIdx, MorphTag morphTag, double score) {
-		super();
 		this.beginIdx = beginIdx;
 		this.endIdx = endIdx;
 		this.morphTag = morphTag;
 		this.score = score;
 	}
+	public LatticeNode(LatticeNode latticeNode) {
+		this.beginIdx = latticeNode.getBeginIdx();
+		this.endIdx = latticeNode.getEndIdx();
+		this.morphTag = latticeNode.getMorphTag();
+		this.score = latticeNode.getScore();
+	}
+
 	public int getBeginIdx() {
 		return beginIdx;
 	}
