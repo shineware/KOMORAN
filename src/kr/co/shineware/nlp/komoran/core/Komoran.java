@@ -26,7 +26,7 @@ public class Komoran {
 	public Resources resources;
 	private KoreanUnitParser unitParser;
 	private Lattice lattice;
-	
+
 	private HashMap<String, List<Pair<String, String>>> fwd;
 
 	private String prevPos;
@@ -48,54 +48,58 @@ public class Komoran {
 				this.resources.getTable().getId(nextPos));
 	}
 
-	public List<Pair<String,String>> analyze(String token){
+	public List<Pair<String,String>> analyze(String sentence){
 		List<Pair<String,String>> resultList = new ArrayList<>();
 
-		token = token.trim();
-		if(token.length() == 0){
-			return null;
+		String[] tokens = sentence.split(" ");
+		for (String token : tokens) {
+
+			token = token.trim();
+			if(token.length() == 0){
+				return null;
+			}
+
+			this.lookupFwd(token); //기분석 사전
+
+			this.resources.getIrrTrie().getTrieDictionary().initCurrentNode();
+			this.resources.getObservation().getTrieDictionary().initCurrentNode();
+
+			this.lattice = new Lattice(this.resources);
+			this.lattice.setUnitParser(this.unitParser);
+
+			//연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
+			this.prevPos = "";
+			this.prevMorph = "";
+			this.prevBeginIdx = 0;
+
+			//자소 단위로 분할
+			String jasoUnits = unitParser.parse(token);
+
+			int length = jasoUnits.length();
+
+			for(int i=0; i<length; i++){
+				this.symbolParsing(jasoUnits.charAt(i),i); //숫자 파싱
+				this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
+				this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
+				//			this.irregularExtends(jasoUnits.charAt(i),i);
+			}
+
+			this.consumeRuleParserBuffer(jasoUnits);
+
+			this.lattice.setLastIdx(jasoUnits.length());
+			this.lattice.appendEndNode();
+			//			this.lattice.printLattice();
+
+			List<Pair<String,String>> shortestPathList = this.lattice.findPath();
+
+			//미분석인 경우
+			if(shortestPathList == null){
+				resultList.add(new Pair<>(token,"NA"));
+			}else{
+				Collections.reverse(shortestPathList);
+				resultList.addAll(shortestPathList);
+			}		
 		}
-		
-		this.lookupFwd(token); //기분석 사전
-
-		this.resources.getIrrTrie().getTrieDictionary().initCurrentNode();
-		this.resources.getObservation().getTrieDictionary().initCurrentNode();
-
-		this.lattice = new Lattice(this.resources);
-		this.lattice.setUnitParser(this.unitParser);
-
-		//연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
-		this.prevPos = "";
-		this.prevMorph = "";
-		this.prevBeginIdx = 0;
-
-		//자소 단위로 분할
-		String jasoUnits = unitParser.parse(token);
-
-		int length = jasoUnits.length();
-
-		for(int i=0; i<length; i++){
-			this.symbolParsing(jasoUnits.charAt(i),i); //숫자 파싱
-			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
-			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
-//			this.irregularExtends(jasoUnits.charAt(i),i);
-		}
-
-		this.consumeRuleParserBuffer(jasoUnits);
-
-		this.lattice.setLastIdx(jasoUnits.length());
-		this.lattice.appendEndNode();
-		//			this.lattice.printLattice();
-
-		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
-
-		//미분석인 경우
-		if(shortestPathList == null){
-			resultList.add(new Pair<>(token,"NA"));
-		}else{
-			Collections.reverse(shortestPathList);
-			resultList.addAll(shortestPathList);
-		}		
 
 		return resultList;
 	}
@@ -193,7 +197,7 @@ public class Komoran {
 
 		}
 	}
-*/
+	 */
 	private boolean irregularParsing(char jaso, int curIndex) {
 		//불규칙 노드들을 얻어옴
 		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(jaso);
@@ -269,7 +273,7 @@ public class Komoran {
 	public void load(String modelPath){
 		this.resources.load(modelPath);
 	}
-	
+
 	//기분석 사전
 	public void setFWDic(String filename) {		
 		try {
