@@ -2,4 +2,5 @@
 .classpath
 .project
 .settings
-
+SpeedValidation.java
+StdinTest.java
