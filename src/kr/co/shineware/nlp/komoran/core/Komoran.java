@@ -1,21 +1,23 @@
 package kr.co.shineware.nlp.komoran.core;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.core.model.Lattice;
-import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
-import kr.co.shineware.nlp.komoran.model.MorphTag;
+import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
+import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
-import kr.co.shineware.util.checker.time.TimeChecker;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
@@ -24,6 +26,8 @@ public class Komoran {
 	public Resources resources;
 	private KoreanUnitParser unitParser;
 	private Lattice lattice;
+	
+	private HashMap<String, List<Pair<String, String>>> fwd;
 
 	private String prevPos;
 	private String prevMorph;
@@ -51,6 +55,8 @@ public class Komoran {
 		if(token.length() == 0){
 			return null;
 		}
+		
+		this.lookupFwd(token); //기분석 사전
 
 		this.resources.getIrrTrie().getTrieDictionary().initCurrentNode();
 		this.resources.getObservation().getTrieDictionary().initCurrentNode();
@@ -69,19 +75,10 @@ public class Komoran {
 		int length = jasoUnits.length();
 
 		for(int i=0; i<length; i++){
-			this.numericParsing(jasoUnits.charAt(i),i); //숫자 파싱
-			//				this.foreignParsing(jasoUnits.charAt(i),i); //외래어 파
+			this.symbolParsing(jasoUnits.charAt(i),i); //숫자 파싱
 			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
-			
-//			TimeChecker.setBeginFlag("IRREGULAR_PARSE");
 			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
-//			TimeChecker.setEndFlag("IRREGULAR_PARSE");
-//			TimeChecker.appendElapsedTime("IRREGULAR_PARSE", TimeChecker.getElapsedTime("IRREGULAR_PARSE"));
-//			
-//			TimeChecker.setBeginFlag("IRREGULAR_EXT_PARSE");
-			this.irregularExtends(jasoUnits.charAt(i),i);
-//			TimeChecker.setEndFlag("IRREGULAR_EXT_PARSE");
-//			TimeChecker.appendElapsedTime("IRREGULAR_EXT_PARSE", TimeChecker.getElapsedTime("IRREGULAR_EXT_PARSE"));
+//			this.irregularExtends(jasoUnits.charAt(i),i);
 		}
 
 		this.consumeRuleParserBuffer(jasoUnits);
@@ -103,7 +100,14 @@ public class Komoran {
 		return resultList;
 	}
 
-	private void numericParsing(char charAt, int i) {
+	private List<Pair<String, String>> lookupFwd(String token) {
+		if(this.fwd == null){
+			return null;
+		}
+		return this.fwd.get(token);
+	}
+
+	private void symbolParsing(char charAt, int i) {
 		String curPos = "";
 		if(StringUtil.isEnglish(charAt)){
 			curPos = "SL";
@@ -120,11 +124,11 @@ public class Komoran {
 		}
 		else{
 			if(this.prevPos.equals("SL")){
-				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, new Tag(this.prevPos,this.resources.getTable().getId(this.prevPos)), SCORE.SL);
+				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SL);
 			}else if(this.prevPos.equals("SN")){
-				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, new Tag(this.prevPos,this.resources.getTable().getId(this.prevPos)), SCORE.SN);
+				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SN);
 			}else if(this.prevPos.equals("SH")){
-				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, new Tag(this.prevPos,this.resources.getTable().getId(this.prevPos)), SCORE.SH);
+				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SH);
 			}
 
 			this.prevBeginIdx = i;
@@ -136,20 +140,16 @@ public class Komoran {
 	private void consumeRuleParserBuffer(String in) {
 		if(this.prevPos.trim().length() != 0){
 			if(this.prevPos.equals("SL")){
-				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, new Tag(this.prevPos,this.resources.getTable().getId(this.prevPos)), SCORE.SL);
+				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SL);
 			}else if(this.prevPos.equals("SH")){
-				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, new Tag(this.prevPos,this.resources.getTable().getId(this.prevPos)), SCORE.SH);
+				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SH);
 			}else if(this.prevPos.equals("SN")){
-				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, new Tag(this.prevPos,this.resources.getTable().getId(this.prevPos)), SCORE.SN);
+				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SN);
 			}
 		}
 	}
 
-	private void foreignParsing(char charAt, int i) {
-		;
-	}
-
-	private void irregularExtends(char jaso, int curIndex) {
+	/*private void irregularExtends(char jaso, int curIndex) {
 		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
 		if(prevLatticeNodes == null){
 			;
@@ -159,7 +159,7 @@ public class Komoran {
 			for (LatticeNode prevLatticeNode : prevLatticeNodes) {
 				//불규칙 태그인 경우에 대해서만
 				if( prevLatticeNode.getMorphTag().getTagId() == -1 ) {
-					//형태소를 공백으로 분할 ('흐르/VV 어'와 같은 형태로 되어 있기 때문) 
+					//형태소를 공백으로 분할 ('흐르/VV 어'와 같은 형태로 되어 있기 때문)
 					String[] tokens = prevLatticeNode.getMorphTag().getMorph().split(" ");
 					//마지막 형태소 정보를 얻어옴
 					String lastMorph = tokens[tokens.length-1];
@@ -193,7 +193,7 @@ public class Komoran {
 
 		}
 	}
-
+*/
 	private boolean irregularParsing(char jaso, int curIndex) {
 		//불규칙 노드들을 얻어옴
 		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(jaso);
@@ -229,19 +229,6 @@ public class Komoran {
 		if(morphScoredTagsMap == null){
 			return false;
 		}
-		
-		TimeChecker.setBeginFlag("REGULAR_INSERT");
-		
-		//key는 형태소
-		//value는 형태소가 갖는 품사별 관측확률(점수)
-//		Set<Entry<String,List<ScoredTag>>> entrySet = morphScoredTagsMap.entrySet();
-//		for (Entry<String, List<ScoredTag>> entry : entrySet) {
-//			int beginIdx = curIndex-entry.getKey().length()+1;
-//			int endIdx = curIndex+1;
-//			for(ScoredTag scoredTag : entry.getValue()){
-//				this.insertLattice(beginIdx,endIdx,entry.getKey(),scoredTag,scoredTag.getScore());
-//			}
-//		}
 
 		//형태소 정보만 얻어옴
 
@@ -267,7 +254,7 @@ public class Komoran {
 
 	private void insertLattice(int beginIdx, int endIdx, String morph,
 			Tag tag, double score) {
-		this.lattice.put(beginIdx,endIdx,morph,tag,score);
+		this.lattice.put(beginIdx,endIdx,morph,tag.getTag(),tag.getTagId(),score);
 	}
 
 	private Set<String> getMorphes(
@@ -281,5 +268,41 @@ public class Komoran {
 
 	public void load(String modelPath){
 		this.resources.load(modelPath);
+	}
+	
+	//기분석 사전
+	public void setFWDic(String filename) {		
+		try {
+			CorpusParser corpusParser = new CorpusParser();
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+			String line;
+			this.fwd = new HashMap<String, List<Pair<String, String>>>();
+			while ((line = br.readLine()) != null) {
+				String[] tmp = line.split("\t");
+				if (tmp.length != 2 || tmp[0].charAt(0) == '#'){
+					tmp = null;
+					continue;
+				}
+				ProblemAnswerPair problemAnswerPair = corpusParser.parse(line);
+				List<Pair<String,String>> convertAnswerList = new ArrayList<>();
+				for (Pair<String, String> pair : problemAnswerPair.getAnswerList()) {
+					convertAnswerList.add(
+							new Pair<String, String>(this.unitParser.parse(pair.getFirst()), pair.getSecond()));
+				}
+				this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
+						convertAnswerList);
+				tmp = null;
+				problemAnswerPair = null;
+				convertAnswerList = null;
+			}			
+			br.close();
+
+			//init
+			corpusParser = null;
+			br = null;
+			line = null;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

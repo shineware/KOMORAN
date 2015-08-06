@@ -8,7 +8,6 @@ import java.util.Map;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
-import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.modeler.model.PosTable;
@@ -20,8 +19,6 @@ public class Lattice {
 
 	private static final int IRREGULAR_POS_ID = -1;
 	private Map<Integer, List<LatticeNode>> lattice;
-//	private Map<Integer, Map<LatticeNode,Integer>> lattice;
-//		private Map<Integer, List<IrregularLatticeNode>> irregularLattice;
 	private PosTable posTable;
 	private Transition transition;
 	private int lastIdx = -1;
@@ -104,8 +101,8 @@ public class Lattice {
 		}
 	}
 
-	public void put(int beginIdx, int endIdx, String morph, Tag tag, double score) {
-		
+//	public void put(int beginIdx, int endIdx, String morph, Tag tag, double score) {
+	public void put(int beginIdx, int endIdx, String morph, String tag, int tagId, double score) {
 		List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
 		if(prevLatticeNodes == null){
 			;
@@ -115,12 +112,11 @@ public class Lattice {
 			//prevMaxScore는 이전 노드까지의 누적된 score와 현재 노드 사이의 전이확률 값이 계산된 결과임
 			this.prevMaxScore = Double.NEGATIVE_INFINITY;
 //			이전 node list에 포함된 node 중 현재 node와 연결 시 값을 최대로 하는 node의 인덱스를 찾음
-			this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodes,tag.getTagId(),morph);
+			this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodes,tagId,morph);
 
 			//연결 가능한 노드가 있다면
 			if(this.prevMaxNode != null){
-				
-				LatticeNode latticeNode = this.makeNode(beginIdx,endIdx,morph,tag.getTag(),tag.getTagId(),this.prevMaxScore+score,this.prevMaxIdx);
+				LatticeNode latticeNode = this.makeNode(beginIdx,endIdx,morph,tag,tagId,this.prevMaxScore+score,this.prevMaxIdx);
 				this.appendNode(latticeNode);
 				
 			}
@@ -189,15 +185,6 @@ public class Lattice {
 				}
 			}
 
-			//시작 기호가 아니고
-			//조사 품사이고
-//			if(morph != null &&
-//					!this.isStartNode(prevLatticeNodes.get(i).getMorphTag().getTagId()) &&
-//					this.isConjugationJosa(tagId,morph) && 
-//					this.isCorrectiveJosaConnection(prevLatticeNodes.get(i).getMorphTag(),tagId, morph) == false){
-//				continue;
-//			}
-
 			double prevObservationScore = prevLatticeNodeSet.get(i).getScore();
 
 			if(this.prevMaxScore < transitionScore+prevObservationScore){
@@ -259,7 +246,7 @@ public class Lattice {
 	}
 
 	public void appendEndNode() {
-		this.put(this.lastIdx, this.lastIdx+1, SYMBOL.END, new Tag(SYMBOL.END, this.getPosTable().getId(SYMBOL.END)), 0);
+		this.put(this.lastIdx, this.lastIdx+1, SYMBOL.END, SYMBOL.END, this.getPosTable().getId(SYMBOL.END), 0);
 	}
 
 	public List<Pair<String,String>> findPath() {
@@ -318,13 +305,13 @@ public class Lattice {
 			if(i == morphPosIdList.size()-1){
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTagId() == morphPosId.getSecond()){
-						this.put(irrIdx, endIdx, morphPosId.getFirst(), new Tag(this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond()), scoredTag.getScore());
+						this.put(irrIdx, endIdx, morphPosId.getFirst(), this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond(), scoredTag.getScore());
 					}
 				}				
 			} else{
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTagId() == morphPosId.getSecond()){
-						this.put(irrIdx, irrIdx-1, morphPosId.getFirst(), new Tag(this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond()), scoredTag.getScore());
+						this.put(irrIdx, irrIdx-1, morphPosId.getFirst(), this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond(), scoredTag.getScore());
 					}
 				}
 			}
@@ -343,7 +330,7 @@ public class Lattice {
 				List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morph);
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTag().equals(pos)){
-						this.put(beginIdx, irrIdx-1, morph, scoredTag, scoredTag.getScore());
+						this.put(beginIdx, irrIdx-1, morph, scoredTag.getTag(), scoredTag.getTagId(), scoredTag.getScore());
 					}
 				}
 
@@ -351,14 +338,14 @@ public class Lattice {
 				List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morph);
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTag().equals(pos)){
-						this.put(irrIdx, endIdx, morph, new Tag(pos, this.posTable.getId(pos)), scoredTag.getScore());
+						this.put(irrIdx, endIdx, morph, pos, this.posTable.getId(pos), scoredTag.getScore());
 					}
 				}				
 			} else{
 				List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morph);
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTag().equals(pos)){
-						this.put(irrIdx, irrIdx-1, morph, new Tag(pos, this.posTable.getId(pos)), scoredTag.getScore());
+						this.put(irrIdx, irrIdx-1, morph, pos, this.posTable.getId(pos), scoredTag.getScore());
 					}
 				}
 			}
