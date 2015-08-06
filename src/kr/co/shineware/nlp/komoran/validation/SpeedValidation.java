@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import kr.co.shineware.nlp.komoran.core.Komoran;
-import kr.co.shineware.util.checker.time.TimeChecker;
 
 public class SpeedValidation {
 
@@ -17,24 +16,19 @@ public class SpeedValidation {
 			BufferedReader br = new BufferedReader(new FileReader("testset/stress.test"));
 			String line = null;
 			long begin,end;
-			long acc=0l;
+			long elapsedTime=0l;
 			while((line = br.readLine()) != null){
 				String[] tmp = line.split(" ");
 				for (String t : tmp) {
 					begin = System.currentTimeMillis();
 					komoran.analyze(t);
 					end = System.currentTimeMillis();
-					acc += (end-begin);
+					elapsedTime += (end-begin);
 				}
 				tmp = null;
 			}
 			br.close();
-			System.out.println(acc);
-//			TimeChecker.printElapsedTime();
-			System.out.println();
-//			TimeChecker.printElapsedTimeRatio(acc);
-			System.out.println();
-//			TimeChecker.init();
+			System.out.println(elapsedTime);
 			if(count-- == 0)break;
 		}
 	}
