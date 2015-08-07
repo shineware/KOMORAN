@@ -58,8 +58,12 @@ public class Komoran {
 			if(token.length() == 0){
 				return null;
 			}
-
-			this.lookupFwd(token); //기분석 사전
+			
+			//기분석 사전
+			List<Pair<String,String>> fwdLookupResult = this.lookupFwd(token);
+			if(fwdLookupResult != null){
+				resultList.addAll(fwdLookupResult);
+			}
 
 			this.resources.getIrrTrie().getTrieDictionary().initCurrentNode();
 			this.resources.getObservation().getTrieDictionary().initCurrentNode();
@@ -291,9 +295,10 @@ public class Komoran {
 				List<Pair<String,String>> convertAnswerList = new ArrayList<>();
 				for (Pair<String, String> pair : problemAnswerPair.getAnswerList()) {
 					convertAnswerList.add(
-							new Pair<String, String>(this.unitParser.parse(pair.getFirst()), pair.getSecond()));
+							new Pair<String, String>(pair.getFirst(), pair.getSecond()));
 				}
-				this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
+				
+				this.fwd.put(problemAnswerPair.getProblem(),
 						convertAnswerList);
 				tmp = null;
 				problemAnswerPair = null;

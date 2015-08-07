@@ -9,6 +9,7 @@ public class KomoranTest {
 
 	public static void main(String[] args) throws Exception {
 		Komoran komoran = new Komoran("models/");
+		komoran.setFWDic("user_data/fwd.user");
 		List<Pair<String,String>> analyzeReulstList = komoran.analyze("눈이 자꾸 감겼었어.");
 		for (Pair<String, String> token : analyzeReulstList) {
 			System.out.println(token);
