@@ -17,13 +17,15 @@ import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
+import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
 public class Komoran {
 
-	public Resources resources;
+	private Resources resources;
+	private Observation userDic;
 	private KoreanUnitParser unitParser;
 	private Lattice lattice;
 
@@ -58,7 +60,7 @@ public class Komoran {
 			if(token.length() == 0){
 				return null;
 			}
-			
+
 			//기분석 사전
 			List<Pair<String,String>> fwdLookupResult = this.lookupFwd(token);
 			if(fwdLookupResult != null){
@@ -67,6 +69,9 @@ public class Komoran {
 
 			this.resources.getIrrTrie().getTrieDictionary().initCurrentNode();
 			this.resources.getObservation().getTrieDictionary().initCurrentNode();
+			if(this.userDic != null){
+				this.userDic.getTrieDictionary().initCurrentNode();
+			}
 
 			this.lattice = new Lattice(this.resources);
 			this.lattice.setUnitParser(this.unitParser);
@@ -83,6 +88,7 @@ public class Komoran {
 
 			for(int i=0; i<length; i++){
 				this.symbolParsing(jasoUnits.charAt(i),i); //숫자 파싱
+				this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
 				this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 				this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
 				//			this.irregularExtends(jasoUnits.charAt(i),i);
@@ -106,6 +112,33 @@ public class Komoran {
 		}
 
 		return resultList;
+	}
+
+	private boolean userDicParsing(char jaso, int curIndex) {
+		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
+
+		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagMapFromUserDic(jaso);
+
+		if(morphScoredTagsMap == null){
+			return false;
+		}
+
+		//형태소 정보만 얻어옴
+
+		Set<String> morphes = this.getMorphes(morphScoredTagsMap);
+
+		//각 형태소와 품사 정보를 lattice에 삽입
+		for (String morph : morphes) {
+			int beginIdx = curIndex-morph.length()+1;
+			int endIdx = curIndex+1;
+
+			//형태소에 대한 품사 및 점수(observation) 정보를 List 형태로 가져옴
+			List<ScoredTag> scoredTags = morphScoredTagsMap.get(morph);
+			for (ScoredTag scoredTag : scoredTags) {
+				this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
+			}
+		}
+		return true;		
 	}
 
 	private List<Pair<String, String>> lookupFwd(String token) {
@@ -273,6 +306,12 @@ public class Komoran {
 	private Map<String, List<ScoredTag>> getMorphScoredTagsMap(char jaso) {
 		return this.resources.getObservation().getTrieDictionary().get(jaso);
 	}
+	private Map<String, List<ScoredTag>> getMorphScoredTagMapFromUserDic(char jaso){
+		if(this.userDic == null){
+			return null;
+		}
+		return this.userDic.getTrieDictionary().get(jaso);
+	}
 
 	public void load(String modelPath){
 		this.resources.load(modelPath);
@@ -297,7 +336,7 @@ public class Komoran {
 					convertAnswerList.add(
 							new Pair<String, String>(pair.getFirst(), pair.getSecond()));
 				}
-				
+
 				this.fwd.put(problemAnswerPair.getProblem(),
 						convertAnswerList);
 				tmp = null;
@@ -313,5 +352,42 @@ public class Komoran {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setUserDic(String userDic) {
+		try {
+			//			System.out.println("User dic loading : "+new File(userDic).getAbsolutePath());
+			this.userDic = new Observation();
+			BufferedReader br = new BufferedReader(new FileReader(userDic));
+			String line = null;
+			while((line = br.readLine()) != null){
+				line = line.trim();				
+				if(line.length() == 0 || line.charAt(0) == '#')continue;
+				int lastIdx = line.lastIndexOf("\t");
+
+				String morph;
+				String pos;
+				if(lastIdx == -1){
+					morph = line.trim();
+					pos = "NNP";
+				}else{
+					morph = line.substring(0, lastIdx);
+					pos = line.substring(lastIdx+1);
+				}
+				this.userDic.put(morph, pos, this.resources.getTable().getId(pos), 0.0);
+
+				line = null;
+				morph = null;
+				pos = null;
+			}
+			br.close();
+
+			//init
+			br = null;
+			line = null;
+			this.userDic.getTrieDictionary().buildFailLink();
+		} catch (Exception e) {		
+			e.printStackTrace();
+		}		
 	}
 }

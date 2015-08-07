@@ -13,6 +13,7 @@ public class Resources {
 	private Observation observation;
 	private PosTable table;
 	private IrregularTrie irrTrie;
+
 	public Transition getTransition() {
 		return transition;
 	}
