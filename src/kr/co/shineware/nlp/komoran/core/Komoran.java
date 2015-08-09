@@ -11,9 +11,11 @@ import java.util.Set;
 
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.core.model.Lattice;
+import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
+import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
@@ -91,14 +93,14 @@ public class Komoran {
 				this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
 				this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 				this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
-				//			this.irregularExtends(jasoUnits.charAt(i),i);
+				this.irregularExtends(jasoUnits.charAt(i),i);
 			}
 
 			this.consumeRuleParserBuffer(jasoUnits);
 
 			this.lattice.setLastIdx(jasoUnits.length());
 			this.lattice.appendEndNode();
-			//			this.lattice.printLattice();
+//			this.lattice.printLattice();
 
 			List<Pair<String,String>> shortestPathList = this.lattice.findPath();
 
@@ -190,7 +192,7 @@ public class Komoran {
 		}
 	}
 
-	/*private void irregularExtends(char jaso, int curIndex) {
+	private void irregularExtends(char jaso, int curIndex) {
 		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
 		if(prevLatticeNodes == null){
 			;
@@ -234,7 +236,7 @@ public class Komoran {
 
 		}
 	}
-	 */
+	 
 	private boolean irregularParsing(char jaso, int curIndex) {
 		//불규칙 노드들을 얻어옴
 		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(jaso);
