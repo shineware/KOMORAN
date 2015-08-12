@@ -5,11 +5,13 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import kr.co.shineware.nlp.komoran.constant.SCORE;
+import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.core.model.Lattice;
 import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
@@ -100,7 +102,6 @@ public class Komoran {
 
 			this.lattice.setLastIdx(jasoUnits.length());
 			this.lattice.appendEndNode();
-//			this.lattice.printLattice();
 
 			List<Pair<String,String>> shortestPathList = this.lattice.findPath();
 
@@ -118,7 +119,6 @@ public class Komoran {
 
 	private boolean userDicParsing(char jaso, int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
-
 		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagMapFromUserDic(jaso);
 
 		if(morphScoredTagsMap == null){
@@ -126,7 +126,6 @@ public class Komoran {
 		}
 
 		//형태소 정보만 얻어옴
-
 		Set<String> morphes = this.getMorphes(morphScoredTagsMap);
 
 		//각 형태소와 품사 정보를 lattice에 삽입
@@ -191,25 +190,22 @@ public class Komoran {
 			}
 		}
 	}
-
+	
 	private void irregularExtends(char jaso, int curIndex) {
 		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
 		if(prevLatticeNodes == null){
 			;
 		}else{
-			List<LatticeNode> extendedIrrNodeList = new ArrayList<>();
+			Set<LatticeNode> extendedIrrNodeList = new HashSet<>();
 
 			for (LatticeNode prevLatticeNode : prevLatticeNodes) {
 				//불규칙 태그인 경우에 대해서만
 				if( prevLatticeNode.getMorphTag().getTagId() == -1 ) {
-					//형태소를 공백으로 분할 ('흐르/VV 어'와 같은 형태로 되어 있기 때문)
-					String[] tokens = prevLatticeNode.getMorphTag().getMorph().split(" ");
 					//마지막 형태소 정보를 얻어옴
-					String lastMorph = tokens[tokens.length-1];
+					String lastMorph = prevLatticeNode.getMorphTag().getMorph();
 
 					//불규칙의 마지막 형태소에 현재 자소 단위를 합쳤을 때 자식 노드가 있다면 계속 탐색 가능 후보로 처리 해야함
 					if(this.resources.getObservation().getTrieDictionary().hasChild((lastMorph+jaso).toCharArray())){
-						//						System.out.println(lastMorph+"+"+jaso+" has child!");
 						LatticeNode extendedIrregularNode = new LatticeNode();
 						extendedIrregularNode.setBeginIdx(prevLatticeNode.getBeginIdx());
 						extendedIrregularNode.setEndIdx(curIndex+1);
@@ -219,14 +215,15 @@ public class Komoran {
 						extendedIrrNodeList.add(extendedIrregularNode);
 					}
 					//불규칙의 마지막 형태소에 현재 자소 단위를 합쳐 점수를 얻어옴
-					//					System.out.println(lastMorph+"+"+jaso+" get score!");
 					List<ScoredTag> lastScoredTags = this.resources.getObservation().getTrieDictionary().getValue(lastMorph+jaso);
 					if(lastScoredTags == null){
 						continue;
 					}
 
+					//얻어온 점수를 토대로 계산
 					for (ScoredTag scoredTag : lastScoredTags) {
-						this.lattice.put(prevLatticeNode.getBeginIdx(), curIndex+1, prevLatticeNode.getMorphTag().getMorph()+jaso+"/"+scoredTag.getTag());
+						this.lattice.put(prevLatticeNode.getBeginIdx(), curIndex+1, prevLatticeNode.getMorphTag().getMorph()+jaso,
+								scoredTag.getTag(), scoredTag.getTagId(),scoredTag.getScore());
 					}
 				}
 			}
@@ -243,7 +240,6 @@ public class Komoran {
 		if(morphIrrNodesMap == null){
 			return false;
 		}
-
 
 		//형태소 정보만 얻어옴
 		Set<String> morphs = morphIrrNodesMap.keySet();
@@ -266,7 +262,6 @@ public class Komoran {
 
 	private boolean regularParsing(char jaso,int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
-
 		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagsMap(jaso);
 
 		if(morphScoredTagsMap == null){
@@ -274,7 +269,6 @@ public class Komoran {
 		}
 
 		//형태소 정보만 얻어옴
-
 		Set<String> morphes = this.getMorphes(morphScoredTagsMap);
 
 		//각 형태소와 품사 정보를 lattice에 삽입
@@ -391,5 +385,29 @@ public class Komoran {
 		} catch (Exception e) {		
 			e.printStackTrace();
 		}		
+	}
+
+	//for debug
+	public double getScore(String src) {
+		String[] tokens = src.split(" ");
+		double score = 0.0;
+		String prevTag = SYMBOL.START;
+		for(int i=0;i<tokens.length;i++){
+			String morph = tokens[i];
+			String pos = tokens[i+1];
+			i++;
+			
+			for (ScoredTag tag : this.getObservationScore(morph)) {
+				if(tag.getTag().equals(pos)){
+					score += tag.getScore();
+					break;
+				}
+			}
+			
+			score += this.getTransitionScore(prevTag, pos);
+			prevTag = pos;
+		}
+		score += this.getTransitionScore(prevTag, SYMBOL.END);
+		return score;
 	}
 }
