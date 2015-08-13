@@ -95,7 +95,7 @@ public class Komoran {
 				this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
 				this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 				this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
-				this.irregularExtends(jasoUnits.charAt(i),i);
+//				this.irregularExtends(jasoUnits.charAt(i),i);
 			}
 
 			this.consumeRuleParserBuffer(jasoUnits);

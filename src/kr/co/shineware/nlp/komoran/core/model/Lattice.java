@@ -70,9 +70,9 @@ public class Lattice {
 				//				this.appendNode(irrLatticeNode);
 				int prevMaxIdx = this.prevMaxIdx;
 				double prevMaxScore = this.prevMaxScore;
-				List<Pair<String,Integer>> irregularExtendTokens = new ArrayList<>(irregularTokens.subList(0, irregularTokens.size()-1));
-				irregularExtendTokens.add(new Pair<String, Integer>(irregularTokens.get(irregularTokens.size()-1).getFirst(), IRREGULAR_POS_ID));
-				this.putIrregularExtendTokens(beginIdx, endIdx, irregularExtendTokens,prevMaxScore, prevMaxIdx);
+//				List<Pair<String,Integer>> irregularExtendTokens = new ArrayList<>(irregularTokens.subList(0, irregularTokens.size()-1));
+//				irregularExtendTokens.add(new Pair<String, Integer>(irregularTokens.get(irregularTokens.size()-1).getFirst(), IRREGULAR_POS_ID));
+//				this.putIrregularExtendTokens(beginIdx, endIdx, irregularExtendTokens,prevMaxScore, prevMaxIdx);
 
 				
 				//일반 불규칙을 노드를 추가하기 위한 루틴
