@@ -30,5 +30,11 @@ public class SCORE {
 	public static final double SL = -1.00;
 	public static final double SN = -1.00;
 	public static final double SH = -1.00;
+	
+	
+	public static final double SF = -1.00;
 	public static final double SW = -10000.0;
+	public static final double SP = -1.00;
+	public static final double SS = -1.00;
+	public static final double SO = -1.00;	
 }

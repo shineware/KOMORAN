@@ -2,6 +2,7 @@ package kr.co.shineware.nlp.komoran.core;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,7 +92,8 @@ public class Komoran {
 			int length = jasoUnits.length();
 
 			for(int i=0; i<length; i++){
-				this.symbolParsing(jasoUnits.charAt(i),i); //숫자 파싱
+				this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
+				this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
 				this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
 				this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 				this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
@@ -115,6 +117,54 @@ public class Komoran {
 		}
 
 		return resultList;
+	}
+
+	private boolean symbolParsing(char jaso, int idx) {
+
+		Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(jaso);
+		//숫자
+		if(Character.isDigit(jaso)){
+			return false;
+		}
+		else if(unicodeBlock == Character.UnicodeBlock.BASIC_LATIN){
+			//영어
+			if (((jaso >= 'A') && (jaso <= 'Z')) || ((jaso >= 'a') && (jaso <= 'z'))) {
+				return false;
+			}
+			else if(this.resources.getObservation().getTrieDictionary().getValue(""+jaso) != null){
+				return false;
+			}
+			//symbol
+			else{
+				this.lattice.put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
+				return true;
+			}
+		}
+		//한글
+		else if(unicodeBlock == UnicodeBlock.HANGUL_COMPATIBILITY_JAMO 
+				|| unicodeBlock == UnicodeBlock.HANGUL_JAMO
+				|| unicodeBlock == UnicodeBlock.HANGUL_JAMO_EXTENDED_A
+				||unicodeBlock == UnicodeBlock.HANGUL_JAMO_EXTENDED_B
+				||unicodeBlock == UnicodeBlock.HANGUL_SYLLABLES){
+			return false;
+		}
+		//일본어
+		else if(unicodeBlock == UnicodeBlock.KATAKANA
+				|| unicodeBlock == UnicodeBlock.KATAKANA_PHONETIC_EXTENSIONS){
+			return false;
+		}
+		//중국어
+		else if(UnicodeBlock.CJK_COMPATIBILITY.equals(unicodeBlock)				
+				|| UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(unicodeBlock)
+				|| UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(unicodeBlock)
+				|| UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(unicodeBlock)
+				|| UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(unicodeBlock)){
+			return false;
+		}
+		else{
+			this.lattice.put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
+			return true;
+		}
 	}
 
 	private boolean userDicParsing(char jaso, int curIndex) {
@@ -149,7 +199,7 @@ public class Komoran {
 		return this.fwd.get(token);
 	}
 
-	private void symbolParsing(char charAt, int i) {
+	private void continiousSymbolParsing(char charAt, int i) {
 		String curPos = "";
 		if(StringUtil.isEnglish(charAt)){
 			curPos = "SL";
@@ -190,7 +240,7 @@ public class Komoran {
 			}
 		}
 	}
-	
+
 	private void irregularExtends(char jaso, int curIndex) {
 		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
 		if(prevLatticeNodes == null){
@@ -233,7 +283,7 @@ public class Komoran {
 
 		}
 	}
-	 
+
 	private boolean irregularParsing(char jaso, int curIndex) {
 		//불규칙 노드들을 얻어옴
 		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(jaso);
@@ -396,14 +446,14 @@ public class Komoran {
 			String morph = tokens[i];
 			String pos = tokens[i+1];
 			i++;
-			
+
 			for (ScoredTag tag : this.getObservationScore(morph)) {
 				if(tag.getTag().equals(pos)){
 					score += tag.getScore();
 					break;
 				}
 			}
-			
+
 			score += this.getTransitionScore(prevTag, pos);
 			prevTag = pos;
 		}

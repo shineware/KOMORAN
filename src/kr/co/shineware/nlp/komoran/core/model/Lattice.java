@@ -66,13 +66,9 @@ public class Lattice {
 			if(this.prevMaxNode != null){
 				List<Pair<String,Integer>> irregularTokens = irregularNode.getTokens();
 				//불규칙확장을 위한 노드 추가
-				//				LatticeNode irrLatticeNode = this.makeNode(beginIdx,endIdx,irregularNode.getMorphFormat(),"IRR",IRREGULAR_POS_ID,this.prevMaxScore+irregularNode.getInnerScore()-1000.0,this.prevMaxIdx);
-				//				this.appendNode(irrLatticeNode);
 				int prevMaxIdx = this.prevMaxIdx;
 				double prevMaxScore = this.prevMaxScore;
-				List<Pair<String,Integer>> irregularExtendTokens = new ArrayList<>(irregularTokens.subList(0, irregularTokens.size()-1));
-				irregularExtendTokens.add(new Pair<String, Integer>(irregularTokens.get(irregularTokens.size()-1).getFirst(), IRREGULAR_POS_ID));
-				this.putIrregularExtendTokens(beginIdx, endIdx, irregularExtendTokens,prevMaxScore, prevMaxIdx);
+				this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens,prevMaxScore, prevMaxIdx);
 
 				
 				//일반 불규칙을 노드를 추가하기 위한 루틴

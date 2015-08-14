@@ -291,6 +291,23 @@ public class CorpusBuilder {
 					continue;
 				}
 			}
+			
+			if(pair.getSecond().equals("SH") || 
+					pair.getSecond().equals("SN") || 
+					pair.getSecond().equals("SL")){
+				continue;
+			}
+			
+			//analyzer와 의존성이 있는 관계로 rule parser에 해당 내용이 포함되어 있어야함
+			//근데 이걸 하면 빨라질까?
+//			if(pair.getSecond().equals("SF")	//마침표, 물음표, 느낌표 . ? !
+//					|| pair.getSecond().equals("SP")	//쉼표, 가운뎃점, 콜론, 빗금 , / ; :
+//					|| pair.getSecond().equals("SS")	//따옴표, 괄호표, 줄표 " ' ` - < > { } [ ] ( )
+//					|| pair.getSecond().equals("SO") 	//붙임표(물결, 숨김, 빠짐) ~
+//					){	//줄임표 ...
+//				continue;
+//			}
+			
 			wordDic.append(pair.getFirst(), pair.getSecond());
 		}
 	}

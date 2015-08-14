@@ -150,6 +150,10 @@ public class ModelBuilder {
 			
 			//관측 확률
 			List<ScoredTag> scoredTagList = this.observation.getTrieDictionary().getValue(morph);
+			if(scoredTagList == null){
+				System.err.println(morph+" has no observation score!");
+				continue;
+			}
 			for (ScoredTag scoredTag: scoredTagList) {
 				if(scoredTag.getTagId() == posId){
 					score += scoredTag.getScore();
