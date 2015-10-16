@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * KOMORAN 3.0 - Korean Morphology Analyzer
+ *
+ * Copyright 2015 Shineware http://www.shineware.co.kr
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ * 	
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
 import java.io.BufferedReader;
@@ -46,13 +63,80 @@ public class Komoran {
 		this.unitParser = new KoreanUnitParser();
 	}
 
+	@Deprecated
 	public List<ScoredTag> getObservationScore(String key){
 		return this.resources.getObservation().getTrieDictionary().getValue(this.unitParser.parse(key));
 	}
 
+	@Deprecated
 	public Double getTransitionScore(String prevPos,String nextPos){
 		return this.resources.getTransition().get(this.resources.getTable().getId(prevPos),
 				this.resources.getTable().getId(nextPos));
+	}
+
+	public List<Pair<String,String>> analyzeWithSpacing(String sentence){
+		List<Pair<String,String>> resultList = new ArrayList<>();
+		this.lattice = new Lattice(this.resources);
+		this.lattice.setUnitParser(this.unitParser);
+
+		//연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
+		this.prevPos = "";
+		this.prevMorph = "";
+		this.prevBeginIdx = 0;
+
+		//자소 단위로 분할
+		String jasoUnits = unitParser.parse(sentence);
+
+		int length = jasoUnits.length();
+		int prevStartSymbolIdx = 0;
+		boolean inserted;
+		for(int i=0; i<length; i++){
+			//띄어쓰기인 경우
+			if(jasoUnits.charAt(i) == ' '){
+				//띄어쓰기에 <end> 노드 추가
+				this.lattice.setLastIdx(i);
+				inserted = this.lattice.appendEndNode();
+				//이 부분에 대한 정제가 필요함
+				
+				if(!inserted){
+					LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,i,new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, i), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore());
+					latticeNode.setPrevNodeIdx(0);
+					this.lattice.appendNode(latticeNode);
+					inserted = this.lattice.appendEndNode();
+				}
+				prevStartSymbolIdx = i;
+			}
+			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
+			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
+			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
+			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
+			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
+			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
+		}
+		
+		this.consumeContiniousSymbolParserBuffer(jasoUnits);
+		this.lattice.setLastIdx(jasoUnits.length());
+		inserted = this.lattice.appendEndNode();
+		if(!inserted){
+			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore());
+			latticeNode.setPrevNodeIdx(0);
+			System.out.println(latticeNode);
+			this.lattice.appendNode(latticeNode);
+			inserted = this.lattice.appendEndNode();
+		}
+		this.lattice.printLattice();
+
+		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
+
+		//미분석인 경우
+		if(shortestPathList == null){
+			resultList.add(new Pair<>(sentence,"NA"));
+		}else{
+			Collections.reverse(shortestPathList);
+			resultList.addAll(shortestPathList);
+		}
+
+		return resultList;
 	}
 
 	public List<Pair<String,String>> analyze(String sentence){
@@ -100,7 +184,7 @@ public class Komoran {
 				this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
 			}
 
-			this.consumeRuleParserBuffer(jasoUnits);
+			this.consumeContiniousSymbolParserBuffer(jasoUnits);
 
 			this.lattice.setLastIdx(jasoUnits.length());
 			this.lattice.appendEndNode();
@@ -134,7 +218,10 @@ public class Komoran {
 			else if(this.resources.getObservation().getTrieDictionary().getValue(""+jaso) != null){
 				return false;
 			}
-			//symbol
+			else if(jaso == ' '){
+				return false;
+			}
+			//아스키 코드 범위 내에 사전에 없는 경우에는 기타 문자
 			else{
 				this.lattice.put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
 				return true;
@@ -161,6 +248,7 @@ public class Komoran {
 				|| UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(unicodeBlock)){
 			return false;
 		}
+		//그 외 문자인 경우
 		else{
 			this.lattice.put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
 			return true;
@@ -229,7 +317,7 @@ public class Komoran {
 		}
 	}
 
-	private void consumeRuleParserBuffer(String in) {
+	private void consumeContiniousSymbolParserBuffer(String in) {
 		if(this.prevPos.trim().length() != 0){
 			if(this.prevPos.equals("SL")){
 				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SL);
@@ -250,7 +338,7 @@ public class Komoran {
 
 			for (LatticeNode prevLatticeNode : prevLatticeNodes) {
 				//불규칙 태그인 경우에 대해서만
-				if( prevLatticeNode.getMorphTag().getTagId() == -1 ) {
+				if( prevLatticeNode.getMorphTag().getTagId() == SYMBOL.IRREGULAR_ID ) {
 					//마지막 형태소 정보를 얻어옴
 					String lastMorph = prevLatticeNode.getMorphTag().getMorph();
 
@@ -259,7 +347,7 @@ public class Komoran {
 						LatticeNode extendedIrregularNode = new LatticeNode();
 						extendedIrregularNode.setBeginIdx(prevLatticeNode.getBeginIdx());
 						extendedIrregularNode.setEndIdx(curIndex+1);
-						extendedIrregularNode.setMorphTag(new MorphTag(prevLatticeNode.getMorphTag().getMorph()+jaso, "IRR", -1));
+						extendedIrregularNode.setMorphTag(new MorphTag(prevLatticeNode.getMorphTag().getMorph()+jaso, SYMBOL.IRREGULAR, SYMBOL.IRREGULAR_ID));
 						extendedIrregularNode.setPrevNodeIdx(prevLatticeNode.getPrevNodeIdx());
 						extendedIrregularNode.setScore(prevLatticeNode.getScore());
 						extendedIrrNodeList.add(extendedIrregularNode);
@@ -270,7 +358,7 @@ public class Komoran {
 						continue;
 					}
 
-					//얻어온 점수를 토대로 계산
+					//얻어온 점수를 토대로 lattice에 넣음
 					for (ScoredTag scoredTag : lastScoredTags) {
 						this.lattice.put(prevLatticeNode.getBeginIdx(), curIndex+1, prevLatticeNode.getMorphTag().getMorph()+jaso,
 								scoredTag.getTag(), scoredTag.getTagId(),scoredTag.getScore());
@@ -372,6 +460,7 @@ public class Komoran {
 			this.fwd = new HashMap<String, List<Pair<String, String>>>();
 			while ((line = br.readLine()) != null) {
 				String[] tmp = line.split("\t");
+				//주석이거나 format에 안 맞는 경우는 skip
 				if (tmp.length != 2 || tmp[0].charAt(0) == '#'){
 					tmp = null;
 					continue;
@@ -402,7 +491,6 @@ public class Komoran {
 
 	public void setUserDic(String userDic) {
 		try {
-			//			System.out.println("User dic loading : "+new File(userDic).getAbsolutePath());
 			this.userDic = new Observation();
 			BufferedReader br = new BufferedReader(new FileReader(userDic));
 			String line = null;
@@ -413,6 +501,7 @@ public class Komoran {
 
 				String morph;
 				String pos;
+				//사용자 사전에 태그가 없는 경우에는 고유 명사로 태깅
 				if(lastIdx == -1){
 					morph = line.trim();
 					pos = "NNP";
@@ -438,6 +527,7 @@ public class Komoran {
 	}
 
 	//for debug
+	@Deprecated
 	public double getScore(String src) {
 		String[] tokens = src.split(" ");
 		double score = 0.0;
