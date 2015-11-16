@@ -63,17 +63,6 @@ public class Komoran {
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	@Deprecated
-	public List<ScoredTag> getObservationScore(String key){
-		return this.resources.getObservation().getTrieDictionary().getValue(this.unitParser.parse(key));
-	}
-
-	@Deprecated
-	public Double getTransitionScore(String prevPos,String nextPos){
-		return this.resources.getTransition().get(this.resources.getTable().getId(prevPos),
-				this.resources.getTable().getId(nextPos));
-	}
-
 	public List<Pair<String,String>> analyzeWithSpacing(String sentence){
 		List<Pair<String,String>> resultList = new ArrayList<>();
 		this.lattice = new Lattice(this.resources);
@@ -88,7 +77,7 @@ public class Komoran {
 		String jasoUnits = unitParser.parse(sentence);
 
 		int length = jasoUnits.length();
-		int prevStartSymbolIdx = 0;
+		int prevStartSymbolIdx = -1;
 		boolean inserted;
 		for(int i=0; i<length; i++){
 			//띄어쓰기인 경우
@@ -97,7 +86,6 @@ public class Komoran {
 				this.lattice.setLastIdx(i);
 				inserted = this.lattice.appendEndNode();
 				//이 부분에 대한 정제가 필요함
-				
 				if(!inserted){
 					LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,i,new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, i), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore());
 					latticeNode.setPrevNodeIdx(0);
@@ -120,11 +108,10 @@ public class Komoran {
 		if(!inserted){
 			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore());
 			latticeNode.setPrevNodeIdx(0);
-			System.out.println(latticeNode);
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
-		this.lattice.printLattice();
+//		this.lattice.printLattice();
 
 		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
 
@@ -524,30 +511,5 @@ public class Komoran {
 		} catch (Exception e) {		
 			e.printStackTrace();
 		}		
-	}
-
-	//for debug
-	@Deprecated
-	public double getScore(String src) {
-		String[] tokens = src.split(" ");
-		double score = 0.0;
-		String prevTag = SYMBOL.START;
-		for(int i=0;i<tokens.length;i++){
-			String morph = tokens[i];
-			String pos = tokens[i+1];
-			i++;
-
-			for (ScoredTag tag : this.getObservationScore(morph)) {
-				if(tag.getTag().equals(pos)){
-					score += tag.getScore();
-					break;
-				}
-			}
-
-			score += this.getTransitionScore(prevTag, pos);
-			prevTag = pos;
-		}
-		score += this.getTransitionScore(prevTag, SYMBOL.END);
-		return score;
 	}
 }

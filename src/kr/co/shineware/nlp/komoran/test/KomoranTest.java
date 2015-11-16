@@ -28,8 +28,7 @@ public class KomoranTest {
 		Komoran komoran = new Komoran("models");
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
-//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("쿠팡 로켓배송");
-		List<Pair<String,String>> analyzeReulstList = komoran.analyzeWithSpacing("쿠팡 어썸 쿠팡 로켓배송 어썸");
+		List<Pair<String,String>> analyzeReulstList = komoran.analyzeWithSpacing("쿠팡 로켓배송 엄청 빠릅니다.");
 		for (Pair<String, String> token : analyzeReulstList) {
 			System.out.println(token);
 		}
