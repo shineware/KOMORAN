@@ -63,8 +63,9 @@ public class Komoran {
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public List<Pair<String,String>> analyzeWithSpacing(String sentence){
+	public synchronized List<Pair<String,String>> analyze(String sentence){
 		List<Pair<String,String>> resultList = new ArrayList<>();
+		
 		this.lattice = new Lattice(this.resources);
 		this.lattice.setUnitParser(this.unitParser);
 
@@ -80,6 +81,8 @@ public class Komoran {
 		int prevStartSymbolIdx = -1;
 		boolean inserted;
 		for(int i=0; i<length; i++){
+			//기분석 사전
+			this.lookupFwd(jasoUnits,i);
 			//띄어쓰기인 경우
 			if(jasoUnits.charAt(i) == ' '){
 				//띄어쓰기에 <end> 노드 추가
@@ -87,7 +90,11 @@ public class Komoran {
 				inserted = this.lattice.appendEndNode();
 				//이 부분에 대한 정제가 필요함
 				if(!inserted){
-					LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,i,new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, i), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore());
+					double NAPenaltyScore = -10000.0;
+					if(prevStartSymbolIdx != -1){
+						NAPenaltyScore = this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
+					}
+					LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,i,new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, i), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
 					latticeNode.setPrevNodeIdx(0);
 					this.lattice.appendNode(latticeNode);
 					inserted = this.lattice.appendEndNode();
@@ -106,7 +113,12 @@ public class Komoran {
 		this.lattice.setLastIdx(jasoUnits.length());
 		inserted = this.lattice.appendEndNode();
 		if(!inserted){
-			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore());
+			double NAPenaltyScore = -10000.0;
+			if(prevStartSymbolIdx != -1){
+				NAPenaltyScore += this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
+			}
+			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
+//			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),-10000.0);
 			latticeNode.setPrevNodeIdx(0);
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
@@ -121,70 +133,6 @@ public class Komoran {
 		}else{
 			Collections.reverse(shortestPathList);
 			resultList.addAll(shortestPathList);
-		}
-
-		return resultList;
-	}
-
-	public List<Pair<String,String>> analyze(String sentence){
-		List<Pair<String,String>> resultList = new ArrayList<>();
-
-		String[] tokens = sentence.split(" ");
-		for (String token : tokens) {
-
-			token = token.trim();
-			if(token.length() == 0){
-				return null;
-			}
-
-			//기분석 사전
-			List<Pair<String,String>> fwdLookupResult = this.lookupFwd(token);
-			if(fwdLookupResult != null){
-				resultList.addAll(fwdLookupResult);
-			}
-
-			this.resources.getIrrTrie().getTrieDictionary().initCurrentNode();
-			this.resources.getObservation().getTrieDictionary().initCurrentNode();
-			if(this.userDic != null){
-				this.userDic.getTrieDictionary().initCurrentNode();
-			}
-
-			this.lattice = new Lattice(this.resources);
-			this.lattice.setUnitParser(this.unitParser);
-
-			//연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
-			this.prevPos = "";
-			this.prevMorph = "";
-			this.prevBeginIdx = 0;
-
-			//자소 단위로 분할
-			String jasoUnits = unitParser.parse(token);
-
-			int length = jasoUnits.length();
-
-			for(int i=0; i<length; i++){
-				this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
-				this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
-				this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
-				this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
-				this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
-				this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
-			}
-
-			this.consumeContiniousSymbolParserBuffer(jasoUnits);
-
-			this.lattice.setLastIdx(jasoUnits.length());
-			this.lattice.appendEndNode();
-
-			List<Pair<String,String>> shortestPathList = this.lattice.findPath();
-
-			//미분석인 경우
-			if(shortestPathList == null){
-				resultList.add(new Pair<>(token,"NA"));
-			}else{
-				Collections.reverse(shortestPathList);
-				resultList.addAll(shortestPathList);
-			}		
 		}
 
 		return resultList;
@@ -267,11 +215,37 @@ public class Komoran {
 		return true;		
 	}
 
-	private List<Pair<String, String>> lookupFwd(String token) {
+	//TO DO
+	//기분석 사전을 어떻게 적용할 것인가....
+	//Lucene에서 활용할 때 인덱스 정보를 어떻게 keep 할 것인가..
+	private int lookupFwd(String token,int curIdx) {
+		
 		if(this.fwd == null){
-			return null;
+			return -1;
 		}
-		return this.fwd.get(token);
+		
+		//현재 인덱스가 시작이거나 이전 인덱스가 공백인 경우 (word 단어인 경우)
+		//현재 인덱스가 온전한 단어의 시작 부분인 경우
+		if(curIdx == 0 || token.charAt(curIdx-1) == ' '){
+			//공백을 찾아 단어(word)의 마지막 인덱스를 가져옴
+			int wordEndIdx = token.indexOf(' ', curIdx);
+			wordEndIdx = wordEndIdx == -1 ? token.length() : wordEndIdx;
+			String targetWord = token.substring(curIdx, wordEndIdx);
+//			this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
+			List<Pair<String,String>> fwdResultList = this.fwd.get(targetWord);
+			
+			if(fwdResultList != null){
+				this.insertLatticeForFwd(curIdx, wordEndIdx, fwdResultList);
+//				this.insertLattice(curIdx, wordEndIdx, fwdResultList.toString(), new Tag("NNG", this.resources.getTable().getId("NNG")), 0.0);
+				return wordEndIdx;
+			}
+		}
+		return -1;
+	}
+
+	private void insertLatticeForFwd(int beginIdx, int endIdx,
+			List<Pair<String, String>> fwdResultList) {
+		this.lattice.put(beginIdx, endIdx, fwdResultList);
 	}
 
 	private void continiousSymbolParsing(char charAt, int i) {
@@ -459,7 +433,7 @@ public class Komoran {
 							new Pair<String, String>(pair.getFirst(), pair.getSecond()));
 				}
 
-				this.fwd.put(problemAnswerPair.getProblem(),
+				this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
 						convertAnswerList);
 				tmp = null;
 				problemAnswerPair = null;

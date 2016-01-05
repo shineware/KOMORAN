@@ -19,6 +19,7 @@ package kr.co.shineware.nlp.komoran.core.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +69,22 @@ public class Lattice {
 
 	private LatticeNode makeStartNode() {
 		return new LatticeNode(-1,0,new MorphTag(SYMBOL.START, SYMBOL.START,this.getPosTable().getId(SYMBOL.START)),0);
+	}
+
+	//기분석 사전을 위한 lattice put
+	public void put(int beginIdx, int endIdx,
+			List<Pair<String, String>> fwdResultList) {
+		for(int i=0;i<fwdResultList.size();i++){
+			Pair<String,String> morphPosPair = fwdResultList.get(i);
+			if(i==0){
+				this.put(beginIdx, irrIdx-1, morphPosPair.getFirst(), morphPosPair.getSecond(), this.posTable.getId(morphPosPair.getSecond()), 0.0);
+			}else if(i==fwdResultList.size()-1){
+				this.put(irrIdx, endIdx, morphPosPair.getFirst(), morphPosPair.getSecond(), this.posTable.getId(morphPosPair.getSecond()), 0.0);
+			}else{
+				this.put(irrIdx, irrIdx-1, morphPosPair.getFirst(), morphPosPair.getSecond(), this.posTable.getId(morphPosPair.getSecond()), 0.0);
+			}
+			irrIdx--;
+		}
 	}
 
 	public void put(int beginIdx, int endIdx, IrregularNode irregularNode) {
