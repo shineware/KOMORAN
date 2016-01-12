@@ -19,7 +19,6 @@ package kr.co.shineware.nlp.komoran.core.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -103,7 +102,6 @@ public class Lattice {
 				int prevMaxIdx = this.prevMaxIdx;
 				double prevMaxScore = this.prevMaxScore;
 				this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens,prevMaxScore, prevMaxIdx);
-
 				
 				//일반 불규칙을 노드를 추가하기 위한 루틴
 				this.putFirstIrrgularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
@@ -164,6 +162,11 @@ public class Lattice {
 				if(scoredTag.getTagId() == morphPosId.getSecond()){
 					LatticeNode firstIrregularNode = this.makeNode(beginIdx, endIdx, morphPosId.getFirst(), scoredTag.getTag(), scoredTag.getTagId(), score+scoredTag.getScore(), maxTransitionPrevIdx);
 					this.appendNode(firstIrregularNode);
+					//마지막 노드가 EC인 경우에는 EF를 변환하여 노드를 추가한다
+					if(scoredTag.getTagId() == this.posTable.getId(SYMBOL.EC)){
+						LatticeNode extendIrregularNode = this.makeNode(beginIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), score+scoredTag.getScore(), maxTransitionPrevIdx);
+						this.appendNode(extendIrregularNode);
+					}
 				}
 			}
 		}else{
@@ -367,6 +370,9 @@ public class Lattice {
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTagId() == morphPosId.getSecond()){
 						this.put(irrIdx, endIdx, morphPosId.getFirst(), this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond(), scoredTag.getScore());
+						if(morphPosId.getSecond() == this.posTable.getId(SYMBOL.EC)){
+							this.put(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), scoredTag.getScore());
+						}
 					}
 				}				
 			} else{

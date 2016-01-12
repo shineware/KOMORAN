@@ -118,7 +118,6 @@ public class Komoran {
 				NAPenaltyScore += this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
 			}
 			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
-//			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),-10000.0);
 			latticeNode.setPrevNodeIdx(0);
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
@@ -379,6 +378,10 @@ public class Komoran {
 			List<ScoredTag> scoredTags = morphScoredTagsMap.get(morph);
 			for (ScoredTag scoredTag : scoredTags) {
 				this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
+				//품사가 EC인 경우에 품사를 EF로 변환하여 lattice에 추가
+				if(scoredTag.getTag().equals(SYMBOL.EC)){
+					this.insertLattice(beginIdx,endIdx,morph,new Tag(SYMBOL.EF, this.resources.getTable().getId(SYMBOL.EF)),scoredTag.getScore());
+				}
 			}
 		}
 		return true;
