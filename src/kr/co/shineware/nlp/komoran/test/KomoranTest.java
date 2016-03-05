@@ -28,8 +28,8 @@ public class KomoranTest {
 		Komoran komoran = new Komoran("models");
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
-//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("감기는 쿠팡 로켓배송 엄청 빠릅니다.");
-		List<Pair<String,String>> analyzeReulstList = komoran.analyze("상상해.");
+		List<Pair<String,String>> analyzeReulstList = komoran.analyze("먹기은 쿠팡 로켓배송 엄청 빠릅니다.");
+//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("한국어버그는 언제쯤 고쳐지나요?");
 		
 		for (Pair<String, String> token : analyzeReulstList) {
 			System.out.println(token);

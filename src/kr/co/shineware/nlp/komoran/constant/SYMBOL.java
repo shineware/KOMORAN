@@ -25,6 +25,7 @@ package kr.co.shineware.nlp.komoran.constant;
  *
  */
 public class SYMBOL {
+	
 	public static final String START = "<start>";
 	public static final String END = "<end>";
 	public static final String SPACE = "<sp>";
@@ -42,5 +43,6 @@ public class SYMBOL {
 	public static final String JKC = "JKC";
 	public static final String IRREGULAR = "IRR";
 	public static final int IRREGULAR_ID = -1;
-
+	public static final String SS = "SS";
+	
 }

@@ -102,7 +102,7 @@ public class Lattice {
 				int prevMaxIdx = this.prevMaxIdx;
 				double prevMaxScore = this.prevMaxScore;
 				this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens,prevMaxScore, prevMaxIdx);
-				
+
 				//일반 불규칙을 노드를 추가하기 위한 루틴
 				this.putFirstIrrgularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
 				this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
@@ -135,7 +135,7 @@ public class Lattice {
 			//마지막 토큰에 대해서는 IRR 태그를 넣어줌 이때 score는 0.0을 줌
 			if(i == morphPosIdList.size()-1){
 				//					this.put(irrIdx, endIdx, morphPosId.getFirst(), "IRR", morphPosId.getSecond(), 0.0);
-//				LatticeNode latticeNode = new LatticeNode(irrIdx, endIdx,new MorphTag(morphPosId.getFirst(),"IRR", IRREGULAR_POS_ID),0.0);
+				//				LatticeNode latticeNode = new LatticeNode(irrIdx, endIdx,new MorphTag(morphPosId.getFirst(),"IRR", IRREGULAR_POS_ID),0.0);
 				LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), "IRR", IRREGULAR_POS_ID, 0.0, 0);
 				this.appendNode(latticeNode);
 
@@ -185,7 +185,7 @@ public class Lattice {
 
 	public boolean put(int beginIdx, int endIdx, String morph, String tag, int tagId, double score) {
 		List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
-		
+
 		if(prevLatticeNodes == null){
 			return false;
 		}else{
@@ -205,7 +205,7 @@ public class Lattice {
 			return false;
 		}
 	}
-	
+
 	private LatticeNode makeNode(int beginIdx, int endIdx, String morph,
 			String tag, int tagId, double score, int prevLatticeIdx) {
 		LatticeNode latticeNode = new LatticeNode(beginIdx, endIdx, new MorphTag(morph, tag, tagId), score);
@@ -266,11 +266,11 @@ public class Lattice {
 			}else if(tagId == this.posTable.getId(SYMBOL.JKS)
 					|| tagId == this.posTable.getId(SYMBOL.JKC)){
 				if(this.hasJongsung(prevMorph)){
-					if(morph.equals("ㄱㅏ")){
+					if(morph.charAt(0) == 'ㄱ' && morph.charAt(1) == 'ㅏ'){
 						continue;
 					}
 				}else{
-					if(morph.equals("ㅇㅣ")){
+					if(morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ'){
 						continue;
 					}
 				}

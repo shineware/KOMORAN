@@ -90,7 +90,7 @@ public class Komoran {
 				inserted = this.lattice.appendEndNode();
 				//이 부분에 대한 정제가 필요함
 				if(!inserted){
-					double NAPenaltyScore = -10000.0;
+					double NAPenaltyScore = SCORE.NA;
 					if(prevStartSymbolIdx != -1){
 						NAPenaltyScore = this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
 					}
@@ -113,7 +113,7 @@ public class Komoran {
 		this.lattice.setLastIdx(jasoUnits.length());
 		inserted = this.lattice.appendEndNode();
 		if(!inserted){
-			double NAPenaltyScore = -10000.0;
+			double NAPenaltyScore = SCORE.NA;
 			if(prevStartSymbolIdx != -1){
 				NAPenaltyScore += this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
 			}
@@ -230,12 +230,10 @@ public class Komoran {
 			int wordEndIdx = token.indexOf(' ', curIdx);
 			wordEndIdx = wordEndIdx == -1 ? token.length() : wordEndIdx;
 			String targetWord = token.substring(curIdx, wordEndIdx);
-//			this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
 			List<Pair<String,String>> fwdResultList = this.fwd.get(targetWord);
 			
 			if(fwdResultList != null){
 				this.insertLatticeForFwd(curIdx, wordEndIdx, fwdResultList);
-//				this.insertLattice(curIdx, wordEndIdx, fwdResultList.toString(), new Tag("NNG", this.resources.getTable().getId("NNG")), 0.0);
 				return wordEndIdx;
 			}
 		}
