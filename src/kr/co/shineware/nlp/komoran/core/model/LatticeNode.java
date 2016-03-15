@@ -25,14 +25,61 @@ public class LatticeNode {
 	public String toString() {
 		return "LatticeNode [beginIdx=" + beginIdx + ", endIdx=" + endIdx
 				+ ", morphTag=" + morphTag + ", score=" + score
-				+ ", prevNodeIdx=" + prevNodeIdx + "]";
+				+ ", prevNodeHash=" + prevNodeHash + "]"
+				+ ", nodeHash=" + this.hashCode() + "]";
 	}
+	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + beginIdx;
+		result = prime * result + endIdx;
+		result = prime * result
+				+ ((morphTag == null) ? 0 : morphTag.hashCode());
+		result = prime * result + prevNodeHash;
+		long temp;
+		temp = Double.doubleToLongBits(score);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LatticeNode other = (LatticeNode) obj;
+		if (beginIdx != other.beginIdx)
+			return false;
+		if (endIdx != other.endIdx)
+			return false;
+		if (morphTag == null) {
+			if (other.morphTag != null)
+				return false;
+		} else if (!morphTag.equals(other.morphTag))
+			return false;
+		if (prevNodeHash != other.prevNodeHash)
+			return false;
+		if (Double.doubleToLongBits(score) != Double
+				.doubleToLongBits(other.score))
+			return false;
+		return true;
+	}
+
+
 
 	private int beginIdx;
 	private int endIdx;
 	private MorphTag morphTag;
 	private double score;
-	private int prevNodeIdx=-1;
+//	private int prevNodeIdx=-1;
+	private int prevNodeHash=-1;
 	
 	public LatticeNode(){
 		;
@@ -76,11 +123,11 @@ public class LatticeNode {
 		this.score = score;
 	}
 
-	public int getPrevNodeIdx() {
-		return prevNodeIdx;
+	public int getPrevNodeHash() {
+		return prevNodeHash;
 	}
 
-	public void setPrevNodeIdx(int prevNodeIdx) {
-		this.prevNodeIdx = prevNodeIdx;
+	public void setPrevNodeHash(int prevNodeHash) {
+		this.prevNodeHash = prevNodeHash;
 	}
 }
