@@ -106,14 +106,14 @@ public class Komoran {
 		if(!inserted){
 			double NAPenaltyScore = SCORE.NA;
 			if(prevStartIdx != 0){
-				NAPenaltyScore += this.lattice.getNodeList(prevStartIdx).entrySet().iterator().next().getValue().getScore();
+				NAPenaltyScore += this.lattice.getNodeList(prevStartIdx).get(0).getScore();
 			}
 			LatticeNode latticeNode = new LatticeNode(prevStartIdx,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartIdx, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
-			latticeNode.setPrevNodeHash(this.lattice.getNodeList(prevStartIdx).entrySet().iterator().next().getKey());
+			latticeNode.setPrevNodeIdx(this.lattice.getNodeList(prevStartIdx).get(0).getPrevNodeIdx());
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
-//		this.lattice.printLattice();
+		this.lattice.printLattice();
 //		System.out.println(sentence);
 		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
 
@@ -133,10 +133,10 @@ public class Komoran {
 		//공백이라면 END 기호를 삽입
 		if(this.lattice.put(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0) == false){
 			//END 기호가 삽입되지 않는 경우라면(해당 어절은 분석 불가 어절임)
-			int prevNodeHash = this.lattice.getNodeList(prevBeginSymbolIdx).entrySet().iterator().next().getKey();
+			int prevNodeHash = this.lattice.getNodeList(prevBeginSymbolIdx).get(0).getPrevNodeIdx();
 			
 			LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, prevNodeHash);
-			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naLatticeNode.hashCode());
+			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naLatticeNode.getPrevNodeIdx());
 			this.lattice.appendNode(naLatticeNode);
 			this.lattice.appendNode(endLatticeNode);
 		}
@@ -293,14 +293,13 @@ public class Komoran {
 	}
 
 	private void irregularExtends(char jaso, int curIndex) {
-		Map<Integer,LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
+		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
 		if(prevLatticeNodes == null){
 			;
 		}else{
 			Set<LatticeNode> extendedIrrNodeList = new HashSet<>();
 
-			for (Integer prevLatticeNodeHash : prevLatticeNodes.keySet()) {
-				LatticeNode prevLatticeNode = prevLatticeNodes.get(prevLatticeNodeHash);
+			for (LatticeNode prevLatticeNode : prevLatticeNodes) {
 				//불규칙 태그인 경우에 대해서만
 				if( prevLatticeNode.getMorphTag().getTagId() == SYMBOL.IRREGULAR_ID ) {
 					//마지막 형태소 정보를 얻어옴
@@ -312,7 +311,7 @@ public class Komoran {
 						extendedIrregularNode.setBeginIdx(prevLatticeNode.getBeginIdx());
 						extendedIrregularNode.setEndIdx(curIndex+1);
 						extendedIrregularNode.setMorphTag(new MorphTag(prevLatticeNode.getMorphTag().getMorph()+jaso, SYMBOL.IRREGULAR, SYMBOL.IRREGULAR_ID));
-						extendedIrregularNode.setPrevNodeHash(prevLatticeNode.getPrevNodeHash());
+						extendedIrregularNode.setPrevNodeIdx(prevLatticeNode.getPrevNodeIdx());
 						extendedIrregularNode.setScore(prevLatticeNode.getScore());
 						extendedIrrNodeList.add(extendedIrregularNode);
 					}

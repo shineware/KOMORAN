@@ -19,12 +19,9 @@ package kr.co.shineware.nlp.komoran.core.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
@@ -38,7 +35,7 @@ import kr.co.shineware.util.common.model.Pair;
 public class Lattice {
 
 	private static final int IRREGULAR_POS_ID = -1;
-	private Map<Integer, Map<Integer,LatticeNode>> lattice;
+	private Map<Integer, List<LatticeNode>> lattice;
 	private PosTable posTable;
 	private Transition transition;
 	private int lastIdx = -1;
@@ -60,11 +57,11 @@ public class Lattice {
 
 	private void init() {
 
-		this.lattice = new HashMap<Integer, Map<Integer,LatticeNode>>();
+		this.lattice = new HashMap<Integer, List<LatticeNode>>();
 		irrIdx = 0;
 
-		Map<Integer,LatticeNode> latticeNodes = new HashMap<>();
-		latticeNodes.put(-1,this.makeStartNode());
+		List<LatticeNode> latticeNodes = new ArrayList<>();
+		latticeNodes.add(this.makeStartNode());
 
 		this.lattice.put(0, latticeNodes);
 	}
@@ -91,7 +88,7 @@ public class Lattice {
 
 	public void put(int beginIdx, int endIdx, IrregularNode irregularNode) {
 		//현재 node를 연결 시킬 이전 node list들을 가져옴
-		Map<Integer,LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
+		List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
 		if(prevLatticeNodes == null){
 			;
 		}else{
@@ -119,7 +116,7 @@ public class Lattice {
 
 		//첫번쨰 토큰에 대한 처리
 		if(morphPosIdList.size() == 0){
-			LatticeNode firstNode = this.makeNode(beginIdx, endIdx, morphPosIdList.get(0).getFirst(), "IRR", IRREGULAR_POS_ID, prevMaxScore, prevMaxIdx);
+			LatticeNode firstNode = this.makeNode(beginIdx, endIdx, morphPosIdList.get(0).getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, prevMaxScore, prevMaxIdx);
 			this.appendNode(firstNode);
 		}
 		else{
@@ -140,7 +137,7 @@ public class Lattice {
 			if(i == morphPosIdList.size()-1){
 				//					this.put(irrIdx, endIdx, morphPosId.getFirst(), "IRR", morphPosId.getSecond(), 0.0);
 				//				LatticeNode latticeNode = new LatticeNode(irrIdx, endIdx,new MorphTag(morphPosId.getFirst(),"IRR", IRREGULAR_POS_ID),0.0);
-				LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), "IRR", IRREGULAR_POS_ID, 0.0, 0);
+				LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, 0.0, 0);
 				this.appendNode(latticeNode);
 
 			}
@@ -191,7 +188,7 @@ public class Lattice {
 		
 		boolean isInserted = false;
 		
-		Map<Integer,LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
+		List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
 
 		if(prevLatticeNodes == null){
 //			return false;
@@ -216,15 +213,14 @@ public class Lattice {
 	}
 
 	private LatticeNode getMaxTransitionNodeFromPrevNodes(
-			Map<Integer,LatticeNode> prevLatticeNodeSet, int beginIdx, int endIdx,
+			List<LatticeNode> prevLatticeNodes, int beginIdx, int endIdx,
 			String morph, String tag, int tagId, double score) {
 
 		double prevMaxScore = Double.NEGATIVE_INFINITY;
 		LatticeNode prevMaxNode = null;
-		for (Integer prevLatticeNodeHash : prevLatticeNodeSet.keySet()) {
-			
-			LatticeNode prevLatticeNode = prevLatticeNodeSet.get(prevLatticeNodeHash);
-
+		int prevLatticeNodeIdx = -1;
+		for (LatticeNode prevLatticeNode : prevLatticeNodes) {
+			prevLatticeNodeIdx++;
 			//불규칙인경우
 			if(prevLatticeNode.getMorphTag().getTagId() == -1){
 				continue;
@@ -276,7 +272,7 @@ public class Lattice {
 			}
 		}
 		if(prevMaxNode != null){
-			return this.makeNode(beginIdx,endIdx,morph,tag,tagId,prevMaxScore+score,prevMaxNode.hashCode());
+			return this.makeNode(beginIdx,endIdx,morph,tag,tagId,prevMaxScore+score,prevLatticeNodeIdx);
 		}
 		return null;
 	}
@@ -284,31 +280,31 @@ public class Lattice {
 	public LatticeNode makeNode(int beginIdx, int endIdx, String morph,
 			String tag, int tagId, double score, int prevNodeHash) {
 		LatticeNode latticeNode = new LatticeNode(beginIdx, endIdx, new MorphTag(morph, tag, tagId), score);
-		latticeNode.setPrevNodeHash(prevNodeHash);
+		latticeNode.setPrevNodeIdx(prevNodeHash);
 		return latticeNode;
 	}
 
 	public void appendNode(LatticeNode latticeNode) {
-		Map<Integer,LatticeNode> latticeNodeList = this.getNodeList(latticeNode.getEndIdx());
+		List<LatticeNode> latticeNodeList = this.getNodeList(latticeNode.getEndIdx());
 		if(latticeNodeList == null){
-			latticeNodeList = new HashMap<>();
+			latticeNodeList = new ArrayList<>();
 		}
-		latticeNodeList.put(latticeNode.hashCode(),latticeNode);
+		latticeNodeList.add(latticeNode);
 		this.lattice.put(latticeNode.getEndIdx(), latticeNodeList);
 	}
-	public Map<Integer,LatticeNode> getNodeList(int index){
+	public List<LatticeNode> getNodeList(int index){
 		return this.lattice.get(index);
 	}
 
-	private void getMaxTransitionIdxFromPrevNodes(Map<Integer,LatticeNode> prevLatticeNodeSet, int tagId) {
-		this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodeSet, tagId, null);
+	private void getMaxTransitionIdxFromPrevNodes(List<LatticeNode> prevLatticeNodes, int tagId) {
+		this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodes, tagId, null);
 	}
 
-	private void getMaxTransitionInfoFromPrevNodes(Map<Integer,LatticeNode> prevLatticeNodeSet, int tagId, String morph) {
+	private void getMaxTransitionInfoFromPrevNodes(List<LatticeNode> prevLatticeNodes, int tagId, String morph) {
 
-		for (Integer prevLatticeNodeHash : prevLatticeNodeSet.keySet()) {
-
-			LatticeNode prevLatticeNode = prevLatticeNodeSet.get(prevLatticeNodeHash);
+		int prevMaxNodeIdx = -1;
+		for (LatticeNode prevLatticeNode : prevLatticeNodes) {
+			prevMaxNodeIdx++;
 			//불규칙인경우
 			if(prevLatticeNode.getMorphTag().getTagId() == -1){
 				continue;
@@ -357,7 +353,7 @@ public class Lattice {
 			if(this.prevMaxScore < transitionScore+prevObservationScore){
 				this.prevMaxScore = transitionScore+prevObservationScore;
 				this.prevMaxNode = prevLatticeNode;
-				this.prevMaxIdx = prevLatticeNode.hashCode();
+				this.prevMaxIdx = prevMaxNodeIdx;
 			}
 		}
 	}
@@ -393,12 +389,12 @@ public class Lattice {
 	public void printLattice() {
 		for(int i=irrIdx;i<this.getLastIdx()+2;i++){
 			System.out.println("["+i+"]");
-			Map<Integer,LatticeNode> nodeList = this.lattice.get(i);
+			List<LatticeNode> nodeList = this.lattice.get(i);
 			if(nodeList == null){
 				continue;
 			}
-			for (Integer latticeNodeHash : nodeList.keySet()) {
-				LatticeNode latticeNode = nodeList.get(latticeNodeHash);
+			
+			for (LatticeNode latticeNode : nodeList) {
 				System.out.println(latticeNode);
 			}
 			System.out.println();
@@ -425,16 +421,17 @@ public class Lattice {
 			return null;
 		}
 
-		LatticeNode latticeNode = this.lattice.get(idx).entrySet().iterator().next().getValue();
+		LatticeNode latticeNode = this.lattice.get(idx).get(0);
 
 		while(true){
-			latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeHash());
+			latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
 			shortestPathList.add(new Pair<>(this.unitParser.combine(latticeNode.getMorphTag().getMorph()),latticeNode.getMorphTag().getTag()));
 
 			if(latticeNode.getBeginIdx() == 0){
 				break;
 			}
 		}
+
 		return shortestPathList;
 	}
 
