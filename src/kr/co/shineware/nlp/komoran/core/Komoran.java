@@ -90,7 +90,13 @@ public class Komoran {
 				this.bridgeToken(i,jasoUnits,prevStartIdx);
 				prevStartIdx = i+1;
 			}
+			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
+			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
+			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
+			
 			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
+			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
+			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
 		}
 		
 		
@@ -107,8 +113,8 @@ public class Komoran {
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
-		this.lattice.printLattice();
-
+//		this.lattice.printLattice();
+//		System.out.println(sentence);
 		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
 
 		//미분석인 경우
@@ -124,18 +130,15 @@ public class Komoran {
 
 	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
 		
+		//공백이라면 END 기호를 삽입
 		if(this.lattice.put(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0) == false){
+			//END 기호가 삽입되지 않는 경우라면(해당 어절은 분석 불가 어절임)
 			int prevNodeHash = this.lattice.getNodeList(prevBeginSymbolIdx).entrySet().iterator().next().getKey();
 			
 			LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, prevNodeHash);
 			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naLatticeNode.hashCode());
 			this.lattice.appendNode(naLatticeNode);
 			this.lattice.appendNode(endLatticeNode);
-			System.out.println("브릿징처리");
-			System.out.println(naLatticeNode);
-			System.out.println(endLatticeNode);
-			System.out.println(this.lattice.getNodeList(prevBeginSymbolIdx));
-			System.out.println("브릿징처리끝");
 		}
 	}
 

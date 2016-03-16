@@ -99,6 +99,7 @@ public class Lattice {
 			this.prevMaxNode = null;
 			this.prevMaxScore = Double.NEGATIVE_INFINITY;
 			this.getMaxTransitionIdxFromPrevNodes(prevLatticeNodes,irregularNode.getFirstPosId());
+			
 			if(this.prevMaxNode != null){
 				List<Pair<String,Integer>> irregularTokens = irregularNode.getTokens();
 				//불규칙확장을 위한 노드 추가
@@ -281,9 +282,9 @@ public class Lattice {
 	}
 
 	public LatticeNode makeNode(int beginIdx, int endIdx, String morph,
-			String tag, int tagId, double score, int prevLatticeIdx) {
+			String tag, int tagId, double score, int prevNodeHash) {
 		LatticeNode latticeNode = new LatticeNode(beginIdx, endIdx, new MorphTag(morph, tag, tagId), score);
-		latticeNode.setPrevNodeHash(prevLatticeIdx);
+		latticeNode.setPrevNodeHash(prevNodeHash);
 		return latticeNode;
 	}
 
@@ -356,6 +357,7 @@ public class Lattice {
 			if(this.prevMaxScore < transitionScore+prevObservationScore){
 				this.prevMaxScore = transitionScore+prevObservationScore;
 				this.prevMaxNode = prevLatticeNode;
+				this.prevMaxIdx = prevLatticeNode.hashCode();
 			}
 		}
 	}
@@ -432,7 +434,6 @@ public class Lattice {
 			if(latticeNode.getBeginIdx() == 0){
 				break;
 			}
-			System.out.println("Find Path : "+latticeNode);
 		}
 		return shortestPathList;
 	}
