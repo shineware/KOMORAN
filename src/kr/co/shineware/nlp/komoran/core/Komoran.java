@@ -35,6 +35,7 @@ import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.model.Tag;
@@ -63,8 +64,8 @@ public class Komoran {
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public synchronized List<Pair<String,String>> analyze(String sentence){
-		List<Pair<String,String>> resultList = new ArrayList<>();
+	public synchronized KomoranResult analyze(String sentence){
+		List<LatticeNode> resultList = new ArrayList<>();
 		
 		this.lattice = new Lattice(this.resources);
 		this.lattice.setUnitParser(this.unitParser);
@@ -109,35 +110,32 @@ public class Komoran {
 				NAPenaltyScore += this.lattice.getNodeList(prevStartIdx).get(0).getScore();
 			}
 			LatticeNode latticeNode = new LatticeNode(prevStartIdx,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartIdx, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
-			latticeNode.setPrevNodeIdx(this.lattice.getNodeList(prevStartIdx).get(0).getPrevNodeIdx());
+			latticeNode.setPrevNodeIdx(0);
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
-		this.lattice.printLattice();
-//		System.out.println(sentence);
-		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
+		List<LatticeNode> shortestPathList = this.lattice.findPath();
 
 		//미분석인 경우
 		if(shortestPathList == null){
-			resultList.add(new Pair<>(sentence,"NA"));
+			resultList.add(new LatticeNode(0, jasoUnits.length(), new MorphTag(sentence, "NA", -1), SCORE.NA));
 		}else{
 			Collections.reverse(shortestPathList);
 			resultList.addAll(shortestPathList);
 		}
 
-		return resultList;
+		return new KomoranResult(resultList);
 	}
 
 	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
 		
 		//공백이라면 END 기호를 삽입
 		if(this.lattice.put(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0) == false){
-			//END 기호가 삽입되지 않는 경우라면(해당 어절은 분석 불가 어절임)
-			int prevNodeHash = this.lattice.getNodeList(prevBeginSymbolIdx).get(0).getPrevNodeIdx();
 			
-			LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, prevNodeHash);
-			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naLatticeNode.getPrevNodeIdx());
-			this.lattice.appendNode(naLatticeNode);
+			LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
+			
+			int naNodeIndex = this.lattice.appendNode(naLatticeNode);
+			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
 			this.lattice.appendNode(endLatticeNode);
 		}
 	}

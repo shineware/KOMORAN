@@ -17,21 +17,19 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.test;
 
-import java.util.List;
-
 import kr.co.shineware.nlp.komoran.core.Komoran;
-import kr.co.shineware.util.common.model.Pair;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
 
 public class KomoranTest {
 
 	public static void main(String[] args) throws Exception {
 		Komoran komoran = new Komoran("models");
-		komoran.setFWDic("user_data/fwd.user");
-		komoran.setUserDic("user_data/dic.user");
-		List<Pair<String,String>> analyzeReulstList = komoran.analyze("혐의라고");
-		
-		for (Pair<String, String> token : analyzeReulstList) {
-			System.out.println(token);
-		}
+//		komoran.setFWDic("user_data/fwd.user");
+//		komoran.setUserDic("user_data/dic.user");
+//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("MCT(M2 CD 금전신탁)는");
+//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("쿠팡 로켓배송");
+//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("ㅋㅋ ㅋㅋ");
+		KomoranResult analyzeReulstList = komoran.analyze("ㅋㅋ ㅋㅋ");
+		System.out.println(analyzeReulstList.getPlainText());
 	}
 }

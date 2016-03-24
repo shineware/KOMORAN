@@ -193,10 +193,10 @@ public class Lattice {
 		if(prevLatticeNodes == null){
 //			return false;
 		}else{
-			this.prevMaxIdx = -1;
-			this.prevMaxNode = null;
-			//prevMaxScore는 이전 노드까지의 누적된 score와 현재 노드 사이의 전이확률 값이 계산된 결과임
-			this.prevMaxScore = Double.NEGATIVE_INFINITY;
+//			this.prevMaxIdx = -1;
+//			this.prevMaxNode = null;
+//			//prevMaxScore는 이전 노드까지의 누적된 score와 현재 노드 사이의 전이확률 값이 계산된 결과임
+//			this.prevMaxScore = Double.NEGATIVE_INFINITY;
 			//이전 node list에 포함된 node 중 현재 node와 연결 시 값을 최대로 하는 node의 인덱스를 찾음
 			//			this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodes,tagId,morph);
 			LatticeNode latticeNode = this.getMaxTransitionNodeFromPrevNodes(prevLatticeNodes,beginIdx,endIdx,morph,tag,tagId,score);
@@ -218,9 +218,10 @@ public class Lattice {
 
 		double prevMaxScore = Double.NEGATIVE_INFINITY;
 		LatticeNode prevMaxNode = null;
+		int latticeNodeIdx = -1;
 		int prevLatticeNodeIdx = -1;
 		for (LatticeNode prevLatticeNode : prevLatticeNodes) {
-			prevLatticeNodeIdx++;
+			latticeNodeIdx++;
 			//불규칙인경우
 			if(prevLatticeNode.getMorphTag().getTagId() == -1){
 				continue;
@@ -269,6 +270,7 @@ public class Lattice {
 			if(prevMaxScore < transitionScore+prevObservationScore){
 				prevMaxScore = transitionScore+prevObservationScore;
 				prevMaxNode = prevLatticeNode;
+				prevLatticeNodeIdx = latticeNodeIdx;
 			}
 		}
 		if(prevMaxNode != null){
@@ -284,13 +286,14 @@ public class Lattice {
 		return latticeNode;
 	}
 
-	public void appendNode(LatticeNode latticeNode) {
+	public int appendNode(LatticeNode latticeNode) {
 		List<LatticeNode> latticeNodeList = this.getNodeList(latticeNode.getEndIdx());
 		if(latticeNodeList == null){
 			latticeNodeList = new ArrayList<>();
 		}
 		latticeNodeList.add(latticeNode);
 		this.lattice.put(latticeNode.getEndIdx(), latticeNodeList);
+		return latticeNodeList.size()-1;
 	}
 	public List<LatticeNode> getNodeList(int index){
 		return this.lattice.get(index);
@@ -413,8 +416,8 @@ public class Lattice {
 		return this.put(this.lastIdx, this.lastIdx+1, SYMBOL.END, SYMBOL.END, this.getPosTable().getId(SYMBOL.END), 0);
 	}
 
-	public List<Pair<String,String>> findPath() {
-		List<Pair<String,String>> shortestPathList = new ArrayList<>();
+	public List<LatticeNode> findPath() {
+		List<LatticeNode> shortestPathList = new ArrayList<>();
 		int idx = this.getLastIdx()+1;
 		//마지막 연결 노드가 없는 경우에는 null 반환
 		if(this.lattice.containsKey(idx) == false){
@@ -425,7 +428,8 @@ public class Lattice {
 
 		while(true){
 			latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
-			shortestPathList.add(new Pair<>(this.unitParser.combine(latticeNode.getMorphTag().getMorph()),latticeNode.getMorphTag().getTag()));
+//			shortestPathList.add(new Pair<>(this.unitParser.combine(latticeNode.getMorphTag().getMorph()),latticeNode.getMorphTag().getTag()));
+			shortestPathList.add(latticeNode);
 
 			if(latticeNode.getBeginIdx() == 0){
 				break;
