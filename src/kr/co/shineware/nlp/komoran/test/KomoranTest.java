@@ -17,8 +17,11 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.test;
 
+import java.util.List;
+
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
+import kr.co.shineware.nlp.komoran.model.Token;
 
 public class KomoranTest {
 
@@ -29,7 +32,13 @@ public class KomoranTest {
 //		List<Pair<String,String>> analyzeReulstList = komoran.analyze("MCT(M2 CD 금전신탁)는");
 //		List<Pair<String,String>> analyzeReulstList = komoran.analyze("쿠팡 로켓배송");
 //		List<Pair<String,String>> analyzeReulstList = komoran.analyze("ㅋㅋ ㅋㅋ");
-		KomoranResult analyzeReulstList = komoran.analyze("ㅋㅋ ㅋㅋ");
-		System.out.println(analyzeReulstList.getPlainText());
+		String input = "쿠팡 로켓배송";
+		System.out.println(komoran.analyze(input).getPlainText());
+		KomoranResult analyzeReulstList = komoran.analyze(input);
+		List<Token> tokenList = analyzeReulstList.getTokenInfoList();
+		for (Token token : tokenList) {
+			System.out.println(token);
+			System.out.println(input.substring(token.getBeginIndex(), token.getEndIndex()));
+		}
 	}
 }
