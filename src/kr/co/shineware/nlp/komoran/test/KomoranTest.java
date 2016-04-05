@@ -20,7 +20,8 @@ package kr.co.shineware.nlp.komoran.test;
 import java.util.List;
 
 import kr.co.shineware.nlp.komoran.core.Komoran;
-import kr.co.shineware.util.common.model.Pair;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
+import kr.co.shineware.nlp.komoran.model.Token;
 
 public class KomoranTest {
 
@@ -28,11 +29,13 @@ public class KomoranTest {
 		Komoran komoran = new Komoran("models");
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
-		List<Pair<String,String>> analyzeReulstList = komoran.analyze("먹기은 쿠팡 로켓배송 엄청 빠릅니다.");
-//		List<Pair<String,String>> analyzeReulstList = komoran.analyze("한국어버그는 언제쯤 고쳐지나요?");
-		
-		for (Pair<String, String> token : analyzeReulstList) {
+		String input = "흘렸어요";
+		KomoranResult analyzeReulstList = komoran.analyze(input);
+		List<Token> tokenList = analyzeReulstList.getTokenInfo();
+		tokenList = analyzeReulstList.getTokenInfoList();
+		for (Token token : tokenList) {
 			System.out.println(token);
+			System.out.println(input.substring(token.getBeginIndex(), token.getEndIndex()));
 		}
 	}
 }

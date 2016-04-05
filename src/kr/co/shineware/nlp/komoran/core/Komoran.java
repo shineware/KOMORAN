@@ -35,6 +35,7 @@ import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.model.Tag;
@@ -63,8 +64,8 @@ public class Komoran {
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public synchronized List<Pair<String,String>> analyze(String sentence){
-		List<Pair<String,String>> resultList = new ArrayList<>();
+	public synchronized KomoranResult analyze(String sentence){
+		List<LatticeNode> resultList = new ArrayList<>();
 		
 		this.lattice = new Lattice(this.resources);
 		this.lattice.setUnitParser(this.unitParser);
@@ -78,63 +79,66 @@ public class Komoran {
 		String jasoUnits = unitParser.parse(sentence);
 
 		int length = jasoUnits.length();
-		int prevStartSymbolIdx = -1;
+		//start 노드 또는 end 노드의 바로 다음 인덱스
+		//어절의 시작을 알리는 idx
+		int prevStartIdx = 0;
 		boolean inserted;
 		for(int i=0; i<length; i++){
 			//기분석 사전
 			this.lookupFwd(jasoUnits,i);
 			//띄어쓰기인 경우
 			if(jasoUnits.charAt(i) == ' '){
-				//띄어쓰기에 <end> 노드 추가
-				this.lattice.setLastIdx(i);
-				inserted = this.lattice.appendEndNode();
-				//이 부분에 대한 정제가 필요함
-				if(!inserted){
-					double NAPenaltyScore = SCORE.NA;
-					if(prevStartSymbolIdx != -1){
-						NAPenaltyScore = this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
-					}
-					LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,i,new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, i), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
-					latticeNode.setPrevNodeIdx(0);
-					this.lattice.appendNode(latticeNode);
-					inserted = this.lattice.appendEndNode();
-				}
-				prevStartSymbolIdx = i;
+				this.bridgeToken(i,jasoUnits,prevStartIdx);
+				prevStartIdx = i+1;
 			}
 			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
 			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
 			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
+			
 			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
 			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
 		}
+		
 		
 		this.consumeContiniousSymbolParserBuffer(jasoUnits);
 		this.lattice.setLastIdx(jasoUnits.length());
 		inserted = this.lattice.appendEndNode();
 		if(!inserted){
 			double NAPenaltyScore = SCORE.NA;
-			if(prevStartSymbolIdx != -1){
-				NAPenaltyScore += this.lattice.getNodeList(prevStartSymbolIdx).get(0).getScore();
+			if(prevStartIdx != 0){
+				NAPenaltyScore += this.lattice.getNodeList(prevStartIdx).get(0).getScore();
 			}
-			LatticeNode latticeNode = new LatticeNode(prevStartSymbolIdx+1,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartSymbolIdx+1, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
+			LatticeNode latticeNode = new LatticeNode(prevStartIdx,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartIdx, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
 			latticeNode.setPrevNodeIdx(0);
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
 //		this.lattice.printLattice();
-
-		List<Pair<String,String>> shortestPathList = this.lattice.findPath();
+		List<LatticeNode> shortestPathList = this.lattice.findPath();
 
 		//미분석인 경우
 		if(shortestPathList == null){
-			resultList.add(new Pair<>(sentence,"NA"));
+			resultList.add(new LatticeNode(0, jasoUnits.length(), new MorphTag(sentence, "NA", -1), SCORE.NA));
 		}else{
 			Collections.reverse(shortestPathList);
 			resultList.addAll(shortestPathList);
 		}
 
-		return resultList;
+		return new KomoranResult(resultList,jasoUnits);
+	}
+
+	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
+		
+		//공백이라면 END 기호를 삽입
+		if(this.lattice.put(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0) == false){
+			
+			LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
+			
+			int naNodeIndex = this.lattice.appendNode(naLatticeNode);
+			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
+			this.lattice.appendNode(endLatticeNode);
+		}
 	}
 
 	private boolean symbolParsing(char jaso, int idx) {
@@ -356,12 +360,12 @@ public class Komoran {
 		this.lattice.put(beginIdx, endIdx, irregularNode);		
 	}
 
-	private boolean regularParsing(char jaso,int curIndex) {
+	private void regularParsing(char jaso,int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
 		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagsMap(jaso);
 
 		if(morphScoredTagsMap == null){
-			return false;
+			return;
 		}
 
 		//형태소 정보만 얻어옴
@@ -375,14 +379,13 @@ public class Komoran {
 			//형태소에 대한 품사 및 점수(observation) 정보를 List 형태로 가져옴
 			List<ScoredTag> scoredTags = morphScoredTagsMap.get(morph);
 			for (ScoredTag scoredTag : scoredTags) {
-				this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
+				this.lattice.put(beginIdx,endIdx,morph,scoredTag.getTag(),scoredTag.getTagId(),scoredTag.getScore());
 				//품사가 EC인 경우에 품사를 EF로 변환하여 lattice에 추가
 				if(scoredTag.getTag().equals(SYMBOL.EC)){
-					this.insertLattice(beginIdx,endIdx,morph,new Tag(SYMBOL.EF, this.resources.getTable().getId(SYMBOL.EF)),scoredTag.getScore());
+					this.lattice.put(beginIdx,endIdx,morph,SYMBOL.EF,this.resources.getTable().getId(SYMBOL.EF),scoredTag.getScore());
 				}
 			}
 		}
-		return true;
 	}
 
 	private Map<String, List<IrregularNode>> getIrregularNodes(char jaso) {

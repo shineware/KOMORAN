@@ -20,12 +20,14 @@ package kr.co.shineware.nlp.komoran.core.model;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 
 public class LatticeNode {
+
+	
 	
 	@Override
 	public String toString() {
 		return "LatticeNode [beginIdx=" + beginIdx + ", endIdx=" + endIdx
 				+ ", morphTag=" + morphTag + ", score=" + score
-				+ ", prevNodeIdx=" + prevNodeIdx + "]";
+				+ ", prevNodeIdx=" + prevNodeIdx + ", morph=" + morph + "]";
 	}
 
 	private int beginIdx;
@@ -33,6 +35,7 @@ public class LatticeNode {
 	private MorphTag morphTag;
 	private double score;
 	private int prevNodeIdx=-1;
+	private String morph;
 	
 	public LatticeNode(){
 		;
@@ -75,6 +78,12 @@ public class LatticeNode {
 	public void setScore(double score) {
 		this.score = score;
 	}
+	public String getMorph(){
+		return this.morph;
+	}
+	public void setMorph(String morph){
+		this.morph = morph;
+	}
 
 	public int getPrevNodeIdx() {
 		return prevNodeIdx;
@@ -82,5 +91,9 @@ public class LatticeNode {
 
 	public void setPrevNodeIdx(int prevNodeIdx) {
 		this.prevNodeIdx = prevNodeIdx;
+	}
+
+	public String getTag() {
+		return this.morphTag.getTag();
 	}
 }
