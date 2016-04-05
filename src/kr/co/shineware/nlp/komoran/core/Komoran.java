@@ -114,6 +114,7 @@ public class Komoran {
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
+//		this.lattice.printLattice();
 		List<LatticeNode> shortestPathList = this.lattice.findPath();
 
 		//미분석인 경우
@@ -124,7 +125,7 @@ public class Komoran {
 			resultList.addAll(shortestPathList);
 		}
 
-		return new KomoranResult(resultList);
+		return new KomoranResult(resultList,jasoUnits);
 	}
 
 	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {

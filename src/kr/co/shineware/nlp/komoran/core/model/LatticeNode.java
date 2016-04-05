@@ -27,17 +27,15 @@ public class LatticeNode {
 	public String toString() {
 		return "LatticeNode [beginIdx=" + beginIdx + ", endIdx=" + endIdx
 				+ ", morphTag=" + morphTag + ", score=" + score
-				+ ", prevNodeIdx=" + prevNodeIdx + "]";
+				+ ", prevNodeIdx=" + prevNodeIdx + ", morph=" + morph + "]";
 	}
-
-
 
 	private int beginIdx;
 	private int endIdx;
 	private MorphTag morphTag;
 	private double score;
 	private int prevNodeIdx=-1;
-//	private int prevNodeHash=-1;
+	private String morph;
 	
 	public LatticeNode(){
 		;
@@ -80,16 +78,22 @@ public class LatticeNode {
 	public void setScore(double score) {
 		this.score = score;
 	}
-
-
+	public String getMorph(){
+		return this.morph;
+	}
+	public void setMorph(String morph){
+		this.morph = morph;
+	}
 
 	public int getPrevNodeIdx() {
 		return prevNodeIdx;
 	}
 
-
-
 	public void setPrevNodeIdx(int prevNodeIdx) {
 		this.prevNodeIdx = prevNodeIdx;
+	}
+
+	public String getTag() {
+		return this.morphTag.getTag();
 	}
 }
