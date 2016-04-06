@@ -114,7 +114,7 @@ public class Komoran {
 			this.lattice.appendNode(latticeNode);
 			inserted = this.lattice.appendEndNode();
 		}
-//		this.lattice.printLattice();
+		
 		List<LatticeNode> shortestPathList = this.lattice.findPath();
 
 		//미분석인 경우

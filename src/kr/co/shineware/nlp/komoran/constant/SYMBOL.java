@@ -44,5 +44,8 @@ public class SYMBOL {
 	public static final String IRREGULAR = "IRR";
 	public static final int IRREGULAR_ID = -1;
 	public static final String SS = "SS";
+	public static final String NNG = "NNG";
+	public static final String NNP = "NNP";
+	public static final String NNB = "NNB";
 	
 }

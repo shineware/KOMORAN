@@ -23,6 +23,18 @@ public class KomoranResult{
 	public List<Token> getTokenInfo(){
 		return this.convertTokenInfoList();
 	}
+	
+	public List<String> getNouns(){
+		List<String> nounList = new ArrayList<>();
+		for (LatticeNode latticeNode : resultNodeList) {
+			if(latticeNode.getTag().equals(SYMBOL.NNG) || 
+					latticeNode.getTag().equals(SYMBOL.NNP) ||
+					latticeNode.getTag().equals(SYMBOL.NNG)){
+				nounList.add(parser.combine(latticeNode.getMorph()));
+			}
+		}
+		return nounList;
+	}
 
 	private List<Token> convertTokenInfoList() {
 		int curSyllableIdx = 0;
