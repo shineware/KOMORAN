@@ -2,6 +2,8 @@
 .classpath
 .project
 .settings
+.classpath
+.project
 SpeedValidation.java
 StdinTest.java
 /bin/

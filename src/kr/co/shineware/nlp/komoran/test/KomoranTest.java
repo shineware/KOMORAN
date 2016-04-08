@@ -29,15 +29,8 @@ public class KomoranTest {
 		Komoran komoran = new Komoran("models");
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
-		//어떠신지
-		//회신주시기
-		//보내주셔요
-		//주셔요
-		//않을게요
-		//철수님 11시에 만나요♥
-		//<DATE_A>까지
-		//1_2__3
-		String input = "1_2__3";
+
+		String input = "1_2_1111_3";
 		KomoranResult analyzeResultList = komoran.analyze(input);
 		List<Token> tokenList = analyzeResultList.getTokenInfo();
 		tokenList = analyzeResultList.getTokenInfoList();
