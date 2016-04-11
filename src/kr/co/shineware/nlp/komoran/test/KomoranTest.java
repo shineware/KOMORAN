@@ -26,20 +26,18 @@ import kr.co.shineware.nlp.komoran.model.Token;
 public class KomoranTest {
 
 	public static void main(String[] args) throws Exception {
+		
 		Komoran komoran = new Komoran("models");
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
 
-		String input = "1_2_1111_3";
+		String input = "바람과 함께 사라졌어를 봤어!!";
 		KomoranResult analyzeResultList = komoran.analyze(input);
-		List<Token> tokenList = analyzeResultList.getTokenInfo();
-		tokenList = analyzeResultList.getTokenInfoList();
+		List<Token> tokenList = analyzeResultList.getTokenInfoList();
 		for (Token token : tokenList) {
 			System.out.println(token);
 			System.out.println(input.substring(token.getBeginIndex(), token.getEndIndex()));
 		}
-		
 		System.out.println(analyzeResultList.getNouns());
-		
 	}
 }

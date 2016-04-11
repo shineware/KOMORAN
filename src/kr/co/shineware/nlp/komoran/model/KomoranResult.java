@@ -19,10 +19,6 @@ public class KomoranResult{
 		this.resultNodeList = latticeNode;
 		this.jasoUnits = jasoUnits;
 	}
-
-	public List<Token> getTokenInfo(){
-		return this.convertTokenInfoList();
-	}
 	
 	public List<String> getNouns(){
 		List<String> nounList = new ArrayList<>();
@@ -34,47 +30,6 @@ public class KomoranResult{
 			}
 		}
 		return nounList;
-	}
-
-	private List<Token> convertTokenInfoList() {
-		int curSyllableIdx = 0;
-		int beginIdx = 0;
-		int endIdx = 0;
-		List<Token> tokenInfos = new ArrayList<>();
-		for (Pair<String, String> morphPosPair : this.getList()) {
-			if(morphPosPair.getFirst().equals(SYMBOL.END)){
-				curSyllableIdx++;
-				continue;
-			}
-			//가장 앞 문자가 자소 단위로 분할된 경우
-			if(this.startWithJamo(morphPosPair.getFirst())){
-				beginIdx = curSyllableIdx-1;
-				if(beginIdx < 0){
-					beginIdx = 0;
-				}
-				endIdx = beginIdx + morphPosPair.getFirst().length();
-			}
-			//자소 단위가 아닌 경우
-			else {
-				beginIdx = curSyllableIdx;
-				endIdx = beginIdx + morphPosPair.getFirst().length();
-			}
-
-			tokenInfos.add(new Token(morphPosPair.getFirst(),morphPosPair.getSecond(),beginIdx,endIdx));
-			curSyllableIdx = endIdx;
-		}
-//		System.out.println(tokenInfos);
-		return tokenInfos;
-	}
-
-	private boolean startWithJamo(String morph) {
-
-		char ch = morph.charAt(0);
-		Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(ch);
-		if(unicodeBlock == Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO){
-			return true;
-		}
-		return false;
 	}
 
 	public String getPlainText(){
