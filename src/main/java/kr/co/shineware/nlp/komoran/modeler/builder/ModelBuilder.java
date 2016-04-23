@@ -128,10 +128,6 @@ public class ModelBuilder {
 		IrregularNode irrNode = new IrregularNode();
 		
 		List<Pair<String,Integer>> irrNodeTokens = new ArrayList<>();
-		if(irr.equals("ㅇㅓㄸㅓㄴㅑ")){
-			System.out.println(irr);
-			System.out.println(convert);
-		}
 		double score = 0;
 		StringBuffer morphFormat = new StringBuffer(); 
 		String[] tokens = convert.split(" ");
@@ -150,7 +146,7 @@ public class ModelBuilder {
 			//관측 확률
 			List<ScoredTag> scoredTagList = this.observation.getTrieDictionary().getValue(morph);
 			if(scoredTagList == null){
-				System.err.println(morph+" has no observation score!");
+//				System.err.println(morph+" has no observation score!");
 				continue;
 			}
 			for (ScoredTag scoredTag: scoredTagList) {
@@ -162,10 +158,10 @@ public class ModelBuilder {
 			
 			//전이 확률
 			if(prevPosId != -1){
-				if(this.transition.get(prevPosId, posId) == null){
-					System.out.println(irr);
-					System.out.println(convert);
-				}
+//				if(this.transition.get(prevPosId, posId) == null){
+//					System.out.println(irr);
+//					System.out.println(convert);
+//				}
 				score += this.transition.get(prevPosId, posId);
 			}
 			prevPosId = posId;
