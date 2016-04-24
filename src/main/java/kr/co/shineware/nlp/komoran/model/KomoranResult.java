@@ -38,12 +38,12 @@ public class KomoranResult{
 			if(latticeNode.getMorphTag().getTag().equals(SYMBOL.END)){
 				continue;
 			}
-			result.append(latticeNode.getMorph()+"/"+latticeNode.getTag()+" ");
+			result.append(parser.combine(latticeNode.getMorph())+"/"+latticeNode.getTag()+" ");
 		}
 		return result.toString().trim();
 	}
 
-	public List<Token> getTokenInfoList(){
+	public List<Token> getTokenList(){
 		List<Pair<Integer,Integer>> syllableAreaList = parser.getSyllableAreaList(this.jasoUnits);
 		List<Token> tokenList = new ArrayList<>();
 		int prevBeginIdx = 0;

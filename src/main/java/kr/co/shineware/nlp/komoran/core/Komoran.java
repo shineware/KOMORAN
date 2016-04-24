@@ -27,12 +27,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
+import kr.co.shineware.nlp.komoran.core.model.DynamicCache;
 import kr.co.shineware.nlp.komoran.core.model.Lattice;
 import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
+import kr.co.shineware.nlp.komoran.core.parser.UserDicParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
@@ -45,12 +50,13 @@ import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
-public class Komoran {
+public class Komoran implements Cloneable{
 
 	private Resources resources;
 	private Observation userDic;
 	private KoreanUnitParser unitParser;
 	private Lattice lattice;
+	private DynamicCache dynamicCache;
 
 	private HashMap<String, List<Pair<String, String>>> fwd;
 
@@ -62,6 +68,7 @@ public class Komoran {
 		this.resources = new Resources();
 		this.load(modelPath);
 		this.unitParser = new KoreanUnitParser();
+//		this.dynamicCache = new DynamicCache();
 	}
 
 	public synchronized KomoranResult analyze(String sentence){
@@ -83,14 +90,28 @@ public class Komoran {
 		//어절의 시작을 알리는 idx
 		int prevStartIdx = 0;
 		boolean inserted;
+
 		for(int i=0; i<length; i++){
 			//기분석 사전
-			this.lookupFwd(jasoUnits,i);
+			int skipIdx = this.lookupFwd(jasoUnits,i);
+			if(skipIdx != -1){
+				i += skipIdx-1;
+				continue;
+			}
+
+//			//동적 캐쉬
+//			skipIdx = this.lookupDynamicCache(jasoUnits,i);
+//			if(skipIdx != -1){
+//				i+= skipIdx-1;
+//				continue;
+//			}
+
 			//띄어쓰기인 경우
 			if(jasoUnits.charAt(i) == ' '){
 				this.bridgeToken(i,jasoUnits,prevStartIdx);
 				prevStartIdx = i+1;
 			}
+
 			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
 			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
 			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
@@ -98,9 +119,9 @@ public class Komoran {
 			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
 			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
+
 		}
-		
-		
+
 		this.consumeContiniousSymbolParserBuffer(jasoUnits);
 		this.lattice.setLastIdx(jasoUnits.length());
 		inserted = this.lattice.appendEndNode();
@@ -125,7 +146,31 @@ public class Komoran {
 			resultList.addAll(shortestPathList);
 		}
 
+//		this.dynamicCache.warmup(resultList);
+
 		return new KomoranResult(resultList,jasoUnits);
+	}
+
+	private int lookupDynamicCache(String token, int curIdx) {
+		if(this.fwd == null){
+			return -1;
+		}
+
+		//현재 인덱스가 시작이거나 이전 인덱스가 공백인 경우 (word 단어인 경우)
+		//현재 인덱스가 온전한 단어의 시작 부분인 경우
+		if(curIdx == 0 || token.charAt(curIdx-1) == ' '){
+			//공백을 찾아 단어(word)의 마지막 인덱스를 가져옴
+			int wordEndIdx = token.indexOf(' ', curIdx);
+			wordEndIdx = wordEndIdx == -1 ? token.length() : wordEndIdx;
+			String targetWord = token.substring(curIdx, wordEndIdx);
+			List<Pair<String,String>> fwdResultList = this.fwd.get(targetWord);
+
+			if(fwdResultList != null){
+				this.insertLatticeForFwd(curIdx, wordEndIdx, fwdResultList);
+				return wordEndIdx;
+			}
+		}
+		return -1;
 	}
 
 	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {

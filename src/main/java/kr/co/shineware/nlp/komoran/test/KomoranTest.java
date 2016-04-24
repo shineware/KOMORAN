@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.test;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 import kr.co.shineware.nlp.komoran.core.Komoran;
@@ -26,18 +27,22 @@ import kr.co.shineware.nlp.komoran.model.Token;
 public class KomoranTest {
 
 	public static void main(String[] args) throws Exception {
-		
+
+		System.out.println(Paths.get(".").toAbsolutePath().normalize().toString()
+		);
 		Komoran komoran = new Komoran("models");
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
 
 		String input = "바람과 함께 사라졌어를 봤어!!";
 		KomoranResult analyzeResultList = komoran.analyze(input);
-		List<Token> tokenList = analyzeResultList.getTokenInfoList();
+		List<Token> tokenList = analyzeResultList.getTokenList();
 		for (Token token : tokenList) {
 			System.out.println(token);
 			System.out.println(input.substring(token.getBeginIndex(), token.getEndIndex()));
 		}
 		System.out.println(analyzeResultList.getNouns());
+		System.out.println(analyzeResultList.getPlainText());
+		System.out.println(analyzeResultList.getTokenList());
 	}
 }
