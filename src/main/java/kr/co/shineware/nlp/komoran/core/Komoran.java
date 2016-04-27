@@ -6,9 +6,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * You may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  * 	http://www.apache.org/licenses/LICENSE-2.0
- * 	
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,27 +17,11 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.lang.Character.UnicodeBlock;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
-import kr.co.shineware.nlp.komoran.core.model.DynamicCache;
 import kr.co.shineware.nlp.komoran.core.model.Lattice;
 import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
-import kr.co.shineware.nlp.komoran.core.parser.UserDicParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
@@ -50,13 +34,17 @@ import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.lang.Character.UnicodeBlock;
+import java.util.*;
+
 public class Komoran implements Cloneable{
 
 	private Resources resources;
 	private Observation userDic;
 	private KoreanUnitParser unitParser;
 	private Lattice lattice;
-	private DynamicCache dynamicCache;
 
 	private HashMap<String, List<Pair<String, String>>> fwd;
 
@@ -68,12 +56,11 @@ public class Komoran implements Cloneable{
 		this.resources = new Resources();
 		this.load(modelPath);
 		this.unitParser = new KoreanUnitParser();
-//		this.dynamicCache = new DynamicCache();
 	}
 
 	public synchronized KomoranResult analyze(String sentence){
 		List<LatticeNode> resultList = new ArrayList<>();
-		
+
 		this.lattice = new Lattice(this.resources);
 		this.lattice.setUnitParser(this.unitParser);
 
@@ -99,13 +86,6 @@ public class Komoran implements Cloneable{
 				continue;
 			}
 
-//			//동적 캐쉬
-//			skipIdx = this.lookupDynamicCache(jasoUnits,i);
-//			if(skipIdx != -1){
-//				i+= skipIdx-1;
-//				continue;
-//			}
-
 			//띄어쓰기인 경우
 			if(jasoUnits.charAt(i) == ' '){
 				this.bridgeToken(i,jasoUnits,prevStartIdx);
@@ -115,7 +95,7 @@ public class Komoran implements Cloneable{
 			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
 			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
 			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
-			
+
 			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
 			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
 			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
@@ -125,6 +105,7 @@ public class Komoran implements Cloneable{
 		this.consumeContiniousSymbolParserBuffer(jasoUnits);
 		this.lattice.setLastIdx(jasoUnits.length());
 		inserted = this.lattice.appendEndNode();
+		//입력 문장의 끝에 END 품사가 올 수 없는 경우
 		if(!inserted){
 			double NAPenaltyScore = SCORE.NA;
 			if(prevStartIdx != 0){
@@ -133,9 +114,9 @@ public class Komoran implements Cloneable{
 			LatticeNode latticeNode = new LatticeNode(prevStartIdx,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartIdx, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
 			latticeNode.setPrevNodeIdx(0);
 			this.lattice.appendNode(latticeNode);
-			inserted = this.lattice.appendEndNode();
+			this.lattice.appendEndNode();
 		}
-		
+
 		List<LatticeNode> shortestPathList = this.lattice.findPath();
 
 		//미분석인 경우
@@ -146,44 +127,22 @@ public class Komoran implements Cloneable{
 			resultList.addAll(shortestPathList);
 		}
 
-//		this.dynamicCache.warmup(resultList);
-
 		return new KomoranResult(resultList,jasoUnits);
 	}
 
-	private int lookupDynamicCache(String token, int curIdx) {
-		if(this.fwd == null){
-			return -1;
-		}
-
-		//현재 인덱스가 시작이거나 이전 인덱스가 공백인 경우 (word 단어인 경우)
-		//현재 인덱스가 온전한 단어의 시작 부분인 경우
-		if(curIdx == 0 || token.charAt(curIdx-1) == ' '){
-			//공백을 찾아 단어(word)의 마지막 인덱스를 가져옴
-			int wordEndIdx = token.indexOf(' ', curIdx);
-			wordEndIdx = wordEndIdx == -1 ? token.length() : wordEndIdx;
-			String targetWord = token.substring(curIdx, wordEndIdx);
-			List<Pair<String,String>> fwdResultList = this.fwd.get(targetWord);
-
-			if(fwdResultList != null){
-				this.insertLatticeForFwd(curIdx, wordEndIdx, fwdResultList);
-				return wordEndIdx;
-			}
-		}
-		return -1;
-	}
-
 	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
-		
-		//공백이라면 END 기호를 삽입
-		if(this.lattice.put(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0) == false){
-			
-			LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
-			
-			int naNodeIndex = this.lattice.appendNode(naLatticeNode);
-			LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
-			this.lattice.appendNode(endLatticeNode);
+
+
+		if (this.lattice.put(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0)) {
+			return;
 		}
+
+		//공백이라면 END 기호를 삽입
+		LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
+
+		int naNodeIndex = this.lattice.appendNode(naLatticeNode);
+		LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
+		this.lattice.appendNode(endLatticeNode);
 	}
 
 	private boolean symbolParsing(char jaso, int idx) {
@@ -211,7 +170,7 @@ public class Komoran implements Cloneable{
 			}
 		}
 		//한글
-		else if(unicodeBlock == UnicodeBlock.HANGUL_COMPATIBILITY_JAMO 
+		else if(unicodeBlock == UnicodeBlock.HANGUL_COMPATIBILITY_JAMO
 				|| unicodeBlock == UnicodeBlock.HANGUL_JAMO
 				|| unicodeBlock == UnicodeBlock.HANGUL_JAMO_EXTENDED_A
 				||unicodeBlock == UnicodeBlock.HANGUL_JAMO_EXTENDED_B
@@ -224,7 +183,7 @@ public class Komoran implements Cloneable{
 			return false;
 		}
 		//중국어
-		else if(UnicodeBlock.CJK_COMPATIBILITY.equals(unicodeBlock)				
+		else if(UnicodeBlock.CJK_COMPATIBILITY.equals(unicodeBlock)
 				|| UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(unicodeBlock)
 				|| UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(unicodeBlock)
 				|| UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(unicodeBlock)
@@ -260,18 +219,18 @@ public class Komoran implements Cloneable{
 				this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
 			}
 		}
-		return true;		
+		return true;
 	}
 
 	//TO DO
 	//기분석 사전을 어떻게 적용할 것인가....
 	//Lucene에서 활용할 때 인덱스 정보를 어떻게 keep 할 것인가..
 	private int lookupFwd(String token,int curIdx) {
-		
+
 		if(this.fwd == null){
 			return -1;
 		}
-		
+
 		//현재 인덱스가 시작이거나 이전 인덱스가 공백인 경우 (word 단어인 경우)
 		//현재 인덱스가 온전한 단어의 시작 부분인 경우
 		if(curIdx == 0 || token.charAt(curIdx-1) == ' '){
@@ -280,7 +239,7 @@ public class Komoran implements Cloneable{
 			wordEndIdx = wordEndIdx == -1 ? token.length() : wordEndIdx;
 			String targetWord = token.substring(curIdx, wordEndIdx);
 			List<Pair<String,String>> fwdResultList = this.fwd.get(targetWord);
-			
+
 			if(fwdResultList != null){
 				this.insertLatticeForFwd(curIdx, wordEndIdx, fwdResultList);
 				return wordEndIdx;
@@ -290,7 +249,7 @@ public class Komoran implements Cloneable{
 	}
 
 	private void insertLatticeForFwd(int beginIdx, int endIdx,
-			List<Pair<String, String>> fwdResultList) {
+									 List<Pair<String, String>> fwdResultList) {
 		this.lattice.put(beginIdx, endIdx, fwdResultList);
 	}
 
@@ -310,12 +269,16 @@ public class Komoran implements Cloneable{
 			this.prevMorph += charAt;
 		}
 		else{
-			if(this.prevPos.equals("SL")){
-				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SL);
-			}else if(this.prevPos.equals("SN")){
-				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SN);
-			}else if(this.prevPos.equals("SH")){
-				this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SH);
+			switch (this.prevPos) {
+				case "SL":
+					this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SL);
+					break;
+				case "SN":
+					this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
+					break;
+				case "SH":
+					this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SH);
+					break;
 			}
 
 			this.prevBeginIdx = i;
@@ -326,21 +289,23 @@ public class Komoran implements Cloneable{
 
 	private void consumeContiniousSymbolParserBuffer(String in) {
 		if(this.prevPos.trim().length() != 0){
-			if(this.prevPos.equals("SL")){
-				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SL);
-			}else if(this.prevPos.equals("SH")){
-				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SH);
-			}else if(this.prevPos.equals("SN")){
-				this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos,this.resources.getTable().getId(this.prevPos), SCORE.SN);
+			switch (this.prevPos) {
+				case "SL":
+					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SL);
+					break;
+				case "SH":
+					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SH);
+					break;
+				case "SN":
+					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
+					break;
 			}
 		}
 	}
 
 	private void irregularExtends(char jaso, int curIndex) {
 		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
-		if(prevLatticeNodes == null){
-			;
-		}else{
+		if(prevLatticeNodes != null){
 			Set<LatticeNode> extendedIrrNodeList = new HashSet<>();
 
 			for (LatticeNode prevLatticeNode : prevLatticeNodes) {
@@ -401,8 +366,8 @@ public class Komoran implements Cloneable{
 	}
 
 	private void insertLattice(int beginIdx, int endIdx,
-			IrregularNode irregularNode) {
-		this.lattice.put(beginIdx, endIdx, irregularNode);		
+							   IrregularNode irregularNode) {
+		this.lattice.put(beginIdx, endIdx, irregularNode);
 	}
 
 	private void regularParsing(char jaso,int curIndex) {
@@ -438,7 +403,7 @@ public class Komoran implements Cloneable{
 	}
 
 	private void insertLattice(int beginIdx, int endIdx, String morph,
-			Tag tag, double score) {
+							   Tag tag, double score) {
 		this.lattice.put(beginIdx,endIdx,morph,tag.getTag(),tag.getTagId(),score);
 	}
 
@@ -462,12 +427,12 @@ public class Komoran implements Cloneable{
 	}
 
 	//기분석 사전
-	public void setFWDic(String filename) {		
+	public void setFWDic(String filename) {
 		try {
 			CorpusParser corpusParser = new CorpusParser();
 			BufferedReader br = new BufferedReader(new FileReader(filename));
 			String line;
-			this.fwd = new HashMap<String, List<Pair<String, String>>>();
+			this.fwd = new HashMap<>();
 			while ((line = br.readLine()) != null) {
 				String[] tmp = line.split("\t");
 				//주석이거나 format에 안 맞는 경우는 skip
@@ -479,7 +444,7 @@ public class Komoran implements Cloneable{
 				List<Pair<String,String>> convertAnswerList = new ArrayList<>();
 				for (Pair<String, String> pair : problemAnswerPair.getAnswerList()) {
 					convertAnswerList.add(
-							new Pair<String, String>(pair.getFirst(), pair.getSecond()));
+							new Pair<>(pair.getFirst(), pair.getSecond()));
 				}
 
 				this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
@@ -487,7 +452,7 @@ public class Komoran implements Cloneable{
 				tmp = null;
 				problemAnswerPair = null;
 				convertAnswerList = null;
-			}			
+			}
 			br.close();
 
 			//init
@@ -505,7 +470,7 @@ public class Komoran implements Cloneable{
 			BufferedReader br = new BufferedReader(new FileReader(userDic));
 			String line = null;
 			while((line = br.readLine()) != null){
-				line = line.trim();				
+				line = line.trim();
 				if(line.length() == 0 || line.charAt(0) == '#')continue;
 				int lastIdx = line.lastIndexOf("\t");
 
@@ -531,8 +496,8 @@ public class Komoran implements Cloneable{
 			br = null;
 			line = null;
 			this.userDic.getTrieDictionary().buildFailLink();
-		} catch (Exception e) {		
+		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 }

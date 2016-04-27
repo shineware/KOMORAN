@@ -17,11 +17,6 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
@@ -31,6 +26,11 @@ import kr.co.shineware.nlp.komoran.modeler.model.PosTable;
 import kr.co.shineware.nlp.komoran.modeler.model.Transition;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Lattice {
 
