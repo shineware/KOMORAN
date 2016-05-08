@@ -17,27 +17,21 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.modeler.builder;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.corpus.model.Dictionary;
 import kr.co.shineware.nlp.komoran.corpus.model.Grammar;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
-import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
-import kr.co.shineware.nlp.komoran.modeler.model.IrregularTrie;
-import kr.co.shineware.nlp.komoran.modeler.model.Observation;
-import kr.co.shineware.nlp.komoran.modeler.model.PosTable;
-import kr.co.shineware.nlp.komoran.modeler.model.Transition;
+import kr.co.shineware.nlp.komoran.modeler.model.*;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 코퍼스 빌드 결과물로 모델 생성</br> 생성되는 데이터는 아래와 같음</br>
@@ -62,7 +56,8 @@ public class ModelBuilder {
 	private PosTable table;
 	private IrregularTrie irrTrie;
 	
-	private KoreanUnitParser unitParser; 
+	private KoreanUnitParser unitParser;
+	private String externalDic;
 
 	/**
 	 * 입력된 path에 저장된 데이터로 부터 model 빌드 <br>
@@ -80,6 +75,8 @@ public class ModelBuilder {
 
 		this.unitParser = new KoreanUnitParser();
 		wordDic = new Dictionary(path+File.separator+FILENAME.WORD_DIC);
+		this.addExternalDic(this.externalDic);
+
 		irrDic = new Dictionary(path+File.separator+FILENAME.IRREGULAR_DIC);
 		grammar = new Grammar(path+File.separator+FILENAME.GRAMMAR);
 
@@ -97,6 +94,8 @@ public class ModelBuilder {
 		//build irregular dic to trie
 		this.buildIrregularDic();
 	}
+
+
 
 	/**
 	 * 불규칙 사전 빌드
@@ -287,4 +286,29 @@ public class ModelBuilder {
 		this.table.save(path+File.separator+FILENAME.POS_TABLE);
 		this.irrTrie.save(path+File.separator+FILENAME.IRREGULAR_MODEL);
 	}
+
+	public void setExternalDic(String externalDic) {
+		this.externalDic = externalDic;
+	}
+	private void addExternalDic(String filename) {
+		try {
+			if(filename != null) {
+				BufferedReader br = new BufferedReader(new FileReader(filename));
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					line = line.trim();
+					if (line.length() == 0 || line.charAt(0) == '#') continue;
+					if (this.wordDic.getPosList(line) == null) {
+						this.wordDic.append(line, "NNP");
+					} else {
+						;
+					}
+				}
+				br.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

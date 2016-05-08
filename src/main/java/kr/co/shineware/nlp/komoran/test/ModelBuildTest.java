@@ -19,6 +19,8 @@ package kr.co.shineware.nlp.komoran.test;
 
 import kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder;
 
+import java.io.File;
+
 public class ModelBuildTest {
 
 	public static void main(String[] args) {
@@ -34,6 +36,7 @@ public class ModelBuildTest {
 
 	private static void modelSave() {
 		ModelBuilder builder = new ModelBuilder();
+		builder.setExternalDic("user_data"+ File.separator+"wiki.titles");
 		builder.buildPath("corpus_build");
 		builder.save("models");
 	}
