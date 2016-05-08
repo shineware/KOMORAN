@@ -34,7 +34,7 @@ public class KomoranTest {
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
 
-		String input = "바람과 함께 사라졌어를 봤어!!";
+		String input = "밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?";
 		KomoranResult analyzeResultList = komoran.analyze(input);
 		List<Token> tokenList = analyzeResultList.getTokenList();
 		for (Token token : tokenList) {

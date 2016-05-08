@@ -82,7 +82,7 @@ public class Komoran implements Cloneable{
 			//기분석 사전
 			int skipIdx = this.lookupFwd(jasoUnits,i);
 			if(skipIdx != -1){
-				i += skipIdx-1;
+				i = skipIdx-1;
 				continue;
 			}
 
@@ -126,6 +126,7 @@ public class Komoran implements Cloneable{
 			Collections.reverse(shortestPathList);
 			resultList.addAll(shortestPathList);
 		}
+		this.lattice.printLattice();
 
 		return new KomoranResult(resultList,jasoUnits);
 	}
