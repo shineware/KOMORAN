@@ -17,12 +17,11 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.test;
 
-import java.nio.file.Paths;
-import java.util.List;
-
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+
+import java.util.List;
 
 public class KomoranTest {
 
