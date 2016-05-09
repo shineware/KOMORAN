@@ -7,7 +7,7 @@
 This project is based on gradle.
 So, you can open by gradle project.
 
-If you want to import eclipse IDE, you can use this command.
+If you want to import eclipse IDE without gradle, you can use this command after download this project.
 ```shell
 ./gradlew eclipse
 ```
