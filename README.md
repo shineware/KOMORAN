@@ -1,11 +1,20 @@
 
-# Komoran 3.0
+# KOMORAN 3.0
 
 **KO**rean **MOR**phological **AN**alyzer
 
+# Import project
+This project is based on gradle.
+So, you can open by gradle project.
+
+If you want to import eclipse IDE, you can use this command.
+```shell
+./gradlew eclipse
+```
+
 # Usage
 
--Analyze
+### For analyze
 
 ```java
 /*******************************************************************************
@@ -65,3 +74,6 @@ public class KomoranTest {
 }
 
 ```
+
+### For model builder
+To be updated..
