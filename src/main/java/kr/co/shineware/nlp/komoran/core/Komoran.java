@@ -126,7 +126,6 @@ public class Komoran implements Cloneable{
 			Collections.reverse(shortestPathList);
 			resultList.addAll(shortestPathList);
 		}
-		this.lattice.printLattice();
 
 		return new KomoranResult(resultList,jasoUnits);
 	}

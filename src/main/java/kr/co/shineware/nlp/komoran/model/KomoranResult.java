@@ -83,6 +83,9 @@ public class KomoranResult{
 	public List<Pair<String,String>> getList(){
 		List<Pair<String,String>> resultList = new ArrayList<Pair<String,String>>();
 		for (LatticeNode latticeNode : resultNodeList) {
+			if(latticeNode.getMorphTag().getTag().equals(SYMBOL.END)){
+				continue;
+			}
 			resultList.add(new Pair<>(parser.combine(latticeNode.getMorph()),latticeNode.getTag()));
 		}
 		return resultList;
