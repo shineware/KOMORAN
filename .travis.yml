@@ -1,4 +1,5 @@
 #add build ci
+repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
 language: java
 
 jdk:
