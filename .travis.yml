@@ -4,5 +4,6 @@ language: java
 jdk:
 - oraclejdk8
 script: ./gradlew build
+repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
 after_success:
 - ./gradlew jacocoTestReport coveralls
