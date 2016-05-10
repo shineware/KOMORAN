@@ -1,4 +1,5 @@
 #add build ci
 language: java
 script: ./gradlew build
-after_success: coveralls
+service_name: travis-pro
+repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
