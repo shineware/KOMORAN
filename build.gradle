@@ -1,8 +1,5 @@
-plugins {
-    id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
-}
-
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -12,9 +9,6 @@ repositories {
 
 }
 
-jacoco {
-    toolVersion = '0.7.1.201405082137'
-}
 
 dependencies {
     compile 'com.github.shineware:commons:1.0.0'
@@ -25,9 +19,21 @@ dependencies {
 
 
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
+    }
+}
+
+
 jacocoTestReport {
     reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
+        xml.enabled = true
         html.enabled = true
+        html.destination "${buildDir}/jacocoHtml"
     }
 }

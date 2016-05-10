@@ -7,8 +7,6 @@ sudo: required
 jdk:
 - oraclejdk8
 
-repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
-
 script: ./gradlew build jacocoTestReport
 
 after_success:
