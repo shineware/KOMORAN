@@ -12,6 +12,10 @@ repositories {
 
 }
 
+jacoco {
+    toolVersion = '0.7.1.201405082137'
+}
+
 dependencies {
     compile 'com.github.shineware:commons:1.0.0'
     compile 'com.github.shineware:aho-corasick:1.0.0'
