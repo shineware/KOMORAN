@@ -1,5 +1,8 @@
 #add build ci
 language: java
+
+jdk:
+- oraclejdk8
 script: ./gradlew build
-service_name: travis-pro
-repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
+after_success:
+- ./gradlew jacocoTestReport coveralls
