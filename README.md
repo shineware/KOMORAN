@@ -1,5 +1,6 @@
 
 # KOMORAN 3.0
+[![Build Status](https://travis-ci.org/shin285/KOMORAN.svg?branch=master)](https://travis-ci.org/shin285/KOMORAN)
 
 **KO**rean **MOR**phological **AN**alyzer
 
