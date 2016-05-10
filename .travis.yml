@@ -1,9 +1,13 @@
 #add build ci
-repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
+
 language: java
+
+sudo: required
 
 jdk:
 - oraclejdk8
+
+repo_token: LPoD35Vuh1NMxXWC0fxSVYfi3epUPnWaM
 
 script: ./gradlew build jacocoTestReport
 
