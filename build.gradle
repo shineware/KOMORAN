@@ -1,7 +1,13 @@
-apply plugin: 'jacoco'
-apply plugin: 'com.github.kt3k.coveralls'
+plugins {
+    id 'net.saliman.cobertura' version '2.3.1'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
+
+cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
 
 repositories {
     jcenter()
@@ -15,25 +21,4 @@ dependencies {
     compile 'com.github.shineware:aho-corasick:1.0.0'
     compile 'org.slf4j:slf4j-api:1.7.13'
     testCompile 'junit:junit:4.12'
-}
-
-
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
-    }
-}
-
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        html.destination "${buildDir}/jacocoHtml"
-    }
 }

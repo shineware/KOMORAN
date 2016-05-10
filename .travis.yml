@@ -7,7 +7,5 @@ sudo: required
 jdk:
 - oraclejdk8
 
-script: ./gradlew build jacocoTestReport
-
 after_success:
-- ./gradlew jacocoTestReport coveralls
+- ./gradlew cobertura coveralls
