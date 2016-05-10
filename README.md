@@ -1,5 +1,7 @@
 
 # KOMORAN 3.0
+[![Build Status](https://travis-ci.org/shin285/KOMORAN.svg?branch=master)](https://travis-ci.org/shin285/KOMORAN)
+[![Coverage Status](https://coveralls.io/repos/github/shin285/KOMORAN/badge.svg?branch=master)](https://coveralls.io/github/shin285/KOMORAN?branch=master)
 
 **KO**rean **MOR**phological **AN**alyzer
 
