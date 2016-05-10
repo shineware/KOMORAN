@@ -8,6 +8,8 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+cobertura.coverageSourceDirs = sourceSets.main.groovy.srcDirs
+
 
 repositories {
     jcenter()
