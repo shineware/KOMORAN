@@ -1,21 +1,26 @@
-apply plugin: 'jacoco'
-apply plugin: 'coveralls'
+plugins {
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
 
-    dependencies {
-        compile 'com.github.shineware:commons:1.0.0'
-        compile 'com.github.shineware:aho-corasick:1.0.0'
-        compile 'org.slf4j:slf4j-api:1.7.13'
-        testCompile 'junit:junit:4.12'
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.6.1'
-    }
+}
+
+jacoco {
+    toolVersion = '0.7.1.201405082137'
+}
+
+dependencies {
+    compile 'com.github.shineware:commons:1.0.0'
+    compile 'com.github.shineware:aho-corasick:1.0.0'
+    compile 'org.slf4j:slf4j-api:1.7.13'
+    testCompile 'junit:junit:4.12'
 }
 
 
