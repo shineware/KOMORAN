@@ -16,7 +16,7 @@ StdinTest.java
 !gradle-wrapper.jar
 
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.ear
 
