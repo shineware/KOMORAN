@@ -165,7 +165,7 @@ public class ModelBuildTest {
 		ModelBuilder builder = new ModelBuilder();
 		//external dictionary for out of vocabulary
 		builder.setExternalDic("user_data"+ File.separator+"wiki.titles");
-		//training corpus include dictionary, grammar and irregular dictionary
+		//training corpus path must include dictionary, grammar and irregular dictionary
 		builder.buildPath("corpus_build");
 		//path to save models
 		builder.save("models");
