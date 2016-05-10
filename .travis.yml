@@ -1,2 +1,4 @@
 #add build ci
-language: java
+#language: java
+script :
+  -./gradlew build
