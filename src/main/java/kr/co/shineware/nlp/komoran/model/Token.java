@@ -5,17 +5,17 @@ public class Token {
 	private String pos;
 	private int beginIndex;
 	private int endIndex;
-	
+
 	public Token(){
 		;
 	}
-	
+
 	public Token(String morph, String pos, int beginIndex, int endIndex) {
 		super();
-		this.morph = morph;
-		this.pos = pos;
-		this.beginIndex = beginIndex;
-		this.endIndex = endIndex;
+		this.setMorph(morph);
+		this.setBeginIndex(beginIndex);
+		this.setEndIndex(endIndex);
+		this.setPos(pos);
 	}
 	
 	public String getMorph() {
