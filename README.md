@@ -5,18 +5,18 @@
 
 **KO**rean **MOR**phological **AN**alyzer
 
-# Import project
+# Importing project
 This project is based on gradle.
 So, you can open by gradle project.
 
-If you want to import eclipse IDE without gradle, you can use this command after download this project.
+When importing on Eclipse IDE without gradle, type in commands below in console(e.g. cmd in window, terminal in *nix) after downloading project.
 ```shell
 ./gradlew eclipse
 ```
 
 # Usage
 
-### For analyze
+### For analyzing
 
 ```java
 /*******************************************************************************
@@ -126,7 +126,7 @@ public class KomoranTest {
 ```
 
 
-### For model builder (training)
+### For training (model builder)
 ```java
 /*******************************************************************************
  * KOMORAN 3.0 - Korean Morphology Analyzer
