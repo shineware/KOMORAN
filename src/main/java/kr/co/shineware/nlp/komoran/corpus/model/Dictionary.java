@@ -170,6 +170,20 @@ public class Dictionary implements FileAccessible{
 		dictionary.put(word, posMap);
 	}
 
+	public void append(String word, String pos, int inc) {
+		Map<String,Integer> posMap = dictionary.get(word);
+		if(posMap == null){
+			posMap = new HashMap<String, Integer>();
+		}
+		Integer tf = posMap.get(pos);
+		if(tf == null){
+			tf = 0;
+		}
+		tf+=inc;
+		posMap.put(pos, tf);
+		dictionary.put(word, posMap);
+	}
+
 	/**
 	 * 단어의 품사 리스트를 반환
 	 * @param word

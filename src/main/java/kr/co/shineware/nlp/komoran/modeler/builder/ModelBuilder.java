@@ -22,6 +22,7 @@ import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.corpus.model.Dictionary;
 import kr.co.shineware.nlp.komoran.corpus.model.Grammar;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
+import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.*;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.file.FileUtil;
@@ -298,11 +299,7 @@ public class ModelBuilder {
 				while ((line = br.readLine()) != null) {
 					line = line.trim();
 					if (line.length() == 0 || line.charAt(0) == '#') continue;
-					if (this.wordDic.getPosList(line) == null) {
-						this.wordDic.append(line, "NNP");
-					} else {
-						;
-					}
+					this.wordDic.append(line, "NNP",10);
 				}
 				br.close();
 			}
