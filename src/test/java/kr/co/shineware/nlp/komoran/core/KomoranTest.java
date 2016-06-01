@@ -31,7 +31,7 @@ public class KomoranTest {
 	private Komoran komoran;
 	@Before
 	public void init() throws Exception {
-		this.komoran = new Komoran("models");
+		this.komoran = new Komoran("models_full");
 	}
 	@Test
 	public void analyze() throws Exception {
@@ -56,7 +56,7 @@ public class KomoranTest {
 
 	@Test
 	public void load() throws Exception {
-		this.komoran.load("models");
+		this.komoran.load("models_full");
 	}
 
 	@Test
