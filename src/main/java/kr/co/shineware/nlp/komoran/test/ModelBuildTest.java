@@ -24,21 +24,31 @@ import java.io.File;
 public class ModelBuildTest {
 
 	public static void main(String[] args) {
-		modelSave();
+		modelSave(false);
+		modelSave(true);
 		modelLoad();
 	}
 
 	@SuppressWarnings("deprecation")
 	private static void modelLoad() {
 		ModelBuilder builder = new ModelBuilder();
-		builder.load("models");
+		builder.load("models_light");
 	}
 
-	private static void modelSave() {
+	private static void modelSave(boolean includeWikiTitle) {
 		ModelBuilder builder = new ModelBuilder();
-		builder.setExternalDic("user_data"+ File.separator+"wiki.titles");
+		if(includeWikiTitle) {
+			builder.setExternalDic("user_data" + File.separator + "wiki.titles");
+		}
 		builder.buildPath("corpus_build");
-		builder.save("models");
+
+		String modelPath = "models";
+		if(includeWikiTitle){
+			modelPath += "_full";
+		}else{
+			modelPath += "_light";
+		}
+		builder.save(modelPath);
 	}
 
 }
