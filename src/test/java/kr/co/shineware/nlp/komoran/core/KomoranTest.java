@@ -25,9 +25,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class KomoranTest {
+
 	private Komoran komoran;
 	@Before
 	public void init() throws Exception {
@@ -35,7 +34,7 @@ public class KomoranTest {
 	}
 	@Test
 	public void analyze() throws Exception {
-		KomoranResult komoranResult = this.komoran.analyze("감사합니다! 바람과 함께 사라지다는 진짜 재밌었어요! nice good!");
+		KomoranResult komoranResult = this.komoran.analyze("자주 걸렸던 병이다");
 		List<Pair<String,String>> pairList = komoranResult.getList();
 		for (Pair<String, String> morphPosPair : pairList) {
 			System.out.println(morphPosPair);
@@ -68,7 +67,7 @@ public class KomoranTest {
 	@Test
 	public void setUserDic() throws Exception {
 		this.komoran.setUserDic("user_data/dic.user");
-		this.komoran.analyze("감사합니다! 바람과 함께 사라지다는 진짜 재밌었어요! nice good!");
+		System.out.println(this.komoran.analyze("싸이는 가수다").getPlainText());
 	}
 
 }

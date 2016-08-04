@@ -88,6 +88,7 @@ public class Komoran implements Cloneable{
 
 			//띄어쓰기인 경우
 			if(jasoUnits.charAt(i) == ' '){
+				this.consumeContiniousSymbolParserBuffer(i);
 				this.bridgeToken(i,jasoUnits,prevStartIdx);
 				prevStartIdx = i+1;
 			}
@@ -298,6 +299,22 @@ public class Komoran implements Cloneable{
 					break;
 				case "SN":
 					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
+					break;
+			}
+		}
+	}
+
+	private void consumeContiniousSymbolParserBuffer(int endIdx) {
+		if(this.prevPos.trim().length() != 0){
+			switch (this.prevPos) {
+				case "SL":
+					this.lattice.put(this.prevBeginIdx, endIdx, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SL);
+					break;
+				case "SH":
+					this.lattice.put(this.prevBeginIdx, endIdx, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SH);
+					break;
+				case "SN":
+					this.lattice.put(this.prevBeginIdx, endIdx, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
 					break;
 			}
 		}

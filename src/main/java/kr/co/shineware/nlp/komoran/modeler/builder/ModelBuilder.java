@@ -66,7 +66,7 @@ public class ModelBuilder {
 	 * - 단어 사전 파일 : dic.word
 	 * - 불규칙 사전 파일 : dic.irregular
 	 * - 품사 간 문법 사전 : grammar.in
-	 * @param path
+	 * @param path 모델을 생성하기 위한 트레이닝 데이터 위치
 	 */
 	public void buildPath(String path){
 		this.unitParser = null;
@@ -119,9 +119,9 @@ public class ModelBuilder {
 	/**
 	 * 불규칙 노드 생성 <br>
 	 * 불규칙 패턴의 head 품사 및 tail 품사, 불규칙 패턴 내부의 관측/전이 확률 score, 변환 규칙 정보를 포함하고 있음 <br>
-	 * @param irr
-	 * @param convert
-	 * @return
+	 * @param irr 불규칙 패턴
+	 * @param convert 불규칙 패턴에 대해 변환되는 규칙
+	 * @return 불규칙 노드를 생성
 	 */
 	private IrregularNode makeIrrNode(String irr, String convert) {
 		
@@ -137,7 +137,7 @@ public class ModelBuilder {
 			int splitIdx = token.lastIndexOf("/");
 			String morph = token.substring(0, splitIdx);
 			int posId = this.table.getId(token.substring(splitIdx+1));
-			irrNodeTokens.add(new Pair<String, Integer>(morph, posId));
+			irrNodeTokens.add(new Pair<>(morph, posId));
 			//set first pos id
 			if(i == 0){
 				irrNode.setFirstPosId(posId);
@@ -187,7 +187,7 @@ public class ModelBuilder {
 	 * 주어진 POS 빈도수 정보를 활용하여 POS table 구축 <br>
 	 * POS table은 형태소 분석 단계에서 메모리 사용량 및 속도 향상을 위해 사용됨 <br>
 	 * String < Integer
-	 * @param totalPrevPOSTf
+	 * @param totalPrevPOSTf 전체 빈도수
 	 */
 	private void buildPosTable(Map<String, Integer> totalPrevPOSTf) {
 		this.table = new PosTable();
@@ -236,6 +236,10 @@ public class ModelBuilder {
 			for (String curPos : curPosSet) {
 				int prev2CurTf = curPosMap.get(curPos);
 				int prevTf = totalPrevPOSTf.get(prevPos);
+				if(curPos.equals("NNP")){
+					prev2CurTf += 100000;
+					prevTf += 100000;
+				}
 				double transitionScore = prev2CurTf/(double)prevTf;
 				transitionScore = Math.log10(transitionScore);
 				this.transition.put(this.table.getId(prevPos),this.table.getId(curPos),transitionScore);
@@ -299,7 +303,7 @@ public class ModelBuilder {
 				while ((line = br.readLine()) != null) {
 					line = line.trim();
 					if (line.length() == 0 || line.charAt(0) == '#') continue;
-					this.wordDic.append(line, "NNP",10);
+					this.wordDic.append(line, "NNP",50);
 				}
 				br.close();
 			}
