@@ -6,9 +6,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * You may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  * 	http://www.apache.org/licenses/LICENSE-2.0
- * 	
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,7 +72,7 @@ public class Lattice {
 
 	//기분석 사전을 위한 lattice put
 	public void put(int beginIdx, int endIdx,
-			List<Pair<String, String>> fwdResultList) {
+					List<Pair<String, String>> fwdResultList) {
 
 		if(fwdResultList.size() == 1){
 			Pair<String,String> morphPosPair = fwdResultList.get(0);
@@ -119,7 +119,7 @@ public class Lattice {
 	}
 
 	private void putIrregularExtendTokens(int beginIdx, int endIdx,
-			List<Pair<String, Integer>> morphPosIdList, double prevMaxScore, int prevMaxIdx) {
+										  List<Pair<String, Integer>> morphPosIdList, double prevMaxScore, int prevMaxIdx) {
 
 		//첫번쨰 토큰에 대한 처리
 		if(morphPosIdList.size() == 0){
@@ -161,8 +161,8 @@ public class Lattice {
 	}
 
 	private void putFirstIrrgularNode(int beginIdx, int endIdx,
-			List<Pair<String, Integer>> irregularTokens, double score,
-			int maxTransitionPrevIdx) {
+									  List<Pair<String, Integer>> irregularTokens, double score,
+									  int maxTransitionPrevIdx) {
 		if(irregularTokens.size() == 1){
 			Pair<String,Integer> morphPosId = irregularTokens.get(0);
 			List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
@@ -287,7 +287,7 @@ public class Lattice {
 	}
 
 	public LatticeNode makeNode(int beginIdx, int endIdx, String morph,
-			String tag, int tagId, double score, int prevNodeHash) {
+								String tag, int tagId, double score, int prevNodeHash) {
 		LatticeNode latticeNode = new LatticeNode(beginIdx, endIdx, new MorphTag(morph, tag, tagId), score);
 		latticeNode.setPrevNodeIdx(prevNodeHash);
 		return latticeNode;
@@ -335,25 +335,27 @@ public class Lattice {
 			}
 
 			//자소 결합규칙 체크
-			if(tagId == this.posTable.getId(SYMBOL.JKO)){
-				if(this.hasJongsung(prevMorph)){
-					if(morph.charAt(0) != 'ㅇ'){
-						continue;
+			if(morph != null){
+				if(tagId == this.posTable.getId(SYMBOL.JKO)){
+					if(this.hasJongsung(prevMorph)){
+						if(morph.charAt(0) != 'ㅇ'){
+							continue;
+						}
+					}else{
+						if(morph.charAt(0) == 'ㅇ'){
+							continue;
+						}
 					}
-				}else{
-					if(morph.charAt(0) == 'ㅇ'){
-						continue;
-					}
-				}
-			}else if(tagId == this.posTable.getId(SYMBOL.JKS)
-					|| tagId == this.posTable.getId(SYMBOL.JKC)){
-				if(this.hasJongsung(prevMorph)){
-					if(morph.charAt(0) == 'ㄱ' && morph.charAt(1) == 'ㅏ'){
-						continue;
-					}
-				}else{
-					if(morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ'){
-						continue;
+				}else if(tagId == this.posTable.getId(SYMBOL.JKS)
+						|| tagId == this.posTable.getId(SYMBOL.JKC)){
+					if(this.hasJongsung(prevMorph)){
+						if(morph.charAt(0) == 'ㄱ' && morph.charAt(1) == 'ㅏ'){
+							continue;
+						}
+					}else{
+						if(morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ'){
+							continue;
+						}
 					}
 				}
 			}
@@ -432,7 +434,7 @@ public class Lattice {
 		}
 
 		LatticeNode latticeNode = this.lattice.get(idx).get(0);
-		
+
 		int prevLatticeEndIndex = latticeNode.getEndIdx();
 		while(true){
 			latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
@@ -466,7 +468,7 @@ public class Lattice {
 							this.put(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), scoredTag.getScore());
 						}
 					}
-				}				
+				}
 			} else{
 				for (ScoredTag scoredTag : scoredTags) {
 					if(scoredTag.getTagId() == morphPosId.getSecond()){
@@ -499,6 +501,6 @@ public class Lattice {
 	}
 
 	public void appendMidtermEndNode() {
-		this.put(this.lastIdx, this.lastIdx+1, SYMBOL.START, SYMBOL.START, this.getPosTable().getId(SYMBOL.END), 0);		
+		this.put(this.lastIdx, this.lastIdx+1, SYMBOL.START, SYMBOL.START, this.getPosTable().getId(SYMBOL.END), 0);
 	}
 }
