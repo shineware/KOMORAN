@@ -59,6 +59,9 @@ public class Komoran implements Cloneable{
 	}
 
 	public synchronized KomoranResult analyze(String sentence){
+
+		sentence = sentence.replaceAll("[ ]+"," ").trim();
+
 		List<LatticeNode> resultList = new ArrayList<>();
 
 		this.lattice = new Lattice(this.resources);
