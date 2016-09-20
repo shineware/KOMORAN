@@ -22,7 +22,6 @@ import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.corpus.model.Dictionary;
 import kr.co.shineware.nlp.komoran.corpus.model.Grammar;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
-import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.*;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.file.FileUtil;
