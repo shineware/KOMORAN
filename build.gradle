@@ -16,10 +16,27 @@ repositories {
 
 }
 
+configurations {
+    provided
+    compile.extendsFrom provided
+}
 
 dependencies {
     compile 'com.github.shineware:commons:1.0.0'
     compile 'com.github.shineware:aho-corasick:1.0.1'
-    compile 'org.slf4j:slf4j-api:1.7.13'
+    provided 'org.slf4j:slf4j-api:1.7.13'
     testCompile 'junit:junit:4.12'
+}
+
+jar {
+    dependsOn configurations.runtime
+    from {
+        (configurations.runtime - configurations.provided).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
 }
