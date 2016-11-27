@@ -17,9 +17,13 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.lang.Character.UnicodeBlock;
+import java.util.*;
+
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
-import kr.co.shineware.nlp.komoran.core.model.Lattice;
 import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.core.model.Resources;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
@@ -34,23 +38,13 @@ import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.lang.Character.UnicodeBlock;
-import java.util.*;
-
 public class Komoran implements Cloneable{
 
-	private Resources resources;
+	private final Resources resources;
+	private final KoreanUnitParser unitParser;
 	private Observation userDic;
-	private KoreanUnitParser unitParser;
-	private Lattice lattice;
 
 	private HashMap<String, List<Pair<String, String>>> fwd;
-
-	private String prevPos;
-	private String prevMorph;
-	private int prevBeginIdx;
 
 	public Komoran(String modelPath){
 		this.resources = new Resources();
@@ -58,22 +52,16 @@ public class Komoran implements Cloneable{
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public synchronized KomoranResult analyze(String sentence){
+	public KomoranResult analyze(String sentence){
 
 		sentence = sentence.replaceAll("[ ]+"," ").trim();
 
 		List<LatticeNode> resultList = new ArrayList<>();
 
-		this.lattice = new Lattice(this.resources);
-		this.lattice.setUnitParser(this.unitParser);
-
-		//연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
-		this.prevPos = "";
-		this.prevMorph = "";
-		this.prevBeginIdx = 0;
-
 		//자소 단위로 분할
 		String jasoUnits = unitParser.parse(sentence);
+
+		final AnalyzeContext context = new AnalyzeContext(resources, unitParser, userDic);
 
 		int length = jasoUnits.length();
 		//start 노드 또는 end 노드의 바로 다음 인덱스
@@ -83,7 +71,7 @@ public class Komoran implements Cloneable{
 
 		for(int i=0; i<length; i++){
 			//기분석 사전
-			int skipIdx = this.lookupFwd(jasoUnits,i);
+			int skipIdx = this.lookupFwd(context, jasoUnits,i);
 			if(skipIdx != -1){
 				i = skipIdx-1;
 				continue;
@@ -91,37 +79,37 @@ public class Komoran implements Cloneable{
 
 			//띄어쓰기인 경우
 			if(jasoUnits.charAt(i) == ' '){
-				this.consumeContiniousSymbolParserBuffer(i);
-				this.bridgeToken(i,jasoUnits,prevStartIdx);
+				this.consumeContiniousSymbolParserBuffer(context, i);
+				this.bridgeToken(context, i,jasoUnits,prevStartIdx);
 				prevStartIdx = i+1;
 			}
 
-			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
-			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
-			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
+			this.continiousSymbolParsing(context, jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
+			this.symbolParsing(context, jasoUnits.charAt(i),i); // 기타 심볼 파싱
+			this.userDicParsing(context, jasoUnits.charAt(i),i); //사용자 사전 적용
 
-			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
-			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
-			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
+			this.regularParsing(context, jasoUnits.charAt(i),i); //일반규칙 파싱
+			this.irregularParsing(context, jasoUnits.charAt(i),i); //불규칙 파싱
+			this.irregularExtends(context, jasoUnits.charAt(i),i); //불규칙 확장
 
 		}
 
-		this.consumeContiniousSymbolParserBuffer(jasoUnits);
-		this.lattice.setLastIdx(jasoUnits.length());
-		inserted = this.lattice.appendEndNode();
+		this.consumeContiniousSymbolParserBuffer(context, jasoUnits);
+		context.getLattice().setLastIdx(jasoUnits.length());
+		inserted = context.getLattice().appendEndNode();
 		//입력 문장의 끝에 END 품사가 올 수 없는 경우
 		if(!inserted){
 			double NAPenaltyScore = SCORE.NA;
 			if(prevStartIdx != 0){
-				NAPenaltyScore += this.lattice.getNodeList(prevStartIdx).get(0).getScore();
+				NAPenaltyScore += context.getLattice().getNodeList(prevStartIdx).get(0).getScore();
 			}
 			LatticeNode latticeNode = new LatticeNode(prevStartIdx,jasoUnits.length(),new MorphTag(jasoUnits.substring(prevStartIdx, jasoUnits.length()), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)),NAPenaltyScore);
 			latticeNode.setPrevNodeIdx(0);
-			this.lattice.appendNode(latticeNode);
-			this.lattice.appendEndNode();
+			context.getLattice().appendNode(latticeNode);
+			context.getLattice().appendEndNode();
 		}
 
-		List<LatticeNode> shortestPathList = this.lattice.findPath();
+		List<LatticeNode> shortestPathList = context.getLattice().findPath();
 
 		//미분석인 경우
 		if(shortestPathList == null){
@@ -134,22 +122,22 @@ public class Komoran implements Cloneable{
 		return new KomoranResult(resultList,jasoUnits);
 	}
 
-	private void bridgeToken(int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
+	private void bridgeToken(AnalyzeContext context, int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
 
 
-		if (this.lattice.put(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0)) {
+		if (context.getLattice().put(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0)) {
 			return;
 		}
 
 		//공백이라면 END 기호를 삽입
-		LatticeNode naLatticeNode = this.lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
+		LatticeNode naLatticeNode = context.getLattice().makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
 
-		int naNodeIndex = this.lattice.appendNode(naLatticeNode);
-		LatticeNode endLatticeNode = this.lattice.makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
-		this.lattice.appendNode(endLatticeNode);
+		int naNodeIndex = context.getLattice().appendNode(naLatticeNode);
+		LatticeNode endLatticeNode = context.getLattice().makeNode(curIdx, curIdx+1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
+		context.getLattice().appendNode(endLatticeNode);
 	}
 
-	private boolean symbolParsing(char jaso, int idx) {
+	private boolean symbolParsing(AnalyzeContext context, char jaso, int idx) {
 
 		Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(jaso);
 		//숫자
@@ -169,7 +157,7 @@ public class Komoran implements Cloneable{
 			}
 			//아스키 코드 범위 내에 사전에 없는 경우에는 기타 문자
 			else{
-				this.lattice.put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
+				context.getLattice().put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
 				return true;
 			}
 		}
@@ -196,14 +184,14 @@ public class Komoran implements Cloneable{
 		}
 		//그 외 문자인 경우
 		else{
-			this.lattice.put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
+			context.getLattice().put(idx, idx+1, ""+jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
 			return true;
 		}
 	}
 
-	private boolean userDicParsing(char jaso, int curIndex) {
+	private boolean userDicParsing(AnalyzeContext context, char jaso, int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
-		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagMapFromUserDic(jaso);
+		Map<String, List<ScoredTag>> morphScoredTagsMap = context.getMorphScoredTagMapFromUserDic(jaso);
 
 		if(morphScoredTagsMap == null){
 			return false;
@@ -220,7 +208,7 @@ public class Komoran implements Cloneable{
 			//형태소에 대한 품사 및 점수(observation) 정보를 List 형태로 가져옴
 			List<ScoredTag> scoredTags = morphScoredTagsMap.get(morph);
 			for (ScoredTag scoredTag : scoredTags) {
-				this.insertLattice(beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
+				this.insertLattice(context, beginIdx,endIdx,morph,scoredTag,scoredTag.getScore());
 			}
 		}
 		return true;
@@ -229,7 +217,7 @@ public class Komoran implements Cloneable{
 	//TO DO
 	//기분석 사전을 어떻게 적용할 것인가....
 	//Lucene에서 활용할 때 인덱스 정보를 어떻게 keep 할 것인가..
-	private int lookupFwd(String token,int curIdx) {
+	private int lookupFwd(AnalyzeContext context, String token,int curIdx) {
 
 		if(this.fwd == null){
 			return -1;
@@ -245,19 +233,19 @@ public class Komoran implements Cloneable{
 			List<Pair<String,String>> fwdResultList = this.fwd.get(targetWord);
 
 			if(fwdResultList != null){
-				this.insertLatticeForFwd(curIdx, wordEndIdx, fwdResultList);
+				this.insertLatticeForFwd(context, curIdx, wordEndIdx, fwdResultList);
 				return wordEndIdx;
 			}
 		}
 		return -1;
 	}
 
-	private void insertLatticeForFwd(int beginIdx, int endIdx,
+	private void insertLatticeForFwd(AnalyzeContext context, int beginIdx, int endIdx,
 									 List<Pair<String, String>> fwdResultList) {
-		this.lattice.put(beginIdx, endIdx, fwdResultList);
+		context.getLattice().put(beginIdx, endIdx, fwdResultList);
 	}
 
-	private void continiousSymbolParsing(char charAt, int i) {
+	private void continiousSymbolParsing(AnalyzeContext context, char charAt, int i) {
 		String curPos = "";
 		if(StringUtil.isEnglish(charAt)){
 			curPos = "SL";
@@ -269,62 +257,62 @@ public class Komoran implements Cloneable{
 			curPos = "SL";
 		}
 
-		if(curPos.equals(this.prevPos)){
-			this.prevMorph += charAt;
+		if(context.isPrevPos(curPos)){
+			context.appendPrevMorph(charAt);
 		}
 		else{
-			switch (this.prevPos) {
+			switch (context.getPrevPos()) {
 				case "SL":
-					this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SL);
+					context.putToLattice(i, SCORE.SL);
 					break;
 				case "SN":
-					this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
+					context.putToLattice(i, SCORE.SN);
 					break;
 				case "SH":
-					this.lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SH);
+					context.putToLattice(i, SCORE.SH);
 					break;
 			}
 
-			this.prevBeginIdx = i;
-			this.prevMorph = ""+charAt;
-			this.prevPos = curPos;
+			context.updatePrevBeginIdx(i);
+			context.updatePrevMorph(String.valueOf(charAt));
+			context.updatePrevPos(curPos);
 		}
 	}
 
-	private void consumeContiniousSymbolParserBuffer(String in) {
-		if(this.prevPos.trim().length() != 0){
-			switch (this.prevPos) {
+	private void consumeContiniousSymbolParserBuffer(AnalyzeContext context, String in) {
+		if(!context.isPrevPosEmpty()){
+			switch (context.getPrevPos()) {
 				case "SL":
-					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SL);
+					context.putToLattice(in.length(), SCORE.SL);
 					break;
 				case "SH":
-					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SH);
+					context.putToLattice(in.length(), SCORE.SH);
 					break;
 				case "SN":
-					this.lattice.put(this.prevBeginIdx, in.length(), this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
-					break;
-			}
-		}
-	}
-
-	private void consumeContiniousSymbolParserBuffer(int endIdx) {
-		if(this.prevPos.trim().length() != 0){
-			switch (this.prevPos) {
-				case "SL":
-					this.lattice.put(this.prevBeginIdx, endIdx, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SL);
-					break;
-				case "SH":
-					this.lattice.put(this.prevBeginIdx, endIdx, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SH);
-					break;
-				case "SN":
-					this.lattice.put(this.prevBeginIdx, endIdx, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);
+					context.putToLattice(in.length(), SCORE.SN);
 					break;
 			}
 		}
 	}
 
-	private void irregularExtends(char jaso, int curIndex) {
-		List<LatticeNode> prevLatticeNodes = this.lattice.getNodeList(curIndex);
+	private void consumeContiniousSymbolParserBuffer(AnalyzeContext context, int endIdx) {
+		if(!context.isPrevPosEmpty()){
+			switch (context.getPrevPos()) {
+				case "SL":
+					context.putToLattice(endIdx, SCORE.SL);
+					break;
+				case "SH":
+					context.putToLattice(endIdx, SCORE.SH);
+					break;
+				case "SN":
+					context.putToLattice(endIdx, SCORE.SN);
+					break;
+			}
+		}
+	}
+
+	private void irregularExtends(AnalyzeContext context, char jaso, int curIndex) {
+		List<LatticeNode> prevLatticeNodes = context.getLattice().getNodeList(curIndex);
 		if(prevLatticeNodes != null){
 			Set<LatticeNode> extendedIrrNodeList = new HashSet<>();
 
@@ -352,21 +340,21 @@ public class Komoran implements Cloneable{
 
 					//얻어온 점수를 토대로 lattice에 넣음
 					for (ScoredTag scoredTag : lastScoredTags) {
-						this.lattice.put(prevLatticeNode.getBeginIdx(), curIndex+1, prevLatticeNode.getMorphTag().getMorph()+jaso,
+						context.getLattice().put(prevLatticeNode.getBeginIdx(), curIndex+1, prevLatticeNode.getMorphTag().getMorph()+jaso,
 								scoredTag.getTag(), scoredTag.getTagId(),scoredTag.getScore());
 					}
 				}
 			}
 			for (LatticeNode extendedIrrNode : extendedIrrNodeList) {
-				this.lattice.appendNode(extendedIrrNode);
+				context.getLattice().appendNode(extendedIrrNode);
 			}
 
 		}
 	}
 
-	private boolean irregularParsing(char jaso, int curIndex) {
+	private boolean irregularParsing(AnalyzeContext context, char jaso, int curIndex) {
 		//불규칙 노드들을 얻어옴
-		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(jaso);
+		Map<String,List<IrregularNode>> morphIrrNodesMap = context.getIrregularNodes(jaso);
 		if(morphIrrNodesMap == null){
 			return false;
 		}
@@ -378,21 +366,16 @@ public class Komoran implements Cloneable{
 			int beginIdx = curIndex-morph.length()+1;
 			int endIdx = curIndex+1;
 			for (IrregularNode irregularNode : irrNodes) {
-				this.insertLattice(beginIdx, endIdx, irregularNode);
+				context.getLattice().put(beginIdx, endIdx, irregularNode);
 			}
 		}
 
 		return true;
 	}
 
-	private void insertLattice(int beginIdx, int endIdx,
-							   IrregularNode irregularNode) {
-		this.lattice.put(beginIdx, endIdx, irregularNode);
-	}
-
-	private void regularParsing(char jaso,int curIndex) {
+	private void regularParsing(AnalyzeContext context, char jaso,int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
-		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagsMap(jaso);
+		Map<String, List<ScoredTag>> morphScoredTagsMap = context.getMorphScoredTagsMap(jaso);
 
 		if(morphScoredTagsMap == null){
 			return;
@@ -409,37 +392,23 @@ public class Komoran implements Cloneable{
 			//형태소에 대한 품사 및 점수(observation) 정보를 List 형태로 가져옴
 			List<ScoredTag> scoredTags = morphScoredTagsMap.get(morph);
 			for (ScoredTag scoredTag : scoredTags) {
-				this.lattice.put(beginIdx,endIdx,morph,scoredTag.getTag(),scoredTag.getTagId(),scoredTag.getScore());
+				context.getLattice().put(beginIdx,endIdx,morph,scoredTag.getTag(),scoredTag.getTagId(),scoredTag.getScore());
 				//품사가 EC인 경우에 품사를 EF로 변환하여 lattice에 추가
 				if(scoredTag.getTag().equals(SYMBOL.EC)){
-					this.lattice.put(beginIdx,endIdx,morph,SYMBOL.EF,this.resources.getTable().getId(SYMBOL.EF),scoredTag.getScore());
+					context.getLattice().put(beginIdx,endIdx,morph,SYMBOL.EF,this.resources.getTable().getId(SYMBOL.EF),scoredTag.getScore());
 				}
 			}
 		}
 	}
 
-	private Map<String, List<IrregularNode>> getIrregularNodes(char jaso) {
-		return this.resources.getIrrTrie().getTrieDictionary().get(jaso);
-	}
-
-	private void insertLattice(int beginIdx, int endIdx, String morph,
+	private void insertLattice(AnalyzeContext context, int beginIdx, int endIdx, String morph,
 							   Tag tag, double score) {
-		this.lattice.put(beginIdx,endIdx,morph,tag.getTag(),tag.getTagId(),score);
+		context.getLattice().put(beginIdx,endIdx,morph,tag.getTag(),tag.getTagId(),score);
 	}
 
 	private Set<String> getMorphes(
 			Map<String, List<ScoredTag>> morphScoredTagMap) {
 		return morphScoredTagMap.keySet();
-	}
-
-	private Map<String, List<ScoredTag>> getMorphScoredTagsMap(char jaso) {
-		return this.resources.getObservation().getTrieDictionary().get(jaso);
-	}
-	private Map<String, List<ScoredTag>> getMorphScoredTagMapFromUserDic(char jaso){
-		if(this.userDic == null){
-			return null;
-		}
-		return this.userDic.getTrieDictionary().get(jaso);
 	}
 
 	public void load(String modelPath){
