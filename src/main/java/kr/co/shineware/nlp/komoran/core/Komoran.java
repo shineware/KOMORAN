@@ -52,16 +52,22 @@ public class Komoran implements Cloneable{
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public KomoranResult analyze(String sentence){
+	public AnalyzeContext newContext() {
+		return new AnalyzeContext(resources, unitParser, userDic);
+	}
 
-		sentence = sentence.replaceAll("[ ]+"," ").trim();
+	public KomoranResult analyze(final String originalSentence) {
+		return analyze(newContext(), originalSentence);
+	}
+
+	public KomoranResult analyze(final AnalyzeContext context, final String originalSentence) {
+
+		final String sentence = originalSentence.replaceAll("[ ]+"," ").trim();
 
 		List<LatticeNode> resultList = new ArrayList<>();
 
 		//자소 단위로 분할
 		String jasoUnits = unitParser.parse(sentence);
-
-		final AnalyzeContext context = new AnalyzeContext(resources, unitParser, userDic);
 
 		int length = jasoUnits.length();
 		//start 노드 또는 end 노드의 바로 다음 인덱스

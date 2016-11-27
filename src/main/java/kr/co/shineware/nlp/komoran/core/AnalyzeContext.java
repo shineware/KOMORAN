@@ -104,7 +104,7 @@ public class AnalyzeContext {
 	}
 
 	public Map<String, List<ScoredTag>> getMorphScoredTagMapFromUserDic(final char jaso) {
-		if(this.userDic == null){
+		if (this.userDic == null) {
 			return null;
 		}
 		return this.userDic.getTrieDictionary().get(userDicFindCtx, jaso);
