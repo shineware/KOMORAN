@@ -13,8 +13,8 @@ import static org.junit.Assert.assertEquals;
 
 public class KomoranConcurrencyTest {
 
-	private static final int THREAD_NUM = 8;
-	private static final int QUERY_NUM = 100000;
+	private static final int THREAD_NUM = 4;
+	private static final int QUERY_NUM = 10000;
 	private static final String QUERY_TEXT = "바람과 함께 사라지다는 진짜 재밌었어요!";
 
 	private static Komoran komoran;
