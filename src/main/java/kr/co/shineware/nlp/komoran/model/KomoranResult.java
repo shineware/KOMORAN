@@ -9,7 +9,7 @@ import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
 
 
-public class KomoranResult{
+public class KomoranResult {
 
 	private List<LatticeNode> resultNodeList;
 	private String jasoUnits;
@@ -89,5 +89,19 @@ public class KomoranResult{
 			resultList.add(new Pair<>(parser.combine(latticeNode.getMorph()),latticeNode.getTag()));
 		}
 		return resultList;
-	} 
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (o instanceof KomoranResult) {
+			KomoranResult that = (KomoranResult) o;
+			return getPlainText().equals(that.getPlainText());
+		}
+
+		return false;
+	}
 }
