@@ -14,6 +14,17 @@ When importing on Eclipse IDE without gradle, type in commands below in console(
 ./gradlew eclipse
 ```
 
+# Citation
+```markdown
+@misc{komoran,
+author = {Junsoo Shin},
+title = {komoran},
+publisher = {GitHub},
+journal = {GitHub repository},
+howpublished = {\url{https://github.com/shin285/KOMORAN}}
+```
+
+
 # Usage
 
 ### For analyzing
