@@ -23,15 +23,35 @@ import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class KomoranTest {
 
 	private Komoran komoran;
+
 	@Before
 	public void init() throws Exception {
 		this.komoran = new Komoran("models_full");
 	}
+
+	@Test
+	public void threadSafeTest() throws ExecutionException, InterruptedException {
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		List<CallableImpl> invokeTargetList = new ArrayList<>();
+		for(int i=0;i<100;i++) {
+			invokeTargetList.add(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i));
+		}
+		List<Future<String>> futureList = executorService.invokeAll(invokeTargetList);
+		for (Future<String> stringFuture : futureList) {
+			System.out.println(stringFuture.get());
+		}
+	}
+
 	@Test
 	public void analyze() throws Exception {
 		KomoranResult komoranResult = this.komoran.analyze("자주 걸렸던 병이다");
@@ -70,4 +90,21 @@ public class KomoranTest {
 		System.out.println(this.komoran.analyze("싸이는 가수다").getPlainText());
 	}
 
+	private class CallableImpl implements java.util.concurrent.Callable<String>{
+
+		private final Komoran komoran;
+		private final String in;
+		private final int threadId;
+
+		public CallableImpl(Komoran komoran, String in, int i) {
+			this.komoran = komoran;
+			this.threadId = i;
+			this.in = in;
+		}
+
+		@Override
+		public String call() throws Exception {
+			return threadId+":"+komoran.analyze(in).getPlainText();
+		}
+	}
 }

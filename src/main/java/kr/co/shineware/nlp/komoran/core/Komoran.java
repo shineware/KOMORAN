@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
+import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.core.model.Lattice;
@@ -51,6 +52,9 @@ public class Komoran implements Cloneable{
 	private String prevPos;
 	private String prevMorph;
 	private int prevBeginIdx;
+	private FindContext<List<ScoredTag>> observationFindContext;
+	private FindContext<List<IrregularNode>> irregularFindContext;
+	private FindContext<List<ScoredTag>> userDicFindContext;
 
 	public Komoran(String modelPath){
 		this.resources = new Resources();
@@ -59,6 +63,10 @@ public class Komoran implements Cloneable{
 	}
 
 	public synchronized KomoranResult analyze(String sentence){
+
+		this.observationFindContext = this.resources.getObservation().getTrieDictionary().newFindContext();
+
+		this.irregularFindContext = this.resources.getIrrTrie().getTrieDictionary().newFindContext();
 
 		sentence = sentence.replaceAll("[ ]+"," ").trim();
 
@@ -419,7 +427,7 @@ public class Komoran implements Cloneable{
 	}
 
 	private Map<String, List<IrregularNode>> getIrregularNodes(char jaso) {
-		return this.resources.getIrrTrie().getTrieDictionary().get(jaso);
+		return this.resources.getIrrTrie().getTrieDictionary().get(this.irregularFindContext,jaso);
 	}
 
 	private void insertLattice(int beginIdx, int endIdx, String morph,
@@ -433,13 +441,13 @@ public class Komoran implements Cloneable{
 	}
 
 	private Map<String, List<ScoredTag>> getMorphScoredTagsMap(char jaso) {
-		return this.resources.getObservation().getTrieDictionary().get(jaso);
+		return this.resources.getObservation().getTrieDictionary().get(this.observationFindContext,jaso);
 	}
 	private Map<String, List<ScoredTag>> getMorphScoredTagMapFromUserDic(char jaso){
 		if(this.userDic == null){
 			return null;
 		}
-		return this.userDic.getTrieDictionary().get(jaso);
+		return this.userDic.getTrieDictionary().get(this.userDicFindContext,jaso);
 	}
 
 	public void load(String modelPath){
@@ -486,6 +494,7 @@ public class Komoran implements Cloneable{
 
 	public void setUserDic(String userDic) {
 		try {
+
 			this.userDic = new Observation();
 			BufferedReader br = new BufferedReader(new FileReader(userDic));
 			String line = null;
@@ -516,6 +525,7 @@ public class Komoran implements Cloneable{
 			br = null;
 			line = null;
 			this.userDic.getTrieDictionary().buildFailLink();
+			this.userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
