@@ -43,10 +43,15 @@ public class KomoranTest {
 	public void threadSafeTest() throws ExecutionException, InterruptedException {
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 		List<CallableImpl> invokeTargetList = new ArrayList<>();
+		List<Future<String>> futureList = new ArrayList<>();
 		for(int i=0;i<100;i++) {
-			invokeTargetList.add(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i));
+			futureList.add(executorService.submit(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i)));
 		}
-		List<Future<String>> futureList = executorService.invokeAll(invokeTargetList);
+
+		for(int i=0;i<futureList.size();i++){
+			System.out.println(futureList.get(i).get());
+		}
+
 		for (Future<String> stringFuture : futureList) {
 			System.out.println(stringFuture.get());
 		}

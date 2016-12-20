@@ -52,9 +52,7 @@ public class Komoran implements Cloneable{
 	private String prevPos;
 	private String prevMorph;
 	private int prevBeginIdx;
-	private FindContext<List<ScoredTag>> observationFindContext;
-	private FindContext<List<IrregularNode>> irregularFindContext;
-	private FindContext<List<ScoredTag>> userDicFindContext;
+
 
 	public Komoran(String modelPath){
 		this.resources = new Resources();
@@ -62,11 +60,15 @@ public class Komoran implements Cloneable{
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public synchronized KomoranResult analyze(String sentence){
+	public KomoranResult analyze(String sentence){
 
-		this.observationFindContext = this.resources.getObservation().getTrieDictionary().newFindContext();
+		FindContext<List<ScoredTag>> observationFindContext;
+		FindContext<List<IrregularNode>> irregularFindContext;
+		FindContext<List<ScoredTag>> userDicFindContext = null;
 
-		this.irregularFindContext = this.resources.getIrrTrie().getTrieDictionary().newFindContext();
+		observationFindContext = this.resources.getObservation().getTrieDictionary().newFindContext();
+
+		irregularFindContext = this.resources.getIrrTrie().getTrieDictionary().newFindContext();
 
 		sentence = sentence.replaceAll("[ ]+"," ").trim();
 
@@ -106,10 +108,10 @@ public class Komoran implements Cloneable{
 
 			this.continiousSymbolParsing(jasoUnits.charAt(i),i); //숫자, 영어, 외래어 파싱
 			this.symbolParsing(jasoUnits.charAt(i),i); // 기타 심볼 파싱
-			this.userDicParsing(jasoUnits.charAt(i),i); //사용자 사전 적용
+			this.userDicParsing(userDicFindContext,jasoUnits.charAt(i),i); //사용자 사전 적용
 
-			this.regularParsing(jasoUnits.charAt(i),i); //일반규칙 파싱
-			this.irregularParsing(jasoUnits.charAt(i),i); //불규칙 파싱
+			this.regularParsing(observationFindContext,jasoUnits.charAt(i),i); //일반규칙 파싱
+			this.irregularParsing(irregularFindContext,jasoUnits.charAt(i),i); //불규칙 파싱
 			this.irregularExtends(jasoUnits.charAt(i),i); //불규칙 확장
 
 		}
@@ -209,9 +211,9 @@ public class Komoran implements Cloneable{
 		}
 	}
 
-	private boolean userDicParsing(char jaso, int curIndex) {
+	private boolean userDicParsing(FindContext<List<ScoredTag>> userDicFindContext, char jaso, int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
-		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagMapFromUserDic(jaso);
+		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagMapFromUserDic(userDicFindContext,jaso);
 
 		if(morphScoredTagsMap == null){
 			return false;
@@ -372,9 +374,9 @@ public class Komoran implements Cloneable{
 		}
 	}
 
-	private boolean irregularParsing(char jaso, int curIndex) {
+	private boolean irregularParsing(FindContext<List<IrregularNode>> irregularFindContext, char jaso, int curIndex) {
 		//불규칙 노드들을 얻어옴
-		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(jaso);
+		Map<String,List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(irregularFindContext,jaso);
 		if(morphIrrNodesMap == null){
 			return false;
 		}
@@ -398,9 +400,9 @@ public class Komoran implements Cloneable{
 		this.lattice.put(beginIdx, endIdx, irregularNode);
 	}
 
-	private void regularParsing(char jaso,int curIndex) {
+	private void regularParsing(FindContext<List<ScoredTag>> observationFindContext, char jaso, int curIndex) {
 		//TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
-		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagsMap(jaso);
+		Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagsMap(observationFindContext,jaso);
 
 		if(morphScoredTagsMap == null){
 			return;
@@ -426,8 +428,8 @@ public class Komoran implements Cloneable{
 		}
 	}
 
-	private Map<String, List<IrregularNode>> getIrregularNodes(char jaso) {
-		return this.resources.getIrrTrie().getTrieDictionary().get(this.irregularFindContext,jaso);
+	private Map<String, List<IrregularNode>> getIrregularNodes(FindContext<List<IrregularNode>> irregularFindContext, char jaso) {
+		return this.resources.getIrrTrie().getTrieDictionary().get(irregularFindContext,jaso);
 	}
 
 	private void insertLattice(int beginIdx, int endIdx, String morph,
@@ -440,14 +442,17 @@ public class Komoran implements Cloneable{
 		return morphScoredTagMap.keySet();
 	}
 
-	private Map<String, List<ScoredTag>> getMorphScoredTagsMap(char jaso) {
-		return this.resources.getObservation().getTrieDictionary().get(this.observationFindContext,jaso);
+	private Map<String, List<ScoredTag>> getMorphScoredTagsMap(FindContext<List<ScoredTag>> observationFindContext, char jaso) {
+		return this.resources.getObservation().getTrieDictionary().get(observationFindContext,jaso);
 	}
-	private Map<String, List<ScoredTag>> getMorphScoredTagMapFromUserDic(char jaso){
+	private Map<String, List<ScoredTag>> getMorphScoredTagMapFromUserDic(FindContext<List<ScoredTag>> userDicFindContext, char jaso){
 		if(this.userDic == null){
 			return null;
 		}
-		return this.userDic.getTrieDictionary().get(this.userDicFindContext,jaso);
+		if(userDicFindContext == null){
+			userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
+		}
+		return this.userDic.getTrieDictionary().get(userDicFindContext,jaso);
 	}
 
 	public void load(String modelPath){
@@ -525,7 +530,7 @@ public class Komoran implements Cloneable{
 			br = null;
 			line = null;
 			this.userDic.getTrieDictionary().buildFailLink();
-			this.userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
+//			this.userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
