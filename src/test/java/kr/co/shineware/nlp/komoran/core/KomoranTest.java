@@ -19,6 +19,7 @@ package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,19 +42,33 @@ public class KomoranTest {
 
 	@Test
 	public void threadSafeTest() throws ExecutionException, InterruptedException {
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		List<String> lines = FileUtil.load2List("title.txt");
+
+
 		List<CallableImpl> invokeTargetList = new ArrayList<>();
 		List<Future<String>> futureList = new ArrayList<>();
-		for(int i=0;i<100;i++) {
-			futureList.add(executorService.submit(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i)));
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		for(int k=0;k<100000;k++) {
+			long b = System.currentTimeMillis();
+			for (int i = 0; i < lines.size(); i++) {
+				String line = lines.get(i).trim();
+				executorService.submit(new CallableImpl(komoran, line, i)).get();
+			}
+
+			long e = System.currentTimeMillis();
+			System.out.println(e - b);
 		}
+
+		for(int i=0;i<100;i++){
+//			futureList.add(executorService.submit(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i)));
+		}
+
+		System.out.println("add done");
+
+//		futureList = executorService.invokeAll(invokeTargetList);
 
 		for(int i=0;i<futureList.size();i++){
 			System.out.println(futureList.get(i).get());
-		}
-
-		for (Future<String> stringFuture : futureList) {
-			System.out.println(stringFuture.get());
 		}
 	}
 
@@ -109,7 +124,8 @@ public class KomoranTest {
 
 		@Override
 		public String call() throws Exception {
-			return threadId+":"+komoran.analyze(in).getPlainText();
+			return threadId+":"+this.in+"->"+komoran.analyze(in).getPlainText();
 		}
 	}
+
 }
