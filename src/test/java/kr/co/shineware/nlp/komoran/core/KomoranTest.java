@@ -19,6 +19,7 @@ package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,14 +42,21 @@ public class KomoranTest {
 
 	@Test
 	public void threadSafeTest() throws ExecutionException, InterruptedException {
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		List<String> lines = FileUtil.load2List("title.txt");
+
+
 		List<CallableImpl> invokeTargetList = new ArrayList<>();
-		for(int i=0;i<100;i++) {
-			invokeTargetList.add(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i));
-		}
-		List<Future<String>> futureList = executorService.invokeAll(invokeTargetList);
-		for (Future<String> stringFuture : futureList) {
-			System.out.println(stringFuture.get());
+		List<Future<String>> futureList = new ArrayList<>();
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		for(int k=0;k<100000;k++) {
+			long b = System.currentTimeMillis();
+			for (int i = 0; i < lines.size(); i++) {
+				String line = lines.get(i).trim();
+				executorService.submit(new CallableImpl(this.komoran, line, i)).get();
+			}
+
+			long e = System.currentTimeMillis();
+			System.out.println(e - b);
 		}
 	}
 
@@ -88,6 +96,10 @@ public class KomoranTest {
 	public void setUserDic() throws Exception {
 		this.komoran.setUserDic("user_data/dic.user");
 		System.out.println(this.komoran.analyze("싸이는 가수다").getPlainText());
+		System.out.println(this.komoran.analyze("센트롤이").getPlainText());
+		System.out.println(this.komoran.analyze("센트롤이").getTokenList());
+		System.out.println(this.komoran.analyze("감싼").getTokenList());
+		System.out.println(this.komoran.analyze("싸").getTokenList());
 	}
 
 	private class CallableImpl implements java.util.concurrent.Callable<String>{
@@ -104,7 +116,8 @@ public class KomoranTest {
 
 		@Override
 		public String call() throws Exception {
-			return threadId+":"+komoran.analyze(in).getPlainText();
+			return threadId+":"+this.in+"->"+komoran.analyze(in).getTokenList();
 		}
 	}
+
 }
