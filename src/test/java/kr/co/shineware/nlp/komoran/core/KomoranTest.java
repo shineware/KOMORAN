@@ -52,23 +52,11 @@ public class KomoranTest {
 			long b = System.currentTimeMillis();
 			for (int i = 0; i < lines.size(); i++) {
 				String line = lines.get(i).trim();
-				executorService.submit(new CallableImpl(komoran, line, i)).get();
+				executorService.submit(new CallableImpl(this.komoran, line, i)).get();
 			}
 
 			long e = System.currentTimeMillis();
 			System.out.println(e - b);
-		}
-
-		for(int i=0;i<100;i++){
-//			futureList.add(executorService.submit(new CallableImpl(komoran, "감기는 자주 걸리는 병이다.",i)));
-		}
-
-		System.out.println("add done");
-
-//		futureList = executorService.invokeAll(invokeTargetList);
-
-		for(int i=0;i<futureList.size();i++){
-			System.out.println(futureList.get(i).get());
 		}
 	}
 
@@ -108,6 +96,10 @@ public class KomoranTest {
 	public void setUserDic() throws Exception {
 		this.komoran.setUserDic("user_data/dic.user");
 		System.out.println(this.komoran.analyze("싸이는 가수다").getPlainText());
+		System.out.println(this.komoran.analyze("센트롤이").getPlainText());
+		System.out.println(this.komoran.analyze("센트롤이").getTokenList());
+		System.out.println(this.komoran.analyze("감싼").getTokenList());
+		System.out.println(this.komoran.analyze("싸").getTokenList());
 	}
 
 	private class CallableImpl implements java.util.concurrent.Callable<String>{
@@ -124,7 +116,7 @@ public class KomoranTest {
 
 		@Override
 		public String call() throws Exception {
-			return threadId+":"+this.in+"->"+komoran.analyze(in).getPlainText();
+			return threadId+":"+this.in+"->"+komoran.analyze(in).getTokenList();
 		}
 	}
 

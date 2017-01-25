@@ -72,8 +72,9 @@ public class Komoran implements Cloneable{
 		observationFindContext = this.resources.getObservation().getTrieDictionary().newFindContext();
 
 		irregularFindContext = this.resources.getIrrTrie().getTrieDictionary().newFindContext();
-
-		userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
+		if(this.userDic != null) {
+			userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
+		}
 
 		sentence = sentence.replaceAll("[ ]+"," ").trim();
 
