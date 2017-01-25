@@ -19,19 +19,47 @@ package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class KomoranTest {
 
 	private Komoran komoran;
+
 	@Before
 	public void init() throws Exception {
 		this.komoran = new Komoran("models_full");
 	}
+
+	@Test
+	public void threadSafeTest() throws ExecutionException, InterruptedException {
+		List<String> lines = FileUtil.load2List("title.txt");
+
+
+		List<CallableImpl> invokeTargetList = new ArrayList<>();
+		List<Future<String>> futureList = new ArrayList<>();
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		for(int k=0;k<100000;k++) {
+			long b = System.currentTimeMillis();
+			for (int i = 0; i < lines.size(); i++) {
+				String line = lines.get(i).trim();
+				executorService.submit(new CallableImpl(this.komoran, line, i)).get();
+			}
+
+			long e = System.currentTimeMillis();
+			System.out.println(e - b);
+		}
+	}
+
 	@Test
 	public void analyze() throws Exception {
 		KomoranResult komoranResult = this.komoran.analyze("자주 걸렸던 병이다");
@@ -68,6 +96,28 @@ public class KomoranTest {
 	public void setUserDic() throws Exception {
 		this.komoran.setUserDic("user_data/dic.user");
 		System.out.println(this.komoran.analyze("싸이는 가수다").getPlainText());
+		System.out.println(this.komoran.analyze("센트롤이").getPlainText());
+		System.out.println(this.komoran.analyze("센트롤이").getTokenList());
+		System.out.println(this.komoran.analyze("감싼").getTokenList());
+		System.out.println(this.komoran.analyze("싸").getTokenList());
+	}
+
+	private class CallableImpl implements java.util.concurrent.Callable<String>{
+
+		private final Komoran komoran;
+		private final String in;
+		private final int threadId;
+
+		public CallableImpl(Komoran komoran, String in, int i) {
+			this.komoran = komoran;
+			this.threadId = i;
+			this.in = in;
+		}
+
+		@Override
+		public String call() throws Exception {
+			return threadId+":"+this.in+"->"+komoran.analyze(in).getTokenList();
+		}
 	}
 
 }
