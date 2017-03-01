@@ -55,8 +55,7 @@ public class KomoranResult{
 				latticeNode.setBeginIdx(prevBeginIdx);
 			}
 			Pair<Integer,Integer> syllableArea = this.getSyllableArea(latticeNode.getBeginIdx(), latticeNode.getEndIdx(),syllableAreaList);
-//			tokenList.add(new Token(latticeNode.getMorph(), 
-//					latticeNode.getTag(), latticeNode.getBeginIdx(), latticeNode.getEndIdx()));
+
 			tokenList.add(new Token(parser.combine(latticeNode.getMorph()), 
 					parser.combine(latticeNode.getTag()), syllableArea.getFirst(), syllableArea.getSecond()));
 			
@@ -68,30 +67,14 @@ public class KomoranResult{
 	private Pair<Integer, Integer> getSyllableArea(int jasoBeginIdx, int jasoEndIdx,
 			List<Pair<Integer, Integer>> syllableAreaList) {
 		Pair<Integer,Integer> syllableAreaPair = new Pair<Integer, Integer>();
-		for(int i=0;i<syllableAreaList.size();i++){
+		for(int i=0;i<syllableAreaList.size();i++) {
 
-			if(syllableAreaList.get(i).getFirst()<=jasoBeginIdx && jasoBeginIdx<=syllableAreaList.get(i).getSecond()){
+			if (syllableAreaList.get(i).getFirst() <= jasoBeginIdx && jasoBeginIdx <= syllableAreaList.get(i).getSecond()) {
 				syllableAreaPair.setFirst(i);
 			}
-			if(syllableAreaList.get(i).getFirst()<=jasoEndIdx && jasoEndIdx<=syllableAreaList.get(i).getSecond()){
-				syllableAreaPair.setSecond(i+1);
+			if (syllableAreaList.get(i).getFirst() <= jasoEndIdx && jasoEndIdx <= syllableAreaList.get(i).getSecond()) {
+				syllableAreaPair.setSecond(i + 1);
 			}
-
-//			if(jasoBeginIdx >= syllableAreaList.get(i).getFirst()){
-//				syllableAreaPair.setFirst(i);
-//			}
-//
-//			if(jasoEndIdx >= syllableAreaList.get(i).getSecond()){
-//				syllableAreaPair.setSecond(i+1);
-//			}else if(jasoEndIdx <= syllableAreaList.get(i).getFirst()){
-//				syllableAreaPair.setSecond(i);
-//				break;
-//			}
-		}
-		//여기가 null 이라는건..한음절이 2개의 형태소로 표현되는 경우인데.
-		//그렇다면...?
-		if(syllableAreaPair.getSecond() == null){
-//			syllableAreaPair.setSecond(syllableAreaPair.getFirst()+1);
 		}
 		return syllableAreaPair;
 	}
