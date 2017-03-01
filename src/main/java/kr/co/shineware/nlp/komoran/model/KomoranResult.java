@@ -72,7 +72,7 @@ public class KomoranResult{
 			if (syllableAreaList.get(i).getFirst() <= jasoBeginIdx && jasoBeginIdx <= syllableAreaList.get(i).getSecond()) {
 				syllableAreaPair.setFirst(i);
 			}
-			if (syllableAreaList.get(i).getFirst() <= jasoEndIdx && jasoEndIdx <= syllableAreaList.get(i).getSecond()) {
+			if (syllableAreaList.get(i).getFirst() < jasoEndIdx && jasoEndIdx <= syllableAreaList.get(i).getSecond()) {
 				syllableAreaPair.setSecond(i + 1);
 			}
 		}

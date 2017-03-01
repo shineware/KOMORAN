@@ -101,6 +101,8 @@ public class KomoranTest {
 		System.out.println(this.komoran.analyze("감싼").getTokenList());
 		System.out.println(this.komoran.analyze("싸").getTokenList());
 		System.out.println(this.komoran.analyze("난").getTokenList());
+		System.out.println(this.komoran.analyze("밀리언 달러 베이비랑").getTokenList());
+		System.out.println(this.komoran.analyze("밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?").getTokenList());
 	}
 
 	private class CallableImpl implements java.util.concurrent.Callable<String>{
