@@ -19,17 +19,18 @@ package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class KomoranTest {
 
@@ -41,8 +42,96 @@ public class KomoranTest {
 	}
 
 	@Test
+	public void singleThreadSpeedTest() throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
+
+		List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+		List<KomoranResult> komoranList = new ArrayList<>();
+
+		long begin = System.currentTimeMillis();
+
+		int count = 0;
+
+		for (String line : lines) {
+
+			komoranList.add(this.komoran.analyze(line));
+			if(komoranList.size() == 1000){
+				for (KomoranResult komoranResult : komoranList) {
+					bw.write(komoranResult.getPlainText());
+					bw.newLine();
+				}
+				komoranList.clear();
+			}
+			count++;
+			if(count % 10000 == 0){
+				System.out.println(count);
+			}
+		}
+
+		for (KomoranResult komoranResult : komoranList) {
+			bw.write(komoranResult.getPlainText());
+			bw.newLine();
+		}
+
+		long end = System.currentTimeMillis();
+
+		bw.close();
+
+		System.out.println("Elapsed time : "+(end-begin));
+	}
+
+	@Test
+	public void multiThreadSpeedTest() throws ExecutionException, InterruptedException, IOException {
+
+		BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
+
+		List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+
+		long begin = System.currentTimeMillis();
+
+		List<Future<KomoranResult>> komoranList = new ArrayList<>();
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
+		int count = 0;
+
+		for (String line : lines) {
+			KomoranCallable komoranCallable = new KomoranCallable(this.komoran,line);
+			komoranList.add(executor.submit(komoranCallable));
+			if(komoranList.size() == 1000){
+				for (Future<KomoranResult> komoranResultFuture : komoranList) {
+					KomoranResult komoranResult = komoranResultFuture.get();
+					bw.write(komoranResult.getPlainText());
+					bw.newLine();
+				}
+				komoranList.clear();
+			}
+			count++;
+			if(count % 10000 == 0){
+				System.out.println(count);
+			}
+		}
+
+		for (Future<KomoranResult> komoranResultFuture : komoranList) {
+			KomoranResult komoranResult = komoranResultFuture.get();
+			bw.write(komoranResult.getPlainText());
+			bw.newLine();
+		}
+
+		long end = System.currentTimeMillis();
+
+		bw.close();
+
+		System.out.println("Elapsed time : "+(end-begin));
+	}
+
+	private void flush(List<Future<KomoranResult>> komoranList, String analyze) throws ExecutionException, InterruptedException {
+		for (Future<KomoranResult> komoranResultFuture : komoranList) {
+			KomoranResult komoranResult = komoranResultFuture.get();
+		}
+	}
+
+	@Test
 	public void threadSafeTest() throws ExecutionException, InterruptedException {
-		List<String> lines = FileUtil.load2List("title.txt");
+		List<String> lines = FileUtil.load2List("in.txt");
 
 
 		List<CallableImpl> invokeTargetList = new ArrayList<>();
