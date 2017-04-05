@@ -135,8 +135,8 @@ public class KomoranConsoleRunner {
 
 	private static void printUsage() {
 		System.out.println("[코모란 트레이닝 방법]");
-		System.out.println("\tjava -jar gnrsys_komoran.jar -train '학습 데이터가 포함된 폴더명' [-externalDic '학습 시 추가될 사전'] -model '학습 모델이 저장될 폴더명'");
+		System.out.println("\tjava -jar KOMORAN.jar -train '학습 데이터가 포함된 폴더명' [-externalDic '학습 시 추가될 사전'] -model '학습 모델이 저장될 폴더명'");
 		System.out.println("[코모란 파일 분석 방법]");
-		System.out.println("\tjava -jar gnrsys_komoran.jar -model '학습된 모델이 포함된 폴더명' [-userDic '사용사 사전 파일'] [-fwd '기분석 사전 파일'] -in '분석 대상 파일' -out '분석 결과 파일'");
+		System.out.println("\tjava -jar KOMORAN.jar -model '학습된 모델이 포함된 폴더명' [-userDic '사용사 사전 파일'] [-fwd '기분석 사전 파일'] -in '분석 대상 파일' -out '분석 결과 파일'");
 	}
 }
