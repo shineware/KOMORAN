@@ -33,13 +33,21 @@ import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.util.KomoranCallable;
+import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.Character.UnicodeBlock;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Komoran implements Cloneable{
 
@@ -61,6 +69,34 @@ public class Komoran implements Cloneable{
 		this.resources = new Resources();
 		this.load(modelPath);
 		this.unitParser = new KoreanUnitParser();
+	}
+
+	public void analyzeTextFile(String inputFilename, String outputFilename, int thread){
+
+		try {
+			List<String> lines = FileUtil.load2List(inputFilename);
+
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilename));
+			List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
+			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
+
+			for (String line : lines) {
+				KomoranCallable komoranCallable = new KomoranCallable(this,line);
+				komoranResultList.add(executor.submit(komoranCallable));
+			}
+
+			for (Future<KomoranResult> komoranResultFuture : komoranResultList) {
+				KomoranResult komoranResult = komoranResultFuture.get();
+				bw.write(komoranResult.getPlainText());
+				bw.newLine();
+			}
+			bw.close();
+			executor.shutdown();
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 
 	public KomoranResult analyze(String sentence){
@@ -298,8 +334,8 @@ public class Komoran implements Cloneable{
 							continuousSymbolInfo.getPrevMorph(),
 							continuousSymbolInfo.getPrevPos(),
 							this.resources.getTable().getId(continuousSymbolInfo.getPrevPos()),
-									SCORE.SL
-							);
+							SCORE.SL
+					);
 					break;
 				case "SN":
 //					lattice.put(this.prevBeginIdx, i, this.prevMorph, this.prevPos, this.resources.getTable().getId(this.prevPos), SCORE.SN);

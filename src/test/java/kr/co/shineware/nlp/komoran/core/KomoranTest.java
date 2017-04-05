@@ -55,7 +55,7 @@ public class KomoranTest {
 		for (String line : lines) {
 
 			komoranList.add(this.komoran.analyze(line));
-			if(komoranList.size() == 1000){
+			if (komoranList.size() == 1000) {
 				for (KomoranResult komoranResult : komoranList) {
 					bw.write(komoranResult.getPlainText());
 					bw.newLine();
@@ -63,7 +63,7 @@ public class KomoranTest {
 				komoranList.clear();
 			}
 			count++;
-			if(count % 10000 == 0){
+			if (count % 10000 == 0) {
 				System.out.println(count);
 			}
 		}
@@ -81,6 +81,16 @@ public class KomoranTest {
 	}
 
 	@Test
+	public void executorServiceTest() throws ExecutionException, InterruptedException, IOException {
+
+		long begin = System.currentTimeMillis();
+		this.komoran.analyzeTextFile("user_data/wiki.titles","analyze_result.txt",2);
+		long end = System.currentTimeMillis();
+
+		System.out.println("Elapsed time : "+(end-begin));
+	}
+
+	@Test
 	public void multiThreadSpeedTest() throws ExecutionException, InterruptedException, IOException {
 
 		BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
@@ -90,24 +100,13 @@ public class KomoranTest {
 		long begin = System.currentTimeMillis();
 
 		List<Future<KomoranResult>> komoranList = new ArrayList<>();
-		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
 		int count = 0;
+
 
 		for (String line : lines) {
 			KomoranCallable komoranCallable = new KomoranCallable(this.komoran,line);
 			komoranList.add(executor.submit(komoranCallable));
-			if(komoranList.size() == 1000){
-				for (Future<KomoranResult> komoranResultFuture : komoranList) {
-					KomoranResult komoranResult = komoranResultFuture.get();
-					bw.write(komoranResult.getPlainText());
-					bw.newLine();
-				}
-				komoranList.clear();
-			}
-			count++;
-			if(count % 10000 == 0){
-				System.out.println(count);
-			}
 		}
 
 		for (Future<KomoranResult> komoranResultFuture : komoranList) {
@@ -116,10 +115,11 @@ public class KomoranTest {
 			bw.newLine();
 		}
 
+
 		long end = System.currentTimeMillis();
 
 		bw.close();
-
+		executor.shutdown();
 		System.out.println("Elapsed time : "+(end-begin));
 	}
 
