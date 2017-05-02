@@ -56,7 +56,7 @@ public class Resources {
 		this.irrTrie = irrTrie;
 	}
 	
-	private void init(){
+	public void init(){
 		this.table = null;
 		this.observation = null;
 		this.transition = null;
@@ -76,6 +76,24 @@ public class Resources {
 		this.irrTrie.load(path+File.separator+FILENAME.IRREGULAR_MODEL);
 		
 		this.observation.getTrieDictionary().buildFailLink();
-		this.irrTrie.getTrieDictionary().buildFailLink();		
+		this.irrTrie.getTrieDictionary().buildFailLink();
+	}
+
+	public void loadPosTable(File file){
+		this.table.load(file);
+	}
+
+	public void loadObservation(File file){
+		this.observation.load(file);
+		this.observation.getTrieDictionary().buildFailLink();
+	}
+
+	public void loadTransition(File file){
+		this.transition.load(file);
+	}
+
+	public void loadIrregular(File file){
+		this.irrTrie.load(file);
+		this.irrTrie.getTrieDictionary().buildFailLink();
 	}
 }

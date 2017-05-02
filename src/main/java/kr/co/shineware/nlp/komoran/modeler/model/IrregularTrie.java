@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.modeler.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,5 +68,9 @@ public class IrregularTrie implements FileAccessible{
 	@Override
 	public void load(String filename) {
 		this.dic.load(filename);		
+	}
+
+	public void load(File file) {
+		this.dic.load(file);
 	}
 }

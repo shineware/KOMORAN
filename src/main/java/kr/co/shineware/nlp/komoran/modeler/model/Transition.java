@@ -17,12 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.modeler.model;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -79,4 +74,14 @@ public class Transition implements FileAccessible{
 		}			
 	}
 
+	public void load(File file) {
+		ObjectInputStream dis;
+		try {
+			dis = new ObjectInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(file))));
+			scoreMatrix = (double[][]) dis.readObject();
+			dis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

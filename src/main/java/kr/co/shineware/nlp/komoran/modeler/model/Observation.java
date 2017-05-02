@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.modeler.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +73,9 @@ public class Observation implements FileAccessible{
 	@Override
 	public void load(String filename) {
 		observation.load(filename);	
+	}
+
+	public void load(File file) {
+		observation.load(file);
 	}
 }

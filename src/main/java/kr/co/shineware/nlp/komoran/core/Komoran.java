@@ -18,6 +18,7 @@
 package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.ds.aho_corasick.FindContext;
+import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.core.model.ContinuousSymbolInfo;
@@ -40,6 +41,8 @@ import kr.co.shineware.util.common.string.StringUtil;
 
 import java.io.*;
 import java.lang.Character.UnicodeBlock;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -69,11 +72,22 @@ public class Komoran implements Cloneable{
 	}
 
 	public Komoran(){
+
 		this.resources = new Resources();
-		File file = new File(getClass().getClassLoader().getResource("models_full").getFile());
-		System.out.println(file.exists());
-		this.load(file.getAbsolutePath());
+		this.resources.init();
+		File posTableFile = this.getResourceFile("models_full"+File.separator+ FILENAME.POS_TABLE);
+		File irrModelFile = this.getResourceFile("models_full"+File.separator+ FILENAME.IRREGULAR_MODEL);
+		File observationFile = this.getResourceFile("models_full"+File.separator+ FILENAME.OBSERVATION);
+		File transitionFile = this.getResourceFile("models_full"+File.separator+ FILENAME.TRANSITION);
+		this.resources.loadPosTable(posTableFile);
+		this.resources.loadIrregular(irrModelFile);
+		this.resources.loadObservation(observationFile);
+		this.resources.loadTransition(transitionFile);
 		this.unitParser = new KoreanUnitParser();
+	}
+
+	private File getResourceFile(String path) {
+		return new File(getClass().getClassLoader().getResource(path).getFile());
 	}
 
 	public void analyzeTextFile(String inputFilename, String outputFilename, int thread){

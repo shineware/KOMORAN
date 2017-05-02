@@ -17,11 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.modeler.model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -92,6 +88,23 @@ public class PosTable implements FileAccessible{
 		try{
 			this.init();
 			BufferedReader br = new BufferedReader(new FileReader(filename));
+			String line = null;
+			while((line = br.readLine()) != null){
+				String[] tokens = line.split("\t");
+				this.posIdTable.put(tokens[0], Integer.parseInt(tokens[1]));
+				this.idPosTable.put(Integer.parseInt(tokens[1]),tokens[0]);
+			}
+			br.close();
+			br = null;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public void load(File file) {
+		try{
+			this.init();
+			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line = null;
 			while((line = br.readLine()) != null){
 				String[] tokens = line.split("\t");
