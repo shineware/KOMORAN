@@ -38,10 +38,7 @@ import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.lang.Character.UnicodeBlock;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -68,6 +65,13 @@ public class Komoran implements Cloneable{
 	public Komoran(String modelPath){
 		this.resources = new Resources();
 		this.load(modelPath);
+		this.unitParser = new KoreanUnitParser();
+	}
+
+	public Komoran(){
+		this.resources = new Resources();
+		File file = new File(getClass().getClassLoader().getResource("models_full").getFile());
+		this.load(file.getAbsolutePath());
 		this.unitParser = new KoreanUnitParser();
 	}
 

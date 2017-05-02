@@ -38,7 +38,8 @@ public class KomoranTest {
 
 	@Before
 	public void init() throws Exception {
-		this.komoran = new Komoran("models_full");
+//		this.komoran = new Komoran("models_full");
+		this.komoran = new Komoran();
 	}
 
 	@Test
