@@ -71,6 +71,7 @@ public class Komoran implements Cloneable{
 	public Komoran(){
 		this.resources = new Resources();
 		File file = new File(getClass().getClassLoader().getResource("models_full").getFile());
+		System.out.println(file.exists());
 		this.load(file.getAbsolutePath());
 		this.unitParser = new KoreanUnitParser();
 	}
