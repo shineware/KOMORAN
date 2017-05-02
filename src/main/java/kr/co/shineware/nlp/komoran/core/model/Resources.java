@@ -18,6 +18,7 @@
 package kr.co.shineware.nlp.komoran.core.model;
 
 import java.io.File;
+import java.io.InputStream;
 
 import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularTrie;
@@ -82,9 +83,17 @@ public class Resources {
 	public void loadPosTable(File file){
 		this.table.load(file);
 	}
+	public void loadPosTable(InputStream file){
+		this.table.load(file);
+	}
 
 	public void loadObservation(File file){
 		this.observation.load(file);
+		this.observation.getTrieDictionary().buildFailLink();
+	}
+
+	public void loadObservation(InputStream inputStream){
+		this.observation.load(inputStream);
 		this.observation.getTrieDictionary().buildFailLink();
 	}
 
@@ -92,8 +101,17 @@ public class Resources {
 		this.transition.load(file);
 	}
 
+	public void loadTransition(InputStream inputStream){
+		this.transition.load(inputStream);
+	}
+
 	public void loadIrregular(File file){
 		this.irrTrie.load(file);
+		this.irrTrie.getTrieDictionary().buildFailLink();
+	}
+
+	public void loadIrregular(InputStream inputStream){
+		this.irrTrie.load(inputStream);
 		this.irrTrie.getTrieDictionary().buildFailLink();
 	}
 }

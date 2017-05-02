@@ -84,4 +84,15 @@ public class Transition implements FileAccessible{
 			e.printStackTrace();
 		}
 	}
+
+	public void load(InputStream inputStream) {
+		ObjectInputStream dis;
+		try {
+			dis = new ObjectInputStream(new BufferedInputStream(new GZIPInputStream(inputStream)));
+			scoreMatrix = (double[][]) dis.readObject();
+			dis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

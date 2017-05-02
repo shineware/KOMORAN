@@ -101,6 +101,23 @@ public class PosTable implements FileAccessible{
 		}
 	}
 
+	public void load(InputStream is) {
+		try{
+			this.init();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			String line = null;
+			while((line = br.readLine()) != null){
+				String[] tokens = line.split("\t");
+				this.posIdTable.put(tokens[0], Integer.parseInt(tokens[1]));
+				this.idPosTable.put(Integer.parseInt(tokens[1]),tokens[0]);
+			}
+			br.close();
+			br = null;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	public void load(File file) {
 		try{
 			this.init();

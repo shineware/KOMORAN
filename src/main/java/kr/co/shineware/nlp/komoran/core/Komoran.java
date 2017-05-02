@@ -41,10 +41,7 @@ import kr.co.shineware.util.common.string.StringUtil;
 
 import java.io.*;
 import java.lang.Character.UnicodeBlock;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -75,10 +72,10 @@ public class Komoran implements Cloneable{
 
 		this.resources = new Resources();
 		this.resources.init();
-		File posTableFile = this.getResourceFile("models_full"+File.separator+ FILENAME.POS_TABLE);
-		File irrModelFile = this.getResourceFile("models_full"+File.separator+ FILENAME.IRREGULAR_MODEL);
-		File observationFile = this.getResourceFile("models_full"+File.separator+ FILENAME.OBSERVATION);
-		File transitionFile = this.getResourceFile("models_full"+File.separator+ FILENAME.TRANSITION);
+		InputStream posTableFile = this.getResourceStream("models_full"+File.separator+ FILENAME.POS_TABLE);
+		InputStream irrModelFile = this.getResourceStream("models_full"+File.separator+ FILENAME.IRREGULAR_MODEL);
+		InputStream observationFile = this.getResourceStream("models_full"+File.separator+ FILENAME.OBSERVATION);
+		InputStream transitionFile = this.getResourceStream("models_full"+File.separator+ FILENAME.TRANSITION);
 		this.resources.loadPosTable(posTableFile);
 		this.resources.loadIrregular(irrModelFile);
 		this.resources.loadObservation(observationFile);
@@ -86,8 +83,8 @@ public class Komoran implements Cloneable{
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	private File getResourceFile(String path) {
-		return new File(getClass().getClassLoader().getResource(path).getFile());
+	private InputStream getResourceStream(String path) {
+		return getClass().getClassLoader().getResourceAsStream(path);
 	}
 
 	public void analyzeTextFile(String inputFilename, String outputFilename, int thread){
