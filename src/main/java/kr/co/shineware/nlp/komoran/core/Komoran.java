@@ -18,6 +18,7 @@
 package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.ds.aho_corasick.FindContext;
+import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
@@ -52,15 +53,7 @@ public class Komoran implements Cloneable{
 	private Observation userDic;
 	private KoreanUnitParser unitParser;
 
-//	private Lattice lattice;
-
-
 	private HashMap<String, List<Pair<String, String>>> fwd;
-
-//	private String prevPos;
-//	private String prevMorph;
-//	private int prevBeginIdx;
-
 
 	public Komoran(String modelPath){
 		this.resources = new Resources();
@@ -68,14 +61,23 @@ public class Komoran implements Cloneable{
 		this.unitParser = new KoreanUnitParser();
 	}
 
-	public Komoran(){
+	public Komoran(DEFAULT_MODEL modelType){
 
 		this.resources = new Resources();
 		this.resources.init();
-		InputStream posTableFile = this.getResourceStream("models_full"+File.separator+ FILENAME.POS_TABLE);
-		InputStream irrModelFile = this.getResourceStream("models_full"+File.separator+ FILENAME.IRREGULAR_MODEL);
-		InputStream observationFile = this.getResourceStream("models_full"+File.separator+ FILENAME.OBSERVATION);
-		InputStream transitionFile = this.getResourceStream("models_full"+File.separator+ FILENAME.TRANSITION);
+		String modelPath;
+		if(modelType == DEFAULT_MODEL.FULL){
+			modelPath = FILENAME.FULL_MODEL;
+		}else if(modelType == DEFAULT_MODEL.LIGHT){
+			modelPath = FILENAME.LIGHT_MODEL;
+		}else{
+			modelPath = FILENAME.FULL_MODEL;
+		}
+		InputStream posTableFile = this.getResourceStream(modelPath+File.separator+ FILENAME.POS_TABLE);
+		InputStream irrModelFile = this.getResourceStream(modelPath+File.separator+ FILENAME.IRREGULAR_MODEL);
+		InputStream observationFile = this.getResourceStream(modelPath+File.separator+ FILENAME.OBSERVATION);
+		InputStream transitionFile = this.getResourceStream(modelPath+File.separator+ FILENAME.TRANSITION);
+
 		this.resources.loadPosTable(posTableFile);
 		this.resources.loadIrregular(irrModelFile);
 		this.resources.loadObservation(observationFile);

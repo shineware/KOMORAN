@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
+import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
@@ -38,8 +39,7 @@ public class KomoranTest {
 
 	@Before
 	public void init() throws Exception {
-//		this.komoran = new Komoran("models_full");
-		this.komoran = new Komoran();
+		this.komoran = new Komoran(DEFAULT_MODEL.LIGHT);
 	}
 
 	@Test
@@ -102,7 +102,6 @@ public class KomoranTest {
 
 		List<Future<KomoranResult>> komoranList = new ArrayList<>();
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
-		int count = 0;
 
 
 		for (String line : lines) {
@@ -124,19 +123,11 @@ public class KomoranTest {
 		System.out.println("Elapsed time : "+(end-begin));
 	}
 
-	private void flush(List<Future<KomoranResult>> komoranList, String analyze) throws ExecutionException, InterruptedException {
-		for (Future<KomoranResult> komoranResultFuture : komoranList) {
-			KomoranResult komoranResult = komoranResultFuture.get();
-		}
-	}
 
 	@Test
 	public void threadSafeTest() throws ExecutionException, InterruptedException {
 		List<String> lines = FileUtil.load2List("in.txt");
 
-
-		List<CallableImpl> invokeTargetList = new ArrayList<>();
-		List<Future<String>> futureList = new ArrayList<>();
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 		for(int k=0;k<100000;k++) {
 			long b = System.currentTimeMillis();
