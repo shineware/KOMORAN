@@ -24,6 +24,9 @@ journal = {GitHub repository},
 howpublished = {\url{https://github.com/shin285/KOMORAN}}
 ```
 
+# Demo
+A [demo page](http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-kr&utm_medium=Referral&utm_campaign=github-demo) is available to test the performance of KOMORAN.
+
 
 # Usage
 
