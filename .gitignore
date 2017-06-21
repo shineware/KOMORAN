@@ -1,3 +1,7 @@
+corpus/
+BuilderTest.java
+analyze_result.txt
+
 *.class
 .classpath
 .project

@@ -143,7 +143,7 @@ public class KomoranTest {
 
 	@Test
 	public void analyze() throws Exception {
-		KomoranResult komoranResult = this.komoran.analyze("자주 걸렸던 병이다");
+		KomoranResult komoranResult = this.komoran.analyze("에서");
 		List<Pair<String,String>> pairList = komoranResult.getList();
 		for (Pair<String, String> morphPosPair : pairList) {
 			System.out.println(morphPosPair);

@@ -531,3 +531,6 @@ remove : ㅇㅣ/VCP ㅈㅣ
 
 key : ㄱㅏㅈㅣ
 remove : ㄲㅏㅈㅣ
+
+key ; ㅇㅔㅅㅓ
+remove : ㅁㅕㄴ/NNG ㅇㅔㅅㅓ

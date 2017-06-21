@@ -193,6 +193,8 @@ public class Komoran implements Cloneable{
 			lattice.appendEndNode();
 		}
 
+		lattice.printLattice();
+
 		List<LatticeNode> shortestPathList = lattice.findPath();
 
 		//미분석인 경우
