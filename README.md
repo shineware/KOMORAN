@@ -5,11 +5,11 @@
 
 **KO**rean **MOR**phological **AN**alyzer
 
-# Importing project
-This project is based on gradle.
-So, you can open by gradle project.
+# Importing the project
+This project is based on gradle with java.
+So, you can open or import this project as gradle project.
 
-When importing on Eclipse IDE without gradle, type in commands below in console(e.g. cmd in window, terminal in *nix) after downloading project.
+If you don't have IDE can support gradle project, you can type below command in your console like cmd and terminal for converting as eclipse project after download this project.
 ```shell
 ./gradlew eclipse
 ```
