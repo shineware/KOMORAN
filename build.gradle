@@ -44,3 +44,6 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '3.2'
 }
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
