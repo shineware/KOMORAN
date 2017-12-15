@@ -70,7 +70,7 @@ public class KomoranTest {
 
 	public static void main(String[] args) throws Exception {
 
-		Komoran komoran = new Komoran("models");
+		Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
 
@@ -138,9 +138,16 @@ public class KomoranTest {
 		*/
 		System.out.println("==========print 'getList()'==========");
 		System.out.println(analyzeResultList.getList());
+		System.out.println();
 		/*
 		==========print 'getList()'==========
 		[Pair [first=밀리언 달러 베이비, second=NNP], Pair [first=랑, second=JKB], Pair [first=바람과 함께 사라지다, second=NNP], Pair [first=랑, second=JKB], Pair [first=뭐, second=NP], Pair [first=가, second=JKS], Pair [first=더, second=MAG], Pair [first=재밌, second=VA], Pair [first=었, second=EP], Pair [first=어, second=EF], Pair [first=?, second=SF]]
+		*/
+		System.out.println("==========print 'getMorphesByTags()'==========");
+		System.out.println(analyzeResultList.getMorphesByTags("NP", "NNP", "JKB"));
+		/*
+		==========print 'getList()'==========
+		[밀리언 달러 베이비, 랑, 바람과 함께 사라지다, 랑, 뭐]
 		*/
 	}
 }
