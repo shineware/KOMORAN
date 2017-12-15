@@ -6,8 +6,8 @@
 **KO**rean **MOR**phological **AN**alyzer
 
 # Importing the project
-This project is based on gradle with java.
-So, you can open or import this project as gradle project.  
+This project is based on Gradle with Java.
+So, you can open or import this project as Gradle project.  
 Due to KOMORAN is published in JitPack, it is also possible to use KOMORAN in sbt project.  
 
 ```scala
@@ -16,7 +16,7 @@ resolvers += MavenRepository("jitpack.io", "https://jitpack.io")
 libraryDependencies += "com.github.shin285" % "KOMORAN" % "3.3.3"
 ```
 
-If you don't have IDE can support gradle project, you can type below command in your console like cmd and terminal for converting as eclipse project after downloading this project.
+If you don't have IDE can support Gradle project, you can type below command in your console like cmd and terminal for converting as eclipse project after downloading this project.
 ```shell
 ./gradlew eclipse
 ```
