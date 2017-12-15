@@ -146,7 +146,7 @@ public class KomoranTest {
 		System.out.println("==========print 'getMorphesByTags()'==========");
 		System.out.println(analyzeResultList.getMorphesByTags("NP", "NNP", "JKB"));
 		/*
-		==========print 'getList()'==========
+		==========print 'getMorphesByTags()'==========
 		[밀리언 달러 베이비, 랑, 바람과 함께 사라지다, 랑, 뭐]
 		*/
 	}
