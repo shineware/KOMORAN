@@ -3,10 +3,10 @@ package kr.co.shineware.nlp.komoran.core;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,8 +15,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class KomoranTest {
 
@@ -25,6 +27,20 @@ public class KomoranTest {
     @Before
     public void init() {
         this.komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+    }
+
+    @Test
+    public void notAnalyzeCombineTest() {
+        KomoranResult komoranResult = this.komoran.analyze("업데이트했어요ㅋㅋㅋㅋ");
+        System.out.println(komoranResult.getPlainText());
+        System.out.println(komoranResult.getList());
+        System.out.println(komoranResult.getMorphesByTags("NA"));
+        System.out.println(komoranResult.getTokenList());
+
+        KoreanUnitParser koreanUnitParser = new KoreanUnitParser();
+        System.out.println(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ"));
+        System.out.println(koreanUnitParser.combineWithType(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ")));
+
     }
 
     @Test
