@@ -23,7 +23,7 @@ public class KomoranResult {
         return this.getMorphesByTags(Arrays.asList(SYMBOL.NNG, SYMBOL.NNP));
     }
 
-    public List<String> getMorphesByTags(String ... str){
+    public List<String> getMorphesByTags(String... str) {
         return this.getMorphesByTags(Arrays.asList(str));
     }
 
@@ -34,7 +34,7 @@ public class KomoranResult {
         List<String> morphList = new ArrayList<>();
         for (LatticeNode latticeNode : resultNodeList) {
             if (targetPosSet.contains(latticeNode.getTag())) {
-                morphList.add(parser.combine(latticeNode.getMorph()));
+                morphList.add(parser.combine(latticeNode.getMorphTag().getMorph()));
             }
         }
         return morphList;
@@ -46,7 +46,11 @@ public class KomoranResult {
             if (latticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
                 continue;
             }
-            result.append(parser.combine(latticeNode.getMorph())).append("/").append(latticeNode.getTag()).append(" ");
+            if (latticeNode.getTag().equals(SYMBOL.NA)) {
+                result.append(latticeNode.getMorphTag().getMorph()).append("/").append(latticeNode.getMorphTag().getTag()).append(" ");
+            } else {
+                result.append(parser.combine(latticeNode.getMorphTag().getMorph())).append("/").append(latticeNode.getTag()).append(" ");
+            }
         }
         return result.toString().trim();
     }
@@ -64,7 +68,7 @@ public class KomoranResult {
             }
             Pair<Integer, Integer> syllableArea = this.getSyllableArea(latticeNode.getBeginIdx(), latticeNode.getEndIdx(), syllableAreaList);
 
-            tokenList.add(new Token(parser.combine(latticeNode.getMorph()),
+            tokenList.add(new Token(parser.combine(latticeNode.getMorphTag().getMorph()),
                     parser.combine(latticeNode.getTag()), syllableArea.getFirst(), syllableArea.getSecond()));
 
             prevBeginIdx = latticeNode.getBeginIdx();
@@ -93,7 +97,7 @@ public class KomoranResult {
             if (latticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
                 continue;
             }
-            resultList.add(new Pair<>(parser.combine(latticeNode.getMorph()), latticeNode.getTag()));
+            resultList.add(new Pair<>(parser.combine(latticeNode.getMorphTag().getMorph()), latticeNode.getTag()));
         }
         return resultList;
     }
