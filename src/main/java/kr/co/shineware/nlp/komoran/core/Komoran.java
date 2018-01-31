@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
+import com.google.common.base.Joiner;
 import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.constant.FILENAME;
@@ -73,10 +74,16 @@ public class Komoran implements Cloneable {
         } else {
             modelPath = FILENAME.FULL_MODEL;
         }
-        InputStream posTableFile = this.getResourceStream(modelPath + File.separator + FILENAME.POS_TABLE);
-        InputStream irrModelFile = this.getResourceStream(modelPath + File.separator + FILENAME.IRREGULAR_MODEL);
-        InputStream observationFile = this.getResourceStream(modelPath + File.separator + FILENAME.OBSERVATION);
-        InputStream transitionFile = this.getResourceStream(modelPath + File.separator + FILENAME.TRANSITION);
+
+        Joiner joiner = Joiner.on("/").skipNulls();
+        InputStream posTableFile =
+            this.getResourceStream(joiner.join(modelPath, FILENAME.POS_TABLE));
+        InputStream irrModelFile =
+            this.getResourceStream(joiner.join(modelPath, FILENAME.IRREGULAR_MODEL));
+        InputStream observationFile =
+            this.getResourceStream(joiner.join(modelPath, FILENAME.OBSERVATION));
+        InputStream transitionFile =
+            this.getResourceStream(joiner.join(modelPath, FILENAME.TRANSITION));
 
         this.resources.loadPosTable(posTableFile);
         this.resources.loadIrregular(irrModelFile);
