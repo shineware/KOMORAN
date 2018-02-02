@@ -38,7 +38,6 @@ jar {
 dependencies {
     compile 'com.github.shineware:commons:1.0.1'
     compile 'com.github.shineware:aho-corasick:1.0.9'
-    compile 'com.google.guava:guava:23.6-jre'
     testCompile 'junit:junit:4.12'
 }
 
