@@ -73,10 +73,16 @@ public class Komoran implements Cloneable {
         } else {
             modelPath = FILENAME.FULL_MODEL;
         }
-        InputStream posTableFile = this.getResourceStream(modelPath + File.separator + FILENAME.POS_TABLE);
-        InputStream irrModelFile = this.getResourceStream(modelPath + File.separator + FILENAME.IRREGULAR_MODEL);
-        InputStream observationFile = this.getResourceStream(modelPath + File.separator + FILENAME.OBSERVATION);
-        InputStream transitionFile = this.getResourceStream(modelPath + File.separator + FILENAME.TRANSITION);
+
+        String delimiter = "/";
+        InputStream posTableFile =
+            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.POS_TABLE));
+        InputStream irrModelFile =
+            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.IRREGULAR_MODEL));
+        InputStream observationFile =
+            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.OBSERVATION));
+        InputStream transitionFile =
+            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.TRANSITION));
 
         this.resources.loadPosTable(posTableFile);
         this.resources.loadIrregular(irrModelFile);
