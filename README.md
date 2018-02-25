@@ -205,3 +205,90 @@ public class ModelBuildTest {
 }
 
 ```
+
+### Spark2 Scala Example
+```scala
+import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL
+import kr.co.shineware.nlp.komoran.core.Komoran
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.expressions.UserDefinedFunction
+import org.apache.spark.sql.functions.udf
+
+import scala.collection.JavaConverters._
+
+object Main {
+  val komoran = new Komoran(DEFAULT_MODEL.LIGHT)
+
+  val getPlainTextUdf: UserDefinedFunction = udf[String, String] { sentence =>
+    komoran.analyze(sentence).getPlainText
+  }
+
+  val getNounsUdf: UserDefinedFunction = udf[Seq[String], String] { sentence =>
+    komoran.analyze(sentence).getNouns.asScala
+  }
+
+  val getTokenListUdf: UserDefinedFunction = udf[Seq[String], String] { sentence =>
+    komoran.analyze(sentence).getTokenList.asScala.map(x => x.toString)
+  }
+
+  def main(args: Array[String]): Unit = {
+    val spark = SparkSession.builder().enableHiveSupport().getOrCreate()
+    import spark.implicits._
+
+    val testDataset = spark.createDataFrame(Seq(
+      "밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?",
+      "아버지가방에들어가신다",
+      "나는 밥을 먹는다",
+      "하늘을 나는 자동차",
+      "아이폰 기다리다 지쳐 애플공홈에서 언락폰질러버렸다 6+ 128기가실버ㅋ"
+    ).map(Tuple1.apply)).toDF("sentence")
+
+    testDataset.show(truncate = false)
+    //    +---------------------------------------+
+    //    |sentence                               |
+    //    +---------------------------------------+
+    //    |밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?    |
+    //    |아버지가방에들어가신다                            |
+    //    |나는 밥을 먹는다                              |
+    //    |하늘을 나는 자동차                             |
+    //    |아이폰 기다리다 지쳐 애플공홈에서 언락폰질러버렸다 6+ 128기가실버ㅋ|
+    //    +---------------------------------------+
+
+    val analyzedDataset =
+      testDataset.withColumn("plain_text", getPlainTextUdf($"sentence"))
+          .withColumn("nouns", getNounsUdf($"sentence"))
+          .withColumn("token_list", getTokenListUdf($"sentence"))
+
+    analyzedDataset.select("sentence", "token_list").show()
+    //    +--------------------+--------------------+
+    //    |            sentence|          token_list|
+    //    +--------------------+--------------------+
+    //    |밀리언 달러 베이비랑 바람과 함...|[Token [morph=밀리,...|
+    //    |         아버지가방에들어가신다|[Token [morph=아버지...|
+    //    |           나는 밥을 먹는다|[Token [morph=나, ...|
+    //    |          하늘을 나는 자동차|[Token [morph=하늘,...|
+    //    |아이폰 기다리다 지쳐 애플공홈에...|[Token [morph=아이,...|
+    //    +--------------------+--------------------+
+    analyzedDataset.select("sentence", "nouns").show()
+    //    +--------------------+--------------------+
+    //    |            sentence|               nouns|
+    //    +--------------------+--------------------+
+    //    |밀리언 달러 베이비랑 바람과 함...|           [베이비, 바람]|
+    //    |         아버지가방에들어가신다|           [아버지, 가방]|
+    //    |           나는 밥을 먹는다|                 [밥]|
+    //    |          하늘을 나는 자동차|           [하늘, 자동차]|
+    //    |아이폰 기다리다 지쳐 애플공홈에...|[아이, 폰, 애플, 공, 홈,...|
+    //    +--------------------+--------------------+
+    analyzedDataset.select("sentence", "plain_text").show()
+    //    +--------------------+--------------------+
+    //    |            sentence|          plain_text|
+    //    +--------------------+--------------------+
+    //    |밀리언 달러 베이비랑 바람과 함...|밀리/VV 어/EC ㄴ/JX 달...|
+    //    |         아버지가방에들어가신다|아버지/NNG 가방/NNG 에/...|
+    //    |           나는 밥을 먹는다|나/NP 는/JX 밥/NNG 을...|
+    //    |          하늘을 나는 자동차|하늘/NNG 을/JKO 나/NP...|
+    //    |아이폰 기다리다 지쳐 애플공홈에...|아이/NNG 폰/NNP 기다리/...|
+    //    +--------------------+--------------------+
+  }
+}
+```
