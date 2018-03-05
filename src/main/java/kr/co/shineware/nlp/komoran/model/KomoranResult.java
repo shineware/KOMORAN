@@ -1,11 +1,11 @@
 package kr.co.shineware.nlp.komoran.model;
 
-import java.util.*;
-
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.model.Pair;
+
+import java.util.*;
 
 
 public class KomoranResult {
@@ -27,7 +27,7 @@ public class KomoranResult {
         return this.getMorphesByTags(Arrays.asList(str));
     }
 
-    private List<String> getMorphesByTags(Collection<String> targetPosCollection) {
+    public List<String> getMorphesByTags(Collection<String> targetPosCollection) {
 
         Set<String> targetPosSet = new HashSet<>(targetPosCollection);
 
