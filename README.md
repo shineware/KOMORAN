@@ -34,7 +34,7 @@ howpublished = {\url{https://github.com/shin285/KOMORAN}}
 # Demo
 * A [demo page](http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-kr&utm_medium=Referral&utm_campaign=github-demo) is available to test the performance of KOMORAN.
 * In addition, there is a [Simple API Server repo](https://github.com/9bow/KOMORANRestAPIServer) that can be run on yourself.
-* It implemented python3 by [Hyunjoong Kim](https://github.com/lovit) [komoran3py](https://github.com/lovit/komoran3py)
+* There is a repository implemented in python3 by [Hyunjoong Kim](https://github.com/lovit) - [komoran3py](https://github.com/lovit/komoran3py)
 
 
 # Usage
