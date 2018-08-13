@@ -35,6 +35,7 @@ howpublished = {\url{https://github.com/shin285/KOMORAN}}
 * A [demo page](http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-kr&utm_medium=Referral&utm_campaign=github-demo) is available to test the performance of KOMORAN.
 * In addition, there is a [Simple API Server repo](https://github.com/9bow/KOMORANRestAPIServer) that can be run on yourself.
 * There is a repository implemented in python3 by [Hyunjoong Kim](https://github.com/lovit) - [komoran3py](https://github.com/lovit/komoran3py)
+* You can manage dictionary through this link made by [Junghwan Park](https://github.com/9bow) - [DictAdmin](https://github.com/9bow/DictAdmin)
 
 
 # Usage
