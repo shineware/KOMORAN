@@ -76,13 +76,13 @@ public class Komoran implements Cloneable {
 
         String delimiter = "/";
         InputStream posTableFile =
-            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.POS_TABLE));
+                this.getResourceStream(String.join(delimiter, modelPath, FILENAME.POS_TABLE));
         InputStream irrModelFile =
-            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.IRREGULAR_MODEL));
+                this.getResourceStream(String.join(delimiter, modelPath, FILENAME.IRREGULAR_MODEL));
         InputStream observationFile =
-            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.OBSERVATION));
+                this.getResourceStream(String.join(delimiter, modelPath, FILENAME.OBSERVATION));
         InputStream transitionFile =
-            this.getResourceStream(String.join(delimiter, modelPath, FILENAME.TRANSITION));
+                this.getResourceStream(String.join(delimiter, modelPath, FILENAME.TRANSITION));
 
         this.resources.loadPosTable(posTableFile);
         this.resources.loadIrregular(irrModelFile);
@@ -123,6 +123,32 @@ public class Komoran implements Cloneable {
 
     }
 
+    public KomoranResult analyze(String sentence, int thread) {
+
+        List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
+
+        String[] words = sentence.replaceAll("[ ]+", " ").split(" ");
+        for (String word : words) {
+            KomoranCallable komoranCallable = new KomoranCallable(this, word);
+            komoranResultList.add(executor.submit(komoranCallable));
+        }
+
+        List<LatticeNode> latticeNodes = new ArrayList<>();
+        StringBuilder jasoUnits = new StringBuilder();
+        for (Future<KomoranResult> komoranResultFuture : komoranResultList) {
+            try {
+                KomoranResult komoranResult = komoranResultFuture.get();
+                latticeNodes.addAll(komoranResult.getResultNodeList());
+                jasoUnits.append(komoranResult.getJasoUnits());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        executor.shutdown();
+        return new KomoranResult(latticeNodes, jasoUnits.toString());
+    }
+
     public KomoranResult analyze(String sentence) {
 
         FindContext<List<ScoredTag>> observationFindContext;
@@ -146,9 +172,6 @@ public class Komoran implements Cloneable {
         lattice.setUnitParser(this.unitParser);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
-//		String prevPos;
-//		String prevMorph;
-//		int prevBeginIdx;
         ContinuousSymbolInfo continuousSymbolInfo = new ContinuousSymbolInfo();
 
         //자소 단위로 분할
@@ -582,7 +605,6 @@ public class Komoran implements Cloneable {
                 String[] tmp = line.split("\t");
                 //주석이거나 format에 안 맞는 경우는 skip
                 if (tmp.length != 2 || tmp[0].charAt(0) == '#') {
-                    tmp = null;
                     continue;
                 }
                 ProblemAnswerPair problemAnswerPair = corpusParser.parse(line);
@@ -594,16 +616,9 @@ public class Komoran implements Cloneable {
 
                 this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
                         convertAnswerList);
-                tmp = null;
-                problemAnswerPair = null;
-                convertAnswerList = null;
             }
             br.close();
 
-            //init
-            corpusParser = null;
-            br = null;
-            line = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -614,7 +629,7 @@ public class Komoran implements Cloneable {
 
             this.userDic = new Observation();
             BufferedReader br = new BufferedReader(new FileReader(userDic));
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (line.length() == 0 || line.charAt(0) == '#') continue;
@@ -632,15 +647,10 @@ public class Komoran implements Cloneable {
                 }
                 this.userDic.put(morph, pos, this.resources.getTable().getId(pos), 0.0);
 
-                line = null;
-                morph = null;
-                pos = null;
             }
             br.close();
 
             //init
-            br = null;
-            line = null;
             this.userDic.getTrieDictionary().buildFailLink();
 
         } catch (Exception e) {

@@ -19,6 +19,14 @@ public class KomoranResult {
         this.jasoUnits = jasoUnits;
     }
 
+    public List<LatticeNode> getResultNodeList() {
+        return this.resultNodeList;
+    }
+
+    public String getJasoUnits() {
+        return this.jasoUnits;
+    }
+
     public List<String> getNouns() {
         return this.getMorphesByTags(Arrays.asList(SYMBOL.NNG, SYMBOL.NNP));
     }
