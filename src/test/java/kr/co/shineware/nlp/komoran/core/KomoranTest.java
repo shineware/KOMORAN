@@ -184,4 +184,13 @@ public class KomoranTest {
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑").getTokenList());
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?").getTokenList());
     }
+
+    @Test
+    public void analyzeWithThreading(){
+        KomoranResult komoranResult = this.komoran.analyze("감사합니다! 바람과 함께 사라지다는 진짜 재밌었어요! nice good!", 2);
+        System.out.println(komoranResult.getPlainText());
+        System.out.println(komoranResult.getList());
+        System.out.println(komoranResult.getTokenList());
+        System.out.println(komoranResult.getTokenList());
+    }
 }
