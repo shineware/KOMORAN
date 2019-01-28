@@ -35,6 +35,7 @@ import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -126,12 +127,11 @@ public class Komoran implements Cloneable {
     public KomoranResult analyze(String sentence, int thread) {
 
         List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
 
         String[] words = sentence.replaceAll("[ ]+", " ").split(" ");
         for (String word : words) {
             KomoranCallable komoranCallable = new KomoranCallable(this, word);
-            komoranResultList.add(executor.submit(komoranCallable));
+//            komoranResultList.add(executor.submit(komoranCallable));
         }
 
         List<LatticeNode> latticeNodes = new ArrayList<>();
@@ -145,11 +145,12 @@ public class Komoran implements Cloneable {
                 e.printStackTrace();
             }
         }
-        executor.shutdown();
         return new KomoranResult(latticeNodes, jasoUnits.toString());
     }
 
     public KomoranResult analyze(String sentence) {
+
+        ElapsedTimeChecker.checkBeginTime("INIT");
 
         FindContext<List<ScoredTag>> observationFindContext;
         FindContext<List<IrregularNode>> irregularFindContext;
@@ -174,9 +175,14 @@ public class Komoran implements Cloneable {
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
         ContinuousSymbolInfo continuousSymbolInfo = new ContinuousSymbolInfo();
 
+        ElapsedTimeChecker.checkEndTime("INIT");
+
+        ElapsedTimeChecker.checkBeginTime("SPLIT_JASO");
         //자소 단위로 분할
         String jasoUnits = unitParser.parse(sentence);
         List<Pair<Character, KoreanUnitParser.UnitType>> jasoUnitsWithType = unitParser.parseWithType(sentence);
+
+        ElapsedTimeChecker.checkEndTime("SPLIT_JASO");
 
         int length = jasoUnits.length();
         //start 노드 또는 end 노드의 바로 다음 인덱스
@@ -185,26 +191,43 @@ public class Komoran implements Cloneable {
         boolean inserted;
 
         for (int i = 0; i < length; i++) {
+
+            ElapsedTimeChecker.checkBeginTime("FWD");
             //기분석 사전
             int skipIdx = this.lookupFwd(lattice, jasoUnits, i);
             if (skipIdx != -1) {
                 i = skipIdx - 1;
                 continue;
             }
+            ElapsedTimeChecker.checkEndTime("FWD");
 
             //띄어쓰기인 경우
+            ElapsedTimeChecker.checkBeginTime("BRIDGE");
             if (jasoUnits.charAt(i) == ' ') {
                 this.consumeContiniousSymbolParserBuffer(lattice, i, continuousSymbolInfo);
                 this.bridgeToken(lattice, i, jasoUnits, prevStartIdx);
                 prevStartIdx = i + 1;
             }
+            ElapsedTimeChecker.checkEndTime("BRIDGE");
+
+            ElapsedTimeChecker.checkBeginTime("SYMBOL");
             this.continiousSymbolParsing(lattice, jasoUnits.charAt(i), i, continuousSymbolInfo); //숫자, 영어, 외래어 파싱
             this.symbolParsing(lattice, jasoUnits.charAt(i), i); // 기타 심볼 파싱
+            ElapsedTimeChecker.checkEndTime("SYMBOL");
+            ElapsedTimeChecker.checkBeginTime("USER_DIC");
             this.userDicParsing(lattice, userDicFindContext, jasoUnits.charAt(i), i); //사용자 사전 적용
+            ElapsedTimeChecker.checkEndTime("USER_DIC");
 
+            // TODO: 2019-01-29 regular, irregular 쓰레딩으로 처리 필요. RegularParser와 IrregularParser의 인터페이스 통일 필요
+            ElapsedTimeChecker.checkBeginTime("REGULAR");
             this.regularParsing(lattice, observationFindContext, jasoUnits.charAt(i), i); //일반규칙 파싱
+            ElapsedTimeChecker.checkEndTime("REGULAR");
+            ElapsedTimeChecker.checkBeginTime("IRREGULAR");
             this.irregularParsing(lattice, irregularFindContext, jasoUnits.charAt(i), i); //불규칙 파싱
+            ElapsedTimeChecker.checkEndTime("IRREGULAR");
+            ElapsedTimeChecker.checkBeginTime("IRREGULAR_EXT");
             this.irregularExtends(lattice, jasoUnits.charAt(i), i); //불규칙 확장
+            ElapsedTimeChecker.checkEndTime("IRREGULAR_EXT");
 
         }
 

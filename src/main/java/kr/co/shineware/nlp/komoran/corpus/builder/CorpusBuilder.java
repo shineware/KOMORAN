@@ -208,8 +208,7 @@ public class CorpusBuilder {
 			for (Pair<String, String> pair : irrRuleList) {
 				//트레이닝 셋의 오류로 인한 skip(세종 코퍼스 기준)
 				if (pair.getSecond().trim().length() == 0) {
-					;
-				}else{
+                }else{
 					//불규칙 대상에 자소 단위가 포함된 경우 skip
 					if(this.irrExclusiveSet.contains(pair.getFirst()+"\t"+pair.getSecond().substring(0, pair.getSecond().lastIndexOf("/")))){
 						continue;
@@ -355,8 +354,7 @@ public class CorpusBuilder {
 				if(this.wordDic.getPosList(line) == null){
 					this.wordDic.append(line, "NNP");
 				}else{
-					;
-				}
+                }
 			}
 			br.close();
 		} catch (Exception e) {

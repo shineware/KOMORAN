@@ -346,11 +346,7 @@ public class Lattice {
     private boolean hasJongsung(String str) {
         char prevLastJaso = str.charAt(str.length() - 1);
         if (0x3131 <= prevLastJaso && prevLastJaso <= 0x314e) {
-            if (prevLastJaso == 0x3138 || prevLastJaso == 0x3143 || prevLastJaso == 0x3149) {
-                return false;
-            } else {
-                return true;
-            }
+            return prevLastJaso != 0x3138 && prevLastJaso != 0x3143 && prevLastJaso != 0x3149;
         }
         return false;
     }

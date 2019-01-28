@@ -160,7 +160,7 @@ public class KoreanUnitParser implements UnitParser {
 
                 //append not combined string to result
                 //prevIdx ~ i-1 = 자소 조합이 안된 스트링 구
-                result.append(str.substring(prevIdx, i - 1));
+                result.append(str, prevIdx, i - 1);
                 if (str.substring(prevIdx, i - 1).length() != 0) {
                     this.appendSplitedSyllableList(prevIdx, i - 1, syllableAreaList);
                 }
@@ -232,7 +232,7 @@ public class KoreanUnitParser implements UnitParser {
 
                 //append not combined string to result
                 //prevIdx ~ i-1 = 자소 조합이 안된 스트링 구
-                result.append(str.substring(prevIdx, i - 1));
+                result.append(str, prevIdx, i - 1);
 //				if(str.substring(prevIdx, i-1).length() != 0){
 //					System.out.println("["+prevIdx+","+(i-2)+"] : "+str.substring(prevIdx, i-1));
 //				}

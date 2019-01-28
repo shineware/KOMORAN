@@ -18,6 +18,7 @@
 package kr.co.shineware.nlp.komoran.modeler.model;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -104,7 +105,7 @@ public class PosTable implements FileAccessible{
 	public void load(InputStream is) {
 		try{
 			this.init();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 			String line = null;
 			while((line = br.readLine()) != null){
 				String[] tokens = line.split("\t");

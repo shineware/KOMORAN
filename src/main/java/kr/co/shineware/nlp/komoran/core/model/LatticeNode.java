@@ -37,7 +37,6 @@ public class LatticeNode {
     private String morph;
 
     public LatticeNode() {
-        ;
     }
 
     public LatticeNode(int beginIdx, int endIdx, MorphTag morphTag, double score) {

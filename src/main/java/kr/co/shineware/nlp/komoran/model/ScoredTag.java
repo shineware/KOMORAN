@@ -38,11 +38,9 @@ public class ScoredTag extends Tag{
 		if (getClass() != obj.getClass())
 			return false;
 		ScoredTag other = (ScoredTag) obj;
-		if (Double.doubleToLongBits(score) != Double
-				.doubleToLongBits(other.score))
-			return false;
-		return true;
-	}
+        return Double.doubleToLongBits(score) == Double
+                .doubleToLongBits(other.score);
+    }
 
 	/**
 	 * 

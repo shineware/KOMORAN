@@ -99,11 +99,8 @@ public class Grammar implements FileAccessible{
 			return false;
 		}else{
 			Integer tf = nextPosMap.get(nextPos);
-			if(tf == null){
-				return false;
-			}
-			return true;
-		}
+            return tf != null;
+        }
 	}
 	
 	@Override

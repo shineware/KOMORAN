@@ -115,12 +115,9 @@ public class IrregularNode implements Serializable{
 		if (lastPosId != other.lastPosId)
 			return false;
 		if (morphFormat == null) {
-			if (other.morphFormat != null)
-				return false;
-		} else if (!morphFormat.equals(other.morphFormat))
-			return false;
-		return true;
-	}
+            return other.morphFormat == null;
+		} else return morphFormat.equals(other.morphFormat);
+    }
 	@Override
 	public String toString() {
 		return "IrregularNode [lastMorph=" + lastMorph + ", firstPosId="

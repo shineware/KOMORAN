@@ -7,8 +7,7 @@ public class Token {
 	private int endIndex;
 
 	public Token(){
-		;
-	}
+    }
 
 	public Token(String morph, String pos, int beginIndex, int endIndex) {
 		super();

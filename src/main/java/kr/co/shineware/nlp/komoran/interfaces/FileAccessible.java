@@ -29,10 +29,10 @@ public interface FileAccessible {
 	 * 현재 사용되고 있는 데이터를 filename에 저장
 	 * @param filename
 	 */
-	public void save(String filename);
+    void save(String filename);
 	/**
 	 * 저장된 filename으로부터 데이터 로드
 	 * @param filename
 	 */
-	public void load(String filename);
+    void load(String filename);
 }

@@ -276,8 +276,7 @@ public class ModelBuilder {
 
 	@Deprecated
 	public void load(String path){
-		;
-	}
+    }
 
 	/**
 	 * build된 모델들(transition, observation, pos_table)을 path 폴더에 저장

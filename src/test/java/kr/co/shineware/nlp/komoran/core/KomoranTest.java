@@ -4,6 +4,7 @@ import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -31,6 +32,9 @@ public class KomoranTest {
 
     @Test
     public void notAnalyzeCombineTest() {
+
+        ElapsedTimeChecker.checkBeginTime("START");
+
         KomoranResult komoranResult = this.komoran.analyze("업데이트했어요ㅋㅋㅋㅋ");
         System.out.println(komoranResult.getPlainText());
         System.out.println(komoranResult.getList());
@@ -40,6 +44,9 @@ public class KomoranTest {
         KoreanUnitParser koreanUnitParser = new KoreanUnitParser();
         System.out.println(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ"));
         System.out.println(koreanUnitParser.combineWithType(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ")));
+        ElapsedTimeChecker.checkEndTime("START");
+
+        ElapsedTimeChecker.printTimes();
 
     }
 
@@ -204,9 +211,10 @@ public class KomoranTest {
     public void analyzeWithThreadingSpeedTest() {
         List<String> lines = FileUtil.load2List("user_data/wiki.titles");
 
+        ElapsedTimeChecker.checkBeginTime("START");
         long avgElapsedTime = 0;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
 
             long begin = System.currentTimeMillis();
 
@@ -220,20 +228,23 @@ public class KomoranTest {
         }
 
         System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
-        avgElapsedTime = 0;
+        ElapsedTimeChecker.checkEndTime("START");
 
-        for (int i = 0; i < 10; i++) {
+        ElapsedTimeChecker.printTimes();
+//        avgElapsedTime = 0;
 
-            long begin = System.currentTimeMillis();
-
-            for (String line : lines) {
-                KomoranResult komoranResult = this.komoran.analyze(line, 2);
-            }
-
-            long end = System.currentTimeMillis();
-            avgElapsedTime += (end - begin);
-            System.out.println("Elapsed time : " + (end - begin));
-        }
-        System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
+//        for (int i = 0; i < 5; i++) {
+//
+//            long begin = System.currentTimeMillis();
+//
+//            for (String line : lines) {
+//                KomoranResult komoranResult = this.komoran.analyze(line, 2);
+//            }
+//
+//            long end = System.currentTimeMillis();
+//            avgElapsedTime += (end - begin);
+//            System.out.println("Elapsed time : " + (end - begin));
+//        }
+//        System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
     }
 }

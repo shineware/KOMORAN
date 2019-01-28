@@ -28,8 +28,7 @@ public class Transition implements FileAccessible{
 	private double[][] scoreMatrix;
 
 	public Transition(){
-		;
-	}
+    }
 	
 	public Transition(int size) {
 		scoreMatrix = new double[size][size];
