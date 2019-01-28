@@ -186,11 +186,54 @@ public class KomoranTest {
     }
 
     @Test
-    public void analyzeWithThreading(){
-        KomoranResult komoranResult = this.komoran.analyze("감사합니다! 바람과 함께 사라지다는 진짜 재밌었어요! nice good!", 2);
+    public void analyzeWithThreading() {
+        this.komoran.setUserDic("user_data/dic.user");
+        KomoranResult komoranResult = this.komoran.analyze("바람과 함께 사라지다", 2);
         System.out.println(komoranResult.getPlainText());
         System.out.println(komoranResult.getList());
         System.out.println(komoranResult.getTokenList());
+        System.out.println();
+
+        komoranResult = this.komoran.analyze("바람과 함께 사라지다");
+        System.out.println(komoranResult.getPlainText());
+        System.out.println(komoranResult.getList());
         System.out.println(komoranResult.getTokenList());
+    }
+
+    @Test
+    public void analyzeWithThreadingSpeedTest() {
+        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+
+        long avgElapsedTime = 0;
+
+        for (int i = 0; i < 10; i++) {
+
+            long begin = System.currentTimeMillis();
+
+            for (String line : lines) {
+                KomoranResult komoranResult = this.komoran.analyze(line);
+            }
+
+            long end = System.currentTimeMillis();
+            avgElapsedTime += (end - begin);
+            System.out.println("Elapsed time : " + (end - begin));
+        }
+
+        System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
+        avgElapsedTime = 0;
+
+        for (int i = 0; i < 10; i++) {
+
+            long begin = System.currentTimeMillis();
+
+            for (String line : lines) {
+                KomoranResult komoranResult = this.komoran.analyze(line, 2);
+            }
+
+            long end = System.currentTimeMillis();
+            avgElapsedTime += (end - begin);
+            System.out.println("Elapsed time : " + (end - begin));
+        }
+        System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
     }
 }
