@@ -182,6 +182,8 @@ public class KomoranTest {
     @Test
     public void setUserDic() {
         this.komoran.setUserDic("user_data/dic.user");
+        System.out.println(this.komoran.analyze("2010년 아시안 게임 사격 남자 10m 공기 권총").getPlainText());
+        System.out.println(this.komoran.analyze("눈이 자꾸 흘렀다.").getPlainText());
         System.out.println(this.komoran.analyze("싸이는 가수다").getPlainText());
         System.out.println(this.komoran.analyze("센트롤이").getPlainText());
         System.out.println(this.komoran.analyze("센트롤이").getTokenList());
@@ -210,16 +212,21 @@ public class KomoranTest {
     @Test
     public void analyzeWithThreadingSpeedTest() {
         List<String> lines = FileUtil.load2List("user_data/wiki.titles");
-
+        System.out.println("Load done");
         ElapsedTimeChecker.checkBeginTime("START");
         long avgElapsedTime = 0;
 
         for (int i = 0; i < 5; i++) {
-
+            int count = 0;
             long begin = System.currentTimeMillis();
 
             for (String line : lines) {
+                System.out.println(count+" : "+line);
                 KomoranResult komoranResult = this.komoran.analyze(line);
+                count += 1;
+                if (count >= 10000) {
+                    break;
+                }
             }
 
             long end = System.currentTimeMillis();
@@ -227,24 +234,9 @@ public class KomoranTest {
             System.out.println("Elapsed time : " + (end - begin));
         }
 
-        System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
+        System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
         ElapsedTimeChecker.checkEndTime("START");
 
         ElapsedTimeChecker.printTimes();
-//        avgElapsedTime = 0;
-
-//        for (int i = 0; i < 5; i++) {
-//
-//            long begin = System.currentTimeMillis();
-//
-//            for (String line : lines) {
-//                KomoranResult komoranResult = this.komoran.analyze(line, 2);
-//            }
-//
-//            long end = System.currentTimeMillis();
-//            avgElapsedTime += (end - begin);
-//            System.out.println("Elapsed time : " + (end - begin));
-//        }
-//        System.out.println("Avg. elapsed time : "+(avgElapsedTime/10.0));
     }
 }
