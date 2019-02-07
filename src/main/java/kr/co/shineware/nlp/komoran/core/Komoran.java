@@ -22,7 +22,10 @@ import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.constant.SCORE;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
-import kr.co.shineware.nlp.komoran.core.model.*;
+import kr.co.shineware.nlp.komoran.core.model.ContinuousSymbolInfo;
+import kr.co.shineware.nlp.komoran.core.model.Lattice;
+import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
+import kr.co.shineware.nlp.komoran.core.model.Resources;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
@@ -32,10 +35,7 @@ import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
-import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
-import kr.co.shineware.nlp.komoran.util.MapRunnable;
-import kr.co.shineware.nlp.komoran.util.ParserRunnable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
@@ -43,7 +43,6 @@ import kr.co.shineware.util.common.string.StringUtil;
 import java.io.*;
 import java.lang.Character.UnicodeBlock;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -55,8 +54,6 @@ public class Komoran implements Cloneable {
     private KoreanUnitParser unitParser;
 
     private HashMap<String, List<Pair<String, String>>> fwd;
-
-//    ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     public Komoran(String modelPath) {
         this.resources = new Resources();
@@ -126,33 +123,32 @@ public class Komoran implements Cloneable {
 
     }
 
-    public KomoranResult analyze(String sentence, int thread) {
+    public List<KomoranResult> analyze(List<String> sentences, int thread) {
 
-        List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
+        List<KomoranResult> komoranResultList = new ArrayList<>();
 
-        String[] words = sentence.replaceAll("[ ]+", " ").split(" ");
-        for (String word : words) {
-            KomoranCallable komoranCallable = new KomoranCallable(this, word);
-//            komoranResultList.add(executor.submit(komoranCallable));
-        }
+        try {
+            List<Future<KomoranResult>> komoranResultFutureList = new ArrayList<>();
+            ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
 
-        List<LatticeNode> latticeNodes = new ArrayList<>();
-        StringBuilder jasoUnits = new StringBuilder();
-        for (Future<KomoranResult> komoranResultFuture : komoranResultList) {
-            try {
-                KomoranResult komoranResult = komoranResultFuture.get();
-                latticeNodes.addAll(komoranResult.getResultNodeList());
-                jasoUnits.append(komoranResult.getJasoUnits());
-            } catch (Exception e) {
-                e.printStackTrace();
+            for (String line : sentences) {
+                KomoranCallable komoranCallable = new KomoranCallable(this, line);
+                komoranResultFutureList.add(executor.submit(komoranCallable));
             }
+
+            for (Future<KomoranResult> komoranResultFuture : komoranResultFutureList) {
+                komoranResultList.add(komoranResultFuture.get());
+            }
+            executor.shutdown();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return new KomoranResult(latticeNodes, jasoUnits.toString());
+
+        return komoranResultList;
     }
 
     public KomoranResult analyze(String sentence) {
-
-        ElapsedTimeChecker.checkBeginTime("INIT");
 
         FindContext<List<ScoredTag>> observationFindContext;
         FindContext<List<IrregularNode>> irregularFindContext;
@@ -169,23 +165,15 @@ public class Komoran implements Cloneable {
 
         List<LatticeNode> resultList = new ArrayList<>();
 
-        RegularParser regularParser = new RegularParser(this.resources);
-        IrregularParser irregularParser = new IrregularParser(this.resources);
-
         Lattice lattice = new Lattice(this.resources);
         lattice.setUnitParser(this.unitParser);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
         ContinuousSymbolInfo continuousSymbolInfo = new ContinuousSymbolInfo();
 
-        ElapsedTimeChecker.checkEndTime("INIT");
-
-        ElapsedTimeChecker.checkBeginTime("SPLIT_JASO");
         //자소 단위로 분할
         String jasoUnits = unitParser.parse(sentence);
         List<Pair<Character, KoreanUnitParser.UnitType>> jasoUnitsWithType = unitParser.parseWithType(sentence);
-
-        ElapsedTimeChecker.checkEndTime("SPLIT_JASO");
 
         int length = jasoUnits.length();
         //start 노드 또는 end 노드의 바로 다음 인덱스
@@ -195,67 +183,28 @@ public class Komoran implements Cloneable {
 
         for (int i = 0; i < length; i++) {
 
-            ElapsedTimeChecker.checkBeginTime("FWD");
             //기분석 사전
             int skipIdx = this.lookupFwd(lattice, jasoUnits, i);
             if (skipIdx != -1) {
                 i = skipIdx - 1;
                 continue;
             }
-            ElapsedTimeChecker.checkEndTime("FWD");
 
             //띄어쓰기인 경우
-            ElapsedTimeChecker.checkBeginTime("BRIDGE");
             if (jasoUnits.charAt(i) == ' ') {
                 this.consumeContiniousSymbolParserBuffer(lattice, i, continuousSymbolInfo);
                 this.bridgeToken(lattice, i, jasoUnits, prevStartIdx);
                 prevStartIdx = i + 1;
             }
-            ElapsedTimeChecker.checkEndTime("BRIDGE");
 
-            ElapsedTimeChecker.checkBeginTime("SYMBOL");
             this.continiousSymbolParsing(lattice, jasoUnits.charAt(i), i, continuousSymbolInfo); //숫자, 영어, 외래어 파싱
             this.symbolParsing(lattice, jasoUnits.charAt(i), i); // 기타 심볼 파싱
-            ElapsedTimeChecker.checkEndTime("SYMBOL");
-            ElapsedTimeChecker.checkBeginTime("USER_DIC");
+
             this.userDicParsing(lattice, userDicFindContext, jasoUnits.charAt(i), i); //사용자 사전 적용
-            ElapsedTimeChecker.checkEndTime("USER_DIC");
 
-            // TODO: 2019-01-29 regular, irregular 쓰레딩으로 처리 필요. RegularParser와 IrregularParser의 인터페이스 통일 필요
-            ElapsedTimeChecker.checkBeginTime("REGULAR");
-            regularParser.setParseInfo(lattice, observationFindContext, jasoUnits.charAt(i), i);
-            irregularParser.setParseInfo(lattice, irregularFindContext, jasoUnits.charAt(i), i);
-
-            Thread regularParserThread = new Thread(new ParserRunnable(regularParser));
-            Thread irregularParserThread = new Thread(new ParserRunnable(irregularParser));
-
-            regularParserThread.start();
-            irregularParserThread.start();
-            try {
-                regularParserThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
-                irregularParserThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(regularParserThread.isAlive()){
-                System.err.println("ERROR!");
-            }
-            if(irregularParserThread.isAlive()){
-                System.err.println("ERROR!");
-            }
-//            this.regularParsing(lattice, observationFindContext, jasoUnits.charAt(i), i); //일반규칙 파싱
-            ElapsedTimeChecker.checkEndTime("REGULAR");
-            ElapsedTimeChecker.checkBeginTime("IRREGULAR");
-//            this.irregularParsing(lattice, irregularFindContext, jasoUnits.charAt(i), i); //불규칙 파싱
-            ElapsedTimeChecker.checkEndTime("IRREGULAR");
-            ElapsedTimeChecker.checkBeginTime("IRREGULAR_EXT");
+            this.regularParsing(lattice, observationFindContext, jasoUnits.charAt(i), i); //일반규칙 파싱
+            this.irregularParsing(lattice, irregularFindContext, jasoUnits.charAt(i), i); //불규칙 파싱
             this.irregularExtends(lattice, jasoUnits.charAt(i), i); //불규칙 확장
-            ElapsedTimeChecker.checkEndTime("IRREGULAR_EXT");
-
         }
 
         this.consumeContiniousSymbolParserBuffer(lattice, jasoUnits, continuousSymbolInfo);
