@@ -5,7 +5,6 @@ import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
-import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
@@ -16,10 +15,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class KomoranTest {
 
@@ -90,48 +85,33 @@ public class KomoranTest {
     }
 
     @Test
-    public void executorServiceTest() {
+    public void bulkAnalyzeSpeedTest() {
+        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+        System.out.println("Load done");
+        System.out.println(lines.size());
+        long avgElapsedTime = 0;
 
-        long begin = System.currentTimeMillis();
-        this.komoran.analyzeTextFile("user_data/wiki.titles", "analyze_result.txt", 2);
-        long end = System.currentTimeMillis();
+        for (int i = 0; i < 5; i++) {
+            long begin = System.currentTimeMillis();
+            List<KomoranResult> komoranResultList = this.komoran.analyze(lines, 4);
+            long end = System.currentTimeMillis();
+            avgElapsedTime += (end - begin);
+            System.out.println("Elapsed time : " + (end - begin));
+        }
 
-        System.out.println("Elapsed time : " + (end - begin));
+        System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
+
+        ElapsedTimeChecker.printTimes();
     }
 
     @Test
-    public void multiThreadSpeedTest() throws ExecutionException, InterruptedException, IOException {
+    public void textFileAnalyzeTest() {
 
-        for (int i = 0; i < 10; i++) {
+        long begin = System.currentTimeMillis();
+        this.komoran.analyzeTextFile("user_data/wiki.titles", "analyze_result.txt", 4);
+        long end = System.currentTimeMillis();
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
-
-            List<String> lines = FileUtil.load2List("user_data/wiki.titles");
-
-            long begin = System.currentTimeMillis();
-
-            List<Future<KomoranResult>> komoranList = new ArrayList<>();
-            ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
-
-
-            for (String line : lines) {
-                KomoranCallable komoranCallable = new KomoranCallable(this.komoran, line);
-                komoranList.add(executor.submit(komoranCallable));
-            }
-
-            for (Future<KomoranResult> komoranResultFuture : komoranList) {
-                KomoranResult komoranResult = komoranResultFuture.get();
-                bw.write(komoranResult.getPlainText());
-                bw.newLine();
-            }
-
-
-            long end = System.currentTimeMillis();
-
-            bw.close();
-            executor.shutdown();
-            System.out.println("Elapsed time : " + (end - begin));
-        }
+        System.out.println("Elapsed time : " + (end - begin));
     }
 
     @Test
@@ -192,51 +172,5 @@ public class KomoranTest {
         System.out.println(this.komoran.analyze("난").getTokenList());
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑").getTokenList());
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?").getTokenList());
-    }
-
-    @Test
-    public void analyzeWithThreading() {
-        this.komoran.setUserDic("user_data/dic.user");
-        KomoranResult komoranResult = this.komoran.analyze("바람과 함께 사라지다", 2);
-        System.out.println(komoranResult.getPlainText());
-        System.out.println(komoranResult.getList());
-        System.out.println(komoranResult.getTokenList());
-        System.out.println();
-
-        komoranResult = this.komoran.analyze("바람과 함께 사라지다");
-        System.out.println(komoranResult.getPlainText());
-        System.out.println(komoranResult.getList());
-        System.out.println(komoranResult.getTokenList());
-    }
-
-    @Test
-    public void analyzeWithThreadingSpeedTest() {
-        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
-        System.out.println("Load done");
-        ElapsedTimeChecker.checkBeginTime("START");
-        long avgElapsedTime = 0;
-
-        for (int i = 0; i < 5; i++) {
-            int count = 0;
-            long begin = System.currentTimeMillis();
-
-            for (String line : lines) {
-                System.out.println(count+" : "+line);
-                KomoranResult komoranResult = this.komoran.analyze(line);
-                count += 1;
-                if (count >= 10000) {
-                    break;
-                }
-            }
-
-            long end = System.currentTimeMillis();
-            avgElapsedTime += (end - begin);
-            System.out.println("Elapsed time : " + (end - begin));
-        }
-
-        System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
-        ElapsedTimeChecker.checkEndTime("START");
-
-        ElapsedTimeChecker.printTimes();
     }
 }
