@@ -30,12 +30,18 @@ public class Lattice {
     private double prevMaxScore;
     private LatticeNode prevMaxNode;
     private int prevMaxIdx;
+    private int nbest;
 
-    public Lattice(Resources resource) {
+    public Lattice(Resources resource, int nbest) {
         this.setPosTable(resource.getTable());
         this.setTransition(resource.getTransition());
         this.setObservation(resource.getObservation());
         this.init();
+        this.nbest = nbest;
+    }
+
+    public Lattice(Resources resource) {
+        this(resource, 1);
     }
 
     private void init() {
@@ -181,14 +187,99 @@ public class Lattice {
             //			this.prevMaxScore = Double.NEGATIVE_INFINITY;
             //이전 node list에 포함된 node 중 현재 node와 연결 시 값을 최대로 하는 node의 인덱스를 찾음
             //			this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodes,tagId,morph);
-            LatticeNode latticeNode = this.getMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score);
+            List<LatticeNode> nbestLatticeNodeList = this.getNbestMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score, this.nbest);
 
-            if (latticeNode != null) {
-                this.appendNode(latticeNode);
+            if (nbestLatticeNodeList != null) {
+                for (LatticeNode latticeNode : nbestLatticeNodeList) {
+                    this.appendNode(latticeNode);
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    private List<LatticeNode> getNbestMaxTransitionNodeFromPrevNodes(
+            List<LatticeNode> prevLatticeNodes, int beginIdx, int endIdx,
+            String morph, String tag, int tagId, double score, int nbest) {
+
+        List<LatticeNode> nbestPrevNodeList = new ArrayList<>();
+        int latticeNodeIdx = -1;
+        for (LatticeNode prevLatticeNode : prevLatticeNodes) {
+            latticeNodeIdx++;
+            //불규칙인경우
+            if (prevLatticeNode.getMorphTag().getTagId() == -1) {
+                continue;
+            }
+            int prevTagId;
+            String prevMorph;
+            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
+                prevTagId = this.getPosTable().getId(SYMBOL.START);
+                prevMorph = SYMBOL.START;
+            } else {
+                prevTagId = prevLatticeNode.getMorphTag().getTagId();
+                prevMorph = prevLatticeNode.getMorphTag().getMorph();
+            }
+            //전이 확률 값 가져옴
+            Double transitionScore = this.transition.get(prevTagId, tagId);
+            if (transitionScore == null) {
+                continue;
+            }
+
+            //자소 결합규칙 체크
+            if (tagId == this.posTable.getId(SYMBOL.JKO)) {
+                if (this.hasJongsung(prevMorph)) {
+                    if (morph.charAt(0) != 'ㅇ') {
+                        continue;
+                    }
+                } else {
+                    if (morph.charAt(0) == 'ㅇ') {
+                        continue;
+                    }
+                }
+            } else if (tagId == this.posTable.getId(SYMBOL.JKS)
+                    || tagId == this.posTable.getId(SYMBOL.JKC)) {
+                if (this.hasJongsung(prevMorph)) {
+                    if (morph.charAt(0) == 'ㄱ' && morph.charAt(1) == 'ㅏ') {
+                        continue;
+                    }
+                } else {
+                    if (morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ') {
+                        continue;
+                    }
+                }
+            }
+
+            double prevObservationScore = prevLatticeNode.getScore();
+
+            if (nbestPrevNodeList.size() < nbest) {
+                nbestPrevNodeList.add(
+                        this.makeNode(beginIdx, endIdx, morph, tag, tagId, transitionScore + prevObservationScore + score, latticeNodeIdx)
+                );
+                continue;
+            }
+
+            int nbestMinIndex = 0;
+            double nbestMinScore = nbestPrevNodeList.get(0).getScore();
+
+            for (int i = 1; i < nbestPrevNodeList.size(); i++) {
+                if (nbestMinScore > nbestPrevNodeList.get(i).getScore()) {
+                    nbestMinIndex = i;
+                    nbestMinScore = nbestPrevNodeList.get(i).getScore();
+                }
+            }
+
+            if (nbestMinScore < transitionScore + prevObservationScore + score) {
+                nbestPrevNodeList.set(
+                        nbestMinIndex,
+                        this.makeNode(beginIdx, endIdx, morph, tag, tagId, transitionScore + prevObservationScore + score, latticeNodeIdx)
+                );
+            }
+        }
+        if (nbestPrevNodeList.size() != 0) {
+            return nbestPrevNodeList;
+        }
+        return null;
     }
 
     private LatticeNode getMaxTransitionNodeFromPrevNodes(
@@ -367,20 +458,23 @@ public class Lattice {
         this.transition = transition;
     }
 
-/*    public void printLattice() {
+    public void printLattice() {
+        int totalLatticeSize = 0;
         for (int i = irrIdx; i < this.getLastIdx() + 2; i++) {
             System.out.println("[" + i + "]");
             List<LatticeNode> nodeList = this.lattice.get(i);
             if (nodeList == null) {
                 continue;
             }
+            totalLatticeSize += nodeList.size();
 
             for (LatticeNode latticeNode : nodeList) {
                 System.out.println(latticeNode);
             }
             System.out.println();
         }
-    }*/
+        System.out.println("Total lattice size : " + totalLatticeSize);
+    }
 
     public int getLastIdx() {
         return lastIdx;
@@ -463,6 +557,40 @@ public class Lattice {
 
     public void setUnitParser(KoreanUnitParser unitParser) {
         this.unitParser = unitParser;
+    }
+
+    public List<List<LatticeNode>> findNBestPath() {
+        List<List<LatticeNode>> nBestShortestPathList = new ArrayList<>();
+        int idx = this.getLastIdx() + 1;
+        //마지막 연결 노드가 없는 경우에는 null 반환
+        if (!this.lattice.containsKey(idx)) {
+            return null;
+        }
+
+        for (LatticeNode endNode : this.lattice.get(idx)) {
+            List<LatticeNode> shortestPathList = new ArrayList<>();
+            int prevLatticeEndIndex = endNode.getEndIdx();
+            LatticeNode latticeNode = endNode;
+            while (true) {
+                latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
+                //			shortestPathList.add(new Pair<>(this.unitParser.combine(latticeNode.getMorphTag().getMorph()),latticeNode.getMorphTag().getTag()));
+//			latticeNode.setMorph(this.unitParser.combine(latticeNode.getMorphTag().getMorph()));
+//			latticeNode.setMorph(latticeNode.getMorphTag().getMorph());
+                if (latticeNode.getEndIdx() < 0) {
+                    latticeNode.setEndIdx(prevLatticeEndIndex);
+                }
+                shortestPathList.add(latticeNode);
+                prevLatticeEndIndex = latticeNode.getEndIdx();
+                if (latticeNode.getBeginIdx() == 0) {
+                    break;
+                }
+            }
+
+            nBestShortestPathList.add(shortestPathList);
+
+        }
+
+        return nBestShortestPathList;
     }
 
 //    public void appendStartNode(int beginIdx) {
