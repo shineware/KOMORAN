@@ -26,6 +26,14 @@ public class KomoranTest {
     }
 
     @Test
+    public void nBestAnalyzeResultTest() {
+        List<KomoranResult> nbestResult = this.komoran.analyze("가을", 2);
+        for (KomoranResult result : nbestResult) {
+            System.out.println(result.getPlainText());
+        }
+    }
+
+    @Test
     public void notAnalyzeCombineTest() {
 
         ElapsedTimeChecker.checkBeginTime("START");

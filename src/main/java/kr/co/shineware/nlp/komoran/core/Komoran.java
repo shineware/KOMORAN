@@ -148,6 +148,100 @@ public class Komoran implements Cloneable {
         return komoranResultList;
     }
 
+    public List<KomoranResult> analyze(String sentence, int nbest) {
+
+        FindContext<List<ScoredTag>> observationFindContext;
+        FindContext<List<IrregularNode>> irregularFindContext;
+        FindContext<List<ScoredTag>> userDicFindContext = null;
+
+        observationFindContext = this.resources.getObservation().getTrieDictionary().newFindContext();
+
+        irregularFindContext = this.resources.getIrrTrie().getTrieDictionary().newFindContext();
+        if (this.userDic != null) {
+            userDicFindContext = this.userDic.getTrieDictionary().newFindContext();
+        }
+
+        sentence = sentence.replaceAll("[ ]+", " ").trim();
+
+
+        Lattice lattice = new Lattice(this.resources, nbest);
+        lattice.setUnitParser(this.unitParser);
+
+        //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
+        ContinuousSymbolInfo continuousSymbolInfo = new ContinuousSymbolInfo();
+
+        //자소 단위로 분할
+        String jasoUnits = unitParser.parse(sentence);
+        List<Pair<Character, KoreanUnitParser.UnitType>> jasoUnitsWithType = unitParser.parseWithType(sentence);
+
+        int length = jasoUnits.length();
+        //start 노드 또는 end 노드의 바로 다음 인덱스
+        //어절의 시작을 알리는 idx
+        int prevStartIdx = 0;
+        boolean inserted;
+
+        for (int i = 0; i < length; i++) {
+
+            //기분석 사전
+            int skipIdx = this.lookupFwd(lattice, jasoUnits, i);
+            if (skipIdx != -1) {
+                i = skipIdx - 1;
+                continue;
+            }
+
+            //띄어쓰기인 경우
+            if (jasoUnits.charAt(i) == ' ') {
+                this.consumeContiniousSymbolParserBuffer(lattice, i, continuousSymbolInfo);
+                this.bridgeToken(lattice, i, jasoUnits, prevStartIdx);
+                prevStartIdx = i + 1;
+            }
+
+            this.continiousSymbolParsing(lattice, jasoUnits.charAt(i), i, continuousSymbolInfo); //숫자, 영어, 외래어 파싱
+            this.symbolParsing(lattice, jasoUnits.charAt(i), i); // 기타 심볼 파싱
+
+            this.userDicParsing(lattice, userDicFindContext, jasoUnits.charAt(i), i); //사용자 사전 적용
+
+            this.regularParsing(lattice, observationFindContext, jasoUnits.charAt(i), i); //일반규칙 파싱
+            this.irregularParsing(lattice, irregularFindContext, jasoUnits.charAt(i), i); //불규칙 파싱
+            this.irregularExtends(lattice, jasoUnits.charAt(i), i); //불규칙 확장
+        }
+
+        this.consumeContiniousSymbolParserBuffer(lattice, jasoUnits, continuousSymbolInfo);
+        lattice.setLastIdx(jasoUnits.length());
+        inserted = lattice.appendEndNode();
+        //입력 문장의 끝에 END 품사가 올 수 없는 경우
+        if (!inserted) {
+            double NAPenaltyScore = SCORE.NA;
+            if (prevStartIdx != 0) {
+                NAPenaltyScore += lattice.getNodeList(prevStartIdx).get(0).getScore();
+            }
+            String combinedWord = unitParser.combineWithType(jasoUnitsWithType.subList(prevStartIdx, jasoUnits.length()));
+            LatticeNode latticeNode = new LatticeNode(prevStartIdx, jasoUnits.length(), new MorphTag(combinedWord, SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)), NAPenaltyScore);
+            latticeNode.setPrevNodeIdx(0);
+            lattice.appendNode(latticeNode);
+            lattice.appendEndNode();
+        }
+
+        List<List<LatticeNode>> nBestPath = lattice.findNBestPath();
+
+        List<KomoranResult> nbestResultList = new ArrayList<>();
+
+        //입력 문장 전체가 미분석인 경우
+        if (nBestPath == null) {
+            List<LatticeNode> resultList = new ArrayList<>();
+            resultList.add(new LatticeNode(0, jasoUnits.length(), new MorphTag(sentence, "NA", -1), SCORE.NA));
+            nbestResultList.add(new KomoranResult(resultList, jasoUnits));
+        } else {
+            for (List<LatticeNode> shortestPath : nBestPath) {
+                Collections.reverse(shortestPath);
+                List<LatticeNode> resultList = new ArrayList<>(shortestPath);
+                nbestResultList.add(new KomoranResult(resultList, jasoUnits));
+            }
+        }
+
+        return nbestResultList;
+    }
+
     public KomoranResult analyze(String sentence) {
 
         FindContext<List<ScoredTag>> observationFindContext;
