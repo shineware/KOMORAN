@@ -66,7 +66,14 @@ public class Lattice {
         if (fwdResultList.size() == 1) {
             Pair<String, String> morphPosPair = fwdResultList.get(0);
             this.put(beginIdx, endIdx, morphPosPair.getFirst(), morphPosPair.getSecond(), this.posTable.getId(morphPosPair.getSecond()), 0.0);
-        } else {
+        }
+
+        //TODO : find solution for better code to simplify calculation of FWD transition score
+        //이 로직은 뭐지? 왜 이렇게 만들어 놨을까..
+        //아..기분석 결과가 여러 형태소로 이뤄진 경우에는 그 형태소 간의 전이확률을 구해야하는데
+        //이거 때문에 irrIdx라는 가상의 index를 주고 그걸로 잇는구나.. 이게 최선인가?
+        //이건 코드 짠 사람이 아니면 이해하기 어려울 것 같다. 개선이 필요해 보임. 일단 irrIdx를 전역 변수로 쓰고 있는 것 자체가 별로임
+        else {
             for (int i = 0; i < fwdResultList.size(); i++) {
                 Pair<String, String> morphPosPair = fwdResultList.get(i);
                 if (i == 0) {
@@ -83,7 +90,9 @@ public class Lattice {
 
     public void put(int beginIdx, int endIdx, IrregularNode irregularNode) {
         //현재 node를 연결 시킬 이전 node list들을 가져옴
-        List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
+        List<LatticeNode> prevLatticeNodes = this.lattice.get(beginIdx);
+
+        //아 이거 아래 코드는 심오한데....
         if (prevLatticeNodes != null) {
             this.prevMaxIdx = -1;
             this.prevMaxNode = null;
@@ -119,10 +128,6 @@ public class Lattice {
                 }
             }
         }
-//        else {
-//            LatticeNode firstNode = this.makeNode(beginIdx, endIdx, morphPosIdList.get(0).getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, prevMaxScore, prevMaxIdx);
-//            this.appendNode(firstNode);
-//        }
 
         for (int i = 1; i < morphPosIdList.size(); i++) {
             Pair<String, Integer> morphPosId = morphPosIdList.get(i);
@@ -181,12 +186,7 @@ public class Lattice {
         List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
 
         if (prevLatticeNodes != null) {
-            //			this.prevMaxIdx = -1;
-            //			this.prevMaxNode = null;
-            //			//prevMaxScore는 이전 노드까지의 누적된 score와 현재 노드 사이의 전이확률 값이 계산된 결과임
-            //			this.prevMaxScore = Double.NEGATIVE_INFINITY;
-            //이전 node list에 포함된 node 중 현재 node와 연결 시 값을 최대로 하는 node의 인덱스를 찾음
-            //			this.getMaxTransitionInfoFromPrevNodes(prevLatticeNodes,tagId,morph);
+
             List<LatticeNode> nbestLatticeNodeList = this.getNbestMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score, this.nbest);
 
             if (nbestLatticeNodeList != null) {
@@ -397,32 +397,6 @@ public class Lattice {
             if (transitionScore == null) {
                 continue;
             }
-
-            //자소 결합규칙 체크
-//            if (null != null) {
-//                if (tagId == this.posTable.getId(SYMBOL.JKO)) {
-//                    if (this.hasJongsung(prevMorph)) {
-//                        if (((String) null).charAt(0) != 'ㅇ') {
-//                            continue;
-//                        }
-//                    } else {
-//                        if (((String) null).charAt(0) == 'ㅇ') {
-//                            continue;
-//                        }
-//                    }
-//                } else if (tagId == this.posTable.getId(SYMBOL.JKS)
-//                        || tagId == this.posTable.getId(SYMBOL.JKC)) {
-//                    if (this.hasJongsung(prevMorph)) {
-//                        if (((String) null).charAt(0) == 'ㄱ' && ((String) null).charAt(1) == 'ㅏ') {
-//                            continue;
-//                        }
-//                    } else {
-//                        if (((String) null).charAt(0) == 'ㅇ' && ((String) null).charAt(1) == 'ㅣ') {
-//                            continue;
-//                        }
-//                    }
-//                }
-//            }
 
             double prevObservationScore = prevLatticeNode.getScore();
 
