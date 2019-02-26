@@ -73,6 +73,7 @@ public class Lattice {
         //아..기분석 결과가 여러 형태소로 이뤄진 경우에는 그 형태소 간의 전이확률을 구해야하는데
         //이거 때문에 irrIdx라는 가상의 index를 주고 그걸로 잇는구나.. 이게 최선인가?
         //이건 코드 짠 사람이 아니면 이해하기 어려울 것 같다. 개선이 필요해 보임. 일단 irrIdx를 전역 변수로 쓰고 있는 것 자체가 별로임
+        //어떻게 할까..생각해보면 lattice 자체는 thread safe 하지 않은데.. lattice를 생성하는 로직이 thread safe하기 때문에 이 로직이 가능한 구조인데.. 어떻게 가져가야할까..고민을 좀 해보자..
         else {
             for (int i = 0; i < fwdResultList.size(); i++) {
                 Pair<String, String> morphPosPair = fwdResultList.get(i);
