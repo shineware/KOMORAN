@@ -1,0 +1,49 @@
+server:
+  port: 8888
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 50MB
+      max-request-size: 50MB
+  datasource:
+#    url: jdbc:h2:mem:AdminDB;
+    url: jdbc:h2:./AdminDB;
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: kr.co.shineware.nlp.komoran.admin.config.CustomH2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: false
+        format_sql: true
+        jdbc:
+          batch_size: 50
+  h2:
+    console:
+      enabled: true
+      path: /console
+      settings:
+        trace: false
+        web-allow-others: false
+
+files:
+  default:
+    basedir: defaults/
+  upload:
+    basedir: uploads/
+  name:
+    dicword: dic.word
+    grammarin: grammar.in
+    dicuser: dic.user
+    fwduser: fwd.user
+
+logging:
+  level:
+    kr.co.shineware.nlp.komoran.admin: TRACE
