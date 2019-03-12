@@ -1,5 +1,6 @@
 ## (WIP) KOMORAN Admin
 * KOMORAN Admin은 현재 개발 진행 중입니다.
+* 필요한 기능이 있으신가요? [기능 추가 요청](https://github.com/komoran/admin/issues/new?template=FEATURE_REQUEST.md)을 남겨주세요!
 
 ### 개요
 * KOMORANAdmin은 [한국어 형태소 분석기 KOMORAN](https://github.com/shin285/KOMORAN)의 사전들을 관리하는 도구입니다.
@@ -11,10 +12,12 @@
 * Chrome Browser
 
 #### 설치
-* Git을 이용하여 KOMORANAdmin 저장소를 복제합니다.
+* 개발 중인 KOMORAN Admin을 설치하시려면 다음과 같이 진행해주세요.
+* Git을 이용하여 komoran/admin 저장소를 복제합니다.
   ```sh
-    git clone https://github.com/9bow/KOMORANAdmin
+    git clone https://github.com/komoran/admin KOMORANAdmin
     cd KOMORANAdmin
+    git checkout development
   ```
 * `./gradlew bootRun`을 실행합니다.
   ```sh
