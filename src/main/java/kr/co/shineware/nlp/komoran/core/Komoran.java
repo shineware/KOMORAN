@@ -31,7 +31,6 @@ import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
-import kr.co.shineware.nlp.komoran.model.Tag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
@@ -41,7 +40,6 @@ import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
 import java.io.*;
-import java.lang.Character.UnicodeBlock;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -264,61 +262,38 @@ public class Komoran implements Cloneable {
         lattice.appendNode(endLatticeNode);
     }
 
-    private boolean symbolParsing(Lattice lattice, char jaso, int idx) {
+    private void symbolParsing(Lattice lattice, char jaso, int idx) {
 
         Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(jaso);
         //숫자
-        if (Character.isDigit(jaso)) {
-            return false;
+        if (StringUtil.isNumeric(jaso)) {
         } else if (unicodeBlock == Character.UnicodeBlock.BASIC_LATIN) {
-            //영어
-            if (((jaso >= 'A') && (jaso <= 'Z')) || ((jaso >= 'a') && (jaso <= 'z'))) {
-                return false;
-            } else if (this.resources.getObservation().getTrieDictionary().getValue("" + jaso) != null) {
-                return false;
-            } else if (jaso == ' ') {
-                return false;
-            }
-            //아스키 코드 범위 내에 사전에 없는 경우에는 기타 문자
-            else {
+            if (!isEnglishCharacter(jaso) && !isWhitespaceCharacter(jaso) && !isDictionaryEntryCharacter(jaso)) {
                 lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
-                return true;
             }
-        }
-        //한글
-        else if (unicodeBlock == UnicodeBlock.HANGUL_COMPATIBILITY_JAMO
-                || unicodeBlock == UnicodeBlock.HANGUL_JAMO
-                || unicodeBlock == UnicodeBlock.HANGUL_JAMO_EXTENDED_A
-                || unicodeBlock == UnicodeBlock.HANGUL_JAMO_EXTENDED_B
-                || unicodeBlock == UnicodeBlock.HANGUL_SYLLABLES) {
-            return false;
-        }
-        //일본어
-        else if (unicodeBlock == UnicodeBlock.KATAKANA
-                || unicodeBlock == UnicodeBlock.KATAKANA_PHONETIC_EXTENSIONS) {
-            return false;
-        }
-        //중국어
-        else if (UnicodeBlock.CJK_COMPATIBILITY.equals(unicodeBlock)
-                || UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(unicodeBlock)
-                || UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(unicodeBlock)
-                || UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(unicodeBlock)
-                || UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(unicodeBlock)) {
-            return false;
-        }
-        //그 외 문자인 경우
-        else {
+        } else if (!StringUtil.isKorean(jaso) && !StringUtil.isJapanese(jaso) && !StringUtil.isChinese(jaso)) {
             lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
-            return true;
         }
     }
 
-    private boolean userDicParsing(Lattice lattice, FindContext<List<ScoredTag>> userDicFindContext, char jaso, int curIndex) {
+    private boolean isDictionaryEntryCharacter(char jaso) {
+        return this.resources.getObservation().getTrieDictionary().getValue("" + jaso) != null;
+    }
+
+    private boolean isWhitespaceCharacter(char jaso) {
+        return jaso == ' ';
+    }
+
+    private boolean isEnglishCharacter(char jaso) {
+        return ((jaso >= 'A') && (jaso <= 'Z')) || ((jaso >= 'a') && (jaso <= 'z'));
+    }
+
+    private void userDicParsing(Lattice lattice, FindContext<List<ScoredTag>> userDicFindContext, char jaso, int curIndex) {
         //Aho-corasick TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
         Map<String, List<ScoredTag>> morphScoredTagsMap = this.getMorphScoredTagMapFromUserDic(userDicFindContext, jaso);
 
         if (morphScoredTagsMap == null || morphScoredTagsMap.size() == 0) {
-            return false;
+            return;
         }
 
         //형태소 정보만 얻어옴
@@ -335,7 +310,6 @@ public class Komoran implements Cloneable {
                 lattice.put(beginIdx, endIdx, morph, scoredTag.getTag(), scoredTag.getTagId(), scoredTag.getScore());
             }
         }
-        return true;
     }
 
     private int lookupFwd(Lattice lattice, String token, int curJasoIndex) {
@@ -509,11 +483,11 @@ public class Komoran implements Cloneable {
         }
     }
 
-    private boolean irregularParsing(Lattice lattice, FindContext<List<IrregularNode>> irregularFindContext, char jaso, int curIndex) {
+    private void irregularParsing(Lattice lattice, FindContext<List<IrregularNode>> irregularFindContext, char jaso, int curIndex) {
         //불규칙 노드들을 얻어옴
         Map<String, List<IrregularNode>> morphIrrNodesMap = this.getIrregularNodes(irregularFindContext, jaso);
         if (morphIrrNodesMap == null || morphIrrNodesMap.size() == 0) {
-            return false;
+            return;
         }
 
         //형태소 정보만 얻어옴
@@ -529,8 +503,6 @@ public class Komoran implements Cloneable {
                 this.insertLattice(lattice, beginIdx, endIdx, irregularNode);
             }
         }
-
-        return true;
     }
 
     private void insertLattice(Lattice lattice, int beginIdx, int endIdx,
