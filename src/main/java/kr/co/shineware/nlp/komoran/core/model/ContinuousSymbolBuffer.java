@@ -3,7 +3,7 @@ package kr.co.shineware.nlp.komoran.core.model;
 /**
  * Created by shin285 on 2017. 1. 23..
  */
-public class ContinuousSymbolInfo {
+public class ContinuousSymbolBuffer {
 	private String prevPos = "";
 	private String prevMorph = "";
 	private int prevBeginIdx = 0;
