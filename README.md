@@ -30,11 +30,11 @@
 
 ### Installation
 
-Please refer to the '[Installation](https://docs.komoran.fr/firststep/installation.html?utm_source=komoran-repo&utm_medium=Referral&utm_campaign=github-demo)' document.
+Please refer to the '[Installation](https://docs.komoran.kr/firststep/installation.html?utm_source=komoran-repo&utm_medium=Referral&utm_campaign=github-demo)' document.
 
 ### Quick Start
 
-Please refer to the '[Morphological Analysis Blitz in 3 minutes](https://docs.komoran.fr/firststep/tutorial.html?utm_source=komoran-repo&utm_medium=Referral&utm_campaign=github-demo)' document.
+Please refer to the '[Morphological Analysis Blitz in 3 minutes](https://docs.komoran.kr/firststep/tutorial.html?utm_source=komoran-repo&utm_medium=Referral&utm_campaign=github-demo)' document.
 
 ### Examples of use
 
