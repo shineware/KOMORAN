@@ -71,4 +71,14 @@ public enum PosType {
         return this.posName;
     }
 
+    public static boolean contains(String posNameToCheck) {
+        for (PosType pos : PosType.values()) {
+            if (pos.name().equals(posNameToCheck)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

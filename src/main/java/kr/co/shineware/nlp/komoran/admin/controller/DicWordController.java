@@ -1,17 +1,20 @@
 package kr.co.shineware.nlp.komoran.admin.controller;
 
+import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.PosType;
-import kr.co.shineware.nlp.komoran.admin.service.FileUploadService;
+import kr.co.shineware.nlp.komoran.admin.exception.GlobalBaseException;
+import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
+import kr.co.shineware.nlp.komoran.admin.exception.ServerErrorException;
+import kr.co.shineware.nlp.komoran.admin.exception.UnknownException;
 import kr.co.shineware.nlp.komoran.admin.service.DicWordService;
-import kr.co.shineware.nlp.komoran.admin.util.MessageBuilder;
+import kr.co.shineware.nlp.komoran.admin.service.FileUploadService;
+import kr.co.shineware.nlp.komoran.admin.util.ResponseDetail;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,37 +41,90 @@ public class DicWordController {
 
 
     @GetMapping(value = "/check/{token}/{pos}")
-    public JSONObject checkItem(@PathVariable("token") String token,
-                                @PathVariable("pos") PosType pos) {
-        return dicWordService.checkGivenTokenAndPosTypeExist(token, pos);
+    public ResponseDetail checkItem(@PathVariable("token") String token,
+                                    @PathVariable("pos") String posInRaw) {
+        if (token == null || token.equals("")) {
+            throw new ParameterInvalidException("token: " + token);
+        } else if (!PosType.contains(posInRaw)) {
+            throw new ParameterInvalidException("품사: " + posInRaw);
+        }
+
+        PosType pos = PosType.valueOf(posInRaw);
+        DicWord dicWordToFind = dicWordService.checkGivenTokenAndPosTypeExist(token, pos);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicWordToFind);
+
+        return responseDetail;
     }
 
 
     @PutMapping(value = "/{id}/tf")
-    public JSONObject updateTfById(@PathVariable("id") int id,
-                                   @RequestParam("tf") int tf) {
-        return dicWordService.updateTfById(id, tf);
+    public ResponseDetail updateTfById(@PathVariable("id") int id,
+                                       @RequestParam("tf") int tf) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (tf < 0) {
+            throw new ParameterInvalidException("빈도: " + tf);
+        }
+
+        DicWord dicWordToUpdate = dicWordService.updateTfById(id, tf);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicWordToUpdate);
+
+        return responseDetail;
     }
 
 
     @PutMapping(value = "/{id}/pos")
-    public JSONObject updatePosById(@PathVariable("id") int id,
-                                    @RequestParam("pos") PosType pos) {
-        return dicWordService.updatePosById(id, pos);
+    public ResponseDetail updatePosById(@PathVariable("id") int id,
+                                        @RequestParam("pos") String posInRaw) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (!PosType.contains(posInRaw)) {
+            throw new ParameterInvalidException("품사: " + posInRaw);
+        }
+
+        PosType pos = PosType.valueOf(posInRaw);
+        DicWord dicWordToUpdate = dicWordService.updatePosById(id, pos);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicWordToUpdate);
+
+        return responseDetail;
     }
 
 
     @DeleteMapping(value = "/{id}")
-    public JSONObject deleteItemById(@PathVariable("id") int id) {
-        return dicWordService.deleteItemById(id);
+    public ResponseDetail deleteItemById(@PathVariable("id") int id) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        }
+
+        DicWord dicWordToDelete = dicWordService.deleteItemById(id);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicWordToDelete);
+
+        return responseDetail;
     }
 
 
     @PostMapping(value = "/item")
-    public JSONObject addItem(@RequestParam("token") String token,
-                              @RequestParam("pos") PosType pos,
-                              @RequestParam("tf") int tf) {
-        return dicWordService.addItem(token, pos, tf);
+    public ResponseDetail addItem(@RequestParam("token") String token,
+                                  @RequestParam("pos") String posInRaw,
+                                  @RequestParam("tf") int tf) {
+        if (token == null || token.equals("")) {
+            throw new ParameterInvalidException("token: " + token);
+        } else if (!PosType.contains(posInRaw)) {
+            throw new ParameterInvalidException("품사: " + posInRaw);
+        } else if (tf < 0) {
+            throw new ParameterInvalidException("빈도: " + tf);
+        }
+
+        PosType pos = PosType.valueOf(posInRaw);
+        DicWord dicWordToAdd = dicWordService.addItem(token, pos, tf);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicWordToAdd);
+
+        return responseDetail;
     }
 
 
@@ -79,44 +135,40 @@ public class DicWordController {
 
 
     @PostMapping(value = "/upload")
-    @SuppressWarnings("unchecked")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile fileToUpload) {
-        JSONObject resultMessage = new JSONObject();
+    public ResponseDetail uploadFile(@RequestParam("file") MultipartFile fileToUpload) {
+        ResponseDetail responseDetail = new ResponseDetail();
 
         try {
             Path savedFilePath = fileUploadService.saveDicWord(fileToUpload);
 
             if (savedFilePath == null) {
-                MessageBuilder.buildErrorMessage(resultMessage, "업로드된 파일이 없습니다.");
-                return new ResponseEntity(resultMessage, HttpStatus.OK);
+                throw new ServerErrorException("업로드 파일을 찾지 못함");
             }
 
+            // TODO: 파일 업로드 시 문제 해결 방법 변경 #2
             dicWordService.importFromFile(savedFilePath);
         } catch (IOException e) {
-            e.printStackTrace();
-            MessageBuilder.buildErrorMessage(resultMessage, "업로드 중 오류가 발생하였습니다.");
-            return new ResponseEntity<>(resultMessage, HttpStatus.BAD_REQUEST);
+            throw new ServerErrorException(e.getMessage(), e.getCause());
         } catch (SecurityException e) {
-            MessageBuilder.buildErrorMessage(resultMessage, "서버에 파일을 저장할 수 없습니다.");
-            return new ResponseEntity<>(resultMessage, HttpStatus.BAD_REQUEST);
+            throw new ServerErrorException(e.getMessage(), e.getCause());
+        } catch (GlobalBaseException e) {
+            throw e;
         } catch (Exception e) {
-            MessageBuilder.buildErrorMessage(resultMessage, "업로드 중 알 수 없는 오류가 발생하였습니다. (" + e.getClass().getSimpleName() + ")");
-            return new ResponseEntity<>(resultMessage, HttpStatus.BAD_REQUEST);
+            throw new UnknownException(e.getCause());
         }
 
-        MessageBuilder.buildSuccessMessage(resultMessage);
-        return new ResponseEntity(resultMessage, HttpStatus.OK);
+        return responseDetail;
     }
 
 
     @GetMapping(value = "/download")
-    public ResponseEntity<Resource> downloadFile() {
+    public ResponseEntity<?> downloadFile() {
         String dicWordBody = dicWordService.exportToString();
         ByteArrayResource resource = new ByteArrayResource(dicWordBody.getBytes());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_PLAIN)
-                .header("Content-Disposition", "attachment; filename="+ dicWordFilename)
+                .header("Content-Disposition", "attachment; filename=" + dicWordFilename)
                 .body(resource);
     }
 
@@ -125,6 +177,11 @@ public class DicWordController {
     public JSONObject getDicWordList(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                      @RequestParam(value = "size", required = false, defaultValue = "20") int size,
                                      @RequestParam Map<String, String> allParameters) {
+        if (page < 1) {
+            throw new ParameterInvalidException("page: "+ page);
+        } else if (size < 1) {
+            throw new ParameterInvalidException("size: "+ size);
+        }
 
         return dicWordService.getDicWordList(page, size, allParameters);
     }

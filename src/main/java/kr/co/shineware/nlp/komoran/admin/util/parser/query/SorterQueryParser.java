@@ -34,7 +34,9 @@ public class SorterQueryParser extends QueryParser {
         ArrayList<HashMap<String, String>> sorters = this.parse(inputParam);
         Sort sortBy = null;
 
-        if (sorters.isEmpty()) {
+        if (sorters == null) {
+            return null;
+        } else if (sorters.isEmpty()) {
             sortBy = Sort.by("token").ascending();
         } else {
             for (HashMap<String, String> sorter : sorters) {

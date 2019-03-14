@@ -2,12 +2,13 @@ package kr.co.shineware.nlp.komoran.admin.service;
 
 import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.PosType;
+import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
+import kr.co.shineware.nlp.komoran.admin.exception.ResourceDuplicatedException;
+import kr.co.shineware.nlp.komoran.admin.exception.ResourceNotFoundException;
 import kr.co.shineware.nlp.komoran.admin.repository.DicWordRepository;
-import kr.co.shineware.nlp.komoran.admin.util.MessageBuilder;
 import kr.co.shineware.nlp.komoran.admin.util.parser.query.FilterQueryParser;
 import kr.co.shineware.nlp.komoran.admin.util.parser.query.SorterQueryParser;
 import kr.co.shineware.nlp.komoran.admin.util.parser.stream.DicWordStreamParser;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,115 +36,109 @@ public class DicWordService {
     private DicWordRepository dicWordRepository;
 
 
+    private DicWord getDicWordItem(int id) {
+        DicWord dicWord = dicWordRepository.findById(id);
+
+        if (dicWord == null) {
+            throw new ResourceNotFoundException("ID: " + id);
+        }
+
+        return dicWord;
+    }
+
+
     @Transactional
-    @SuppressWarnings("unchecked")
-    public JSONObject checkGivenTokenAndPosTypeExist(String token, PosType pos) {
-        JSONObject result = new JSONObject();
-        JSONArray resultRows = new JSONArray();
+    public DicWord checkGivenTokenAndPosTypeExist(String token, PosType pos) {
+        if (token == null || token.equals("")) {
+            throw new ParameterInvalidException("token: " + token);
+        } else if (pos == null || pos.getPosName().equals("")) {
+            throw new ParameterInvalidException("품사: []");
+        }
 
         DicWord dicWordToFind = dicWordRepository.findByTokenAndPos(token, pos);
 
         if (dicWordToFind == null) {
-            MessageBuilder.buildErrorMessage(result, "해당하는 단어/품사가 존재하지 않습니다.");
-        } else {
-            MessageBuilder.buildSuccessMessage(result);
-            resultRows.add(dicWordToFind);
+            throw new ResourceNotFoundException(token + "/" + pos.getPosName());
         }
 
-        result.put("rows", resultRows);
-
-        return result;
+        return dicWordToFind;
     }
 
 
     @Transactional
-    public JSONObject updateTfById(int id, int tf) {
-        JSONObject result = new JSONObject();
-        DicWord dicWordToUpdate = dicWordRepository.findById(id);
-
-        if (tf < 0) {
-            MessageBuilder.buildErrorMessage(result, "잘못된 빈도입니다.");
-            return result;
+    public DicWord updateTfById(int id, int tf) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (tf < 0) {
+            throw new ParameterInvalidException("빈도: " + tf);
         }
 
-        if (dicWordToUpdate == null) {
-            MessageBuilder.buildErrorMessage(result, "ID가 존재하지 않습니다.");
-        } else {
-            dicWordToUpdate.setTf(tf);
-            dicWordRepository.save(dicWordToUpdate);
+        DicWord dicWordToUpdate = getDicWordItem(id);
 
-            MessageBuilder.buildSuccessMessage(result);
-        }
+        dicWordToUpdate.setTf(tf);
+        dicWordRepository.save(dicWordToUpdate);
 
-        return result;
+        return dicWordToUpdate;
     }
 
 
     @Transactional
-    public JSONObject updatePosById(int id, PosType pos) {
-        JSONObject result = new JSONObject();
-        DicWord dicWordToUpdate = dicWordRepository.findById(id);
-        DicWord duplicateItem = null;
-
-        if (pos == null || pos.equals("")) {
-            MessageBuilder.buildErrorMessage(result, "존재하지 않는 품사입니다.");
-            return result;
+    public DicWord updatePosById(int id, PosType pos) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (pos == null || pos.getPosName().equals("")) {
+            throw new ParameterInvalidException("품사: []");
         }
 
-        if (dicWordToUpdate != null) {
-            duplicateItem = dicWordRepository.findByTokenAndPos(dicWordToUpdate.getToken(), pos);
+        DicWord dicWordToUpdate = getDicWordItem(id);
+
+        DicWord duplicateItem = dicWordRepository.findByTokenAndPos(dicWordToUpdate.getToken(), pos);
+
+        if (duplicateItem != null && duplicateItem.getId() != id) {
+            throw new ResourceDuplicatedException(duplicateItem.getToken() + "/" + duplicateItem.getPos());
         }
 
-        if (dicWordToUpdate == null) {
-            MessageBuilder.buildErrorMessage(result, "ID가 존재하지 않습니다.");
-        } else if (duplicateItem != null) {
-            MessageBuilder.buildErrorMessage(result, "해당 단어/품사는 이미 등록되어 있습니다.");
-        } else {
-            dicWordToUpdate.setPos(pos);
-            dicWordRepository.save(dicWordToUpdate);
+        dicWordToUpdate.setPos(pos);
+        dicWordRepository.save(dicWordToUpdate);
 
-            MessageBuilder.buildSuccessMessage(result);
-        }
-
-        return result;
+        return dicWordToUpdate;
     }
 
 
     @Transactional
-    public JSONObject deleteItemById(int id) {
-        JSONObject result = new JSONObject();
-        DicWord dicWordToDelete = dicWordRepository.findById(id);
-
-        if (dicWordToDelete == null) {
-            MessageBuilder.buildErrorMessage(result, "ID가 존재하지 않습니다.");
-        } else {
-            dicWordRepository.delete(dicWordToDelete);
-
-            MessageBuilder.buildSuccessMessage(result);
+    public DicWord deleteItemById(int id) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
         }
 
-        return result;
+        DicWord dicWordToDelete = getDicWordItem(id);
+
+        dicWordRepository.delete(dicWordToDelete);
+
+        return dicWordToDelete;
     }
 
 
     @Transactional
-    @SuppressWarnings("unchecked")
-    public JSONObject addItem(String token, PosType pos, int tf) {
-        JSONObject result = new JSONObject();
+    public DicWord addItem(String token, PosType pos, int tf) {
+        if (token == null || token.equals("")) {
+            throw new ParameterInvalidException("token: " + token);
+        } else if (pos == null || pos.getPosName().equals("")) {
+            throw new ParameterInvalidException("품사: []");
+        } else if (tf < 0) {
+            throw new ParameterInvalidException("빈도: " + tf);
+        }
+
         DicWord duplicateItem = dicWordRepository.findByTokenAndPos(token, pos);
 
         if (duplicateItem != null) {
-            MessageBuilder.buildErrorMessage(result, "해당 단어/품사는 이미 등록되어 있습니다.");
-        } else if (tf < 0) {
-            MessageBuilder.buildErrorMessage(result, "잘못된 빈도입니다.");
-        } else {
-            DicWord dicWordToAdd = new DicWord(token, pos, tf);
-            dicWordRepository.save(dicWordToAdd);
-            MessageBuilder.buildSuccessMessage(result);
-            result.put("data", dicWordToAdd);
+            throw new ResourceDuplicatedException(duplicateItem.getToken() + "/" + duplicateItem.getPos());
         }
 
-        return result;
+        DicWord dicWordToAdd = new DicWord(token, pos, tf);
+        dicWordRepository.save(dicWordToAdd);
+
+        return dicWordToAdd;
     }
 
 
@@ -160,25 +156,19 @@ public class DicWordService {
     public void importFromFile(Path savedFilePath) throws Exception {
         Stream<String> lines = Files.lines(savedFilePath);
 
-        logger.debug("Purging all data before importing...");
+        // TODO: 파일 업로드 시 문제 해결 방법 변경 #2
+        // @formatter:off
+        List<DicWord> dicWordsToInsert = lines.filter(line -> !line.isEmpty())
+                                              .filter(line -> line.split("\t").length >= 2)
+                                              .flatMap(DicWordStreamParser::parse)
+                                              .distinct()
+                                              .collect(Collectors.toList());
+        // @formatter:on
+
         dicWordRepository.deleteAll();
         dicWordRepository.flush();
-        logger.debug("Purged");
 
-        logger.debug("Importing from file - " + savedFilePath);
-//        lines.filter(line -> !line.isEmpty())
-//                .filter(line -> line.split("\t").length >= 2)
-//                .flatMap(DicWordStreamParser::parse)
-//                .distinct()
-//                .forEach(dicWordRepository::save);
-
-        dicWordRepository.saveAll(
-                lines.filter(line -> !line.isEmpty())
-                .filter(line -> line.split("\t").length >= 2)
-                .flatMap(DicWordStreamParser::parse)
-                .distinct()
-                .collect(Collectors.toList())
-        );
+        dicWordRepository.saveAll(dicWordsToInsert);
 
         lines.close();
         dicWordRepository.flush();
@@ -198,50 +188,55 @@ public class DicWordService {
         JSONObject result = new JSONObject();
         Page<DicWord> pageResult;
 
-        SorterQueryParser sorterQueryParser = new SorterQueryParser();
-        FilterQueryParser filterQueryParser = new FilterQueryParser();
-
-        Sort sortBy = sorterQueryParser.getSorter(allParameters);
-        HashMap<String, String> filters = filterQueryParser.getFilter(allParameters);
-
-        logger.debug("Sorters: " + sortBy.toString());
-        logger.debug("Filters: " + filters.toString());
-
-        if (filters.containsKey("token") && filters.containsKey("pos") && filters.containsKey("tf")) {
-            // token && pos && tf
-            pageResult = dicWordRepository.findByTokenContainingAndPosAndTfGreaterThanEqual(
-                    filters.get("token"), PosType.valueOf(filters.get("pos")), Integer.valueOf(filters.get("tf")),
-                    PageRequest.of(page - 1, size, sortBy));
-        } else if (filters.containsKey("token") && filters.containsKey("pos")) {
-            // token && pos
-            pageResult = dicWordRepository.findByTokenContainingAndPos(
-                    filters.get("token"), PosType.valueOf(filters.get("pos")),
-                    PageRequest.of(page - 1, size, sortBy));
-        } else if (filters.containsKey("token") && filters.containsKey("tf")) {
-            // token && tf
-            pageResult = dicWordRepository.findByTokenContainingAndTfGreaterThanEqual(
-                    filters.get("token"), Integer.valueOf(filters.get("tf")),
-                    PageRequest.of(page - 1, size, sortBy));
-        } else if (filters.containsKey("pos") && filters.containsKey("tf")) {
-            // pos && tf
-            pageResult = dicWordRepository.findByPosAndTfGreaterThanEqual(
-                    PosType.valueOf(filters.get("pos")), Integer.valueOf(filters.get("tf")),
-                    PageRequest.of(page - 1, size, sortBy));
-        } else if (filters.containsKey("token")) {
-            // token
-            pageResult = dicWordRepository.findByTokenContaining(
-                    filters.get("token"), PageRequest.of(page - 1, size, sortBy));
-        } else if (filters.containsKey("pos")) {
-            // pos
-            pageResult = dicWordRepository.findByPos(
-                    PosType.valueOf(filters.get("pos")), PageRequest.of(page - 1, size, sortBy));
-        } else if (filters.containsKey("tf")) {
-            // tf
-            pageResult = dicWordRepository.findByTfGreaterThanEqual(
-                    Integer.valueOf(filters.get("tf")), PageRequest.of(page - 1, size, sortBy));
+        if (allParameters.isEmpty()) {
+            pageResult = dicWordRepository.findAll(PageRequest.of(page - 1, size));
         } else {
-            // NOTHING
-            pageResult = dicWordRepository.findAll(PageRequest.of(page - 1, size, sortBy));
+            SorterQueryParser sorterQueryParser = new SorterQueryParser();
+            FilterQueryParser filterQueryParser = new FilterQueryParser();
+
+            Sort sortBy = sorterQueryParser.getSorter(allParameters);
+            HashMap<String, String> filters = filterQueryParser.getFilter(allParameters);
+
+            logger.debug("Sorters: " + sortBy.toString());
+            logger.debug("Filters: " + filters.toString());
+
+
+            if (filters.containsKey("token") && filters.containsKey("pos") && filters.containsKey("tf")) {
+                // token && pos && tf
+                pageResult = dicWordRepository.findByTokenContainingAndPosAndTfGreaterThanEqual(
+                        filters.get("token"), PosType.valueOf(filters.get("pos")), Integer.valueOf(filters.get("tf")),
+                        PageRequest.of(page - 1, size, sortBy));
+            } else if (filters.containsKey("token") && filters.containsKey("pos")) {
+                // token && pos
+                pageResult = dicWordRepository.findByTokenContainingAndPos(
+                        filters.get("token"), PosType.valueOf(filters.get("pos")),
+                        PageRequest.of(page - 1, size, sortBy));
+            } else if (filters.containsKey("token") && filters.containsKey("tf")) {
+                // token && tf
+                pageResult = dicWordRepository.findByTokenContainingAndTfGreaterThanEqual(
+                        filters.get("token"), Integer.valueOf(filters.get("tf")),
+                        PageRequest.of(page - 1, size, sortBy));
+            } else if (filters.containsKey("pos") && filters.containsKey("tf")) {
+                // pos && tf
+                pageResult = dicWordRepository.findByPosAndTfGreaterThanEqual(
+                        PosType.valueOf(filters.get("pos")), Integer.valueOf(filters.get("tf")),
+                        PageRequest.of(page - 1, size, sortBy));
+            } else if (filters.containsKey("token")) {
+                // token
+                pageResult = dicWordRepository.findByTokenContaining(
+                        filters.get("token"), PageRequest.of(page - 1, size, sortBy));
+            } else if (filters.containsKey("pos")) {
+                // pos
+                pageResult = dicWordRepository.findByPos(
+                        PosType.valueOf(filters.get("pos")), PageRequest.of(page - 1, size, sortBy));
+            } else if (filters.containsKey("tf")) {
+                // tf
+                pageResult = dicWordRepository.findByTfGreaterThanEqual(
+                        Integer.valueOf(filters.get("tf")), PageRequest.of(page - 1, size, sortBy));
+            } else {
+                // NOTHING
+                pageResult = dicWordRepository.findAll(PageRequest.of(page - 1, size, sortBy));
+            }
         }
 
         result.put("data", pageResult.getContent());

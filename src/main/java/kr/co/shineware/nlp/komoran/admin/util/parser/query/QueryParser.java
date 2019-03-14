@@ -1,5 +1,6 @@
 package kr.co.shineware.nlp.komoran.admin.util.parser.query;
 
+import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ public class QueryParser {
 
     public ArrayList<HashMap<String, String>> parse(Map<String, String> inputParam) {
         if (inputParam.isEmpty()) {
-            return null;
+            throw new ParameterInvalidException("파라매터 미존재");
         }
 
         this.parsedResults = new ArrayList<>();
