@@ -1,13 +1,10 @@
 package kr.co.shineware.nlp.komoran.core.model;
 
+import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
-import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
-import kr.co.shineware.nlp.komoran.modeler.model.Observation;
-import kr.co.shineware.nlp.komoran.modeler.model.PosTable;
-import kr.co.shineware.nlp.komoran.modeler.model.Transition;
-import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.modeler.model.*;
 import kr.co.shineware.util.common.model.Pair;
 
 import java.util.ArrayList;
@@ -24,24 +21,51 @@ public class Lattice {
     private int lastIdx = -1;
     private int irrIdx = 0;
     private Observation observation;
+    private Observation userDicObservation;
+    private IrregularTrie irregularTrie;
 
-    private KoreanUnitParser unitParser;
+    private FindContext<List<ScoredTag>> observationFindContext;
+    private FindContext<List<IrregularNode>> irregularFindContext;
+    private FindContext<List<ScoredTag>> userDicFindContext;
 
     private double prevMaxScore;
     private LatticeNode prevMaxNode;
     private int prevMaxIdx;
     private int nbest;
 
-    public Lattice(Resources resource, int nbest) {
+    public Lattice(Resources resource, Observation userDic) {
+        this(resource, userDic, 1);
+    }
+
+    public Lattice(Resources resource, Observation userDic, int nbest) {
         this.setPosTable(resource.getTable());
         this.setTransition(resource.getTransition());
         this.setObservation(resource.getObservation());
+        this.setIrregularTrie(resource.getIrrTrie());
+        this.setUserDicObservation(userDic);
         this.init();
+        this.makeNewContexts();
         this.nbest = nbest;
     }
 
-    public Lattice(Resources resource) {
-        this(resource, 1);
+    private void setUserDicObservation(Observation userDic) {
+        this.userDicObservation = userDic;
+    }
+
+    private void setIrregularTrie(IrregularTrie irrTrie) {
+        this.irregularTrie = irrTrie;
+    }
+
+    private void makeNewContexts() {
+        this.observationFindContext = this.observation.getTrieDictionary().newFindContext();
+        this.irregularFindContext = this.irregularTrie.getTrieDictionary().newFindContext();
+        if (this.userDicObservation != null) {
+            this.userDicFindContext = this.userDicObservation.getTrieDictionary().newFindContext();
+        }
+    }
+
+    public Map<String, List<ScoredTag>> retrievalObservation(char jaso){
+        return this.observation.getTrieDictionary().get(this.observationFindContext, jaso);
     }
 
     private void init() {
@@ -388,10 +412,8 @@ public class Lattice {
 //            String prevMorph;
             if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
                 prevTagId = this.getPosTable().getId(SYMBOL.START);
-//                prevMorph = SYMBOL.START;
             } else {
                 prevTagId = prevLatticeNode.getMorphTag().getTagId();
-//                prevMorph = prevLatticeNode.getMorphTag().getMorph();
             }
             //전이 확률 값 가져옴
             Double transitionScore = this.transition.get(prevTagId, tagId);
@@ -424,10 +446,6 @@ public class Lattice {
     public void setPosTable(PosTable posTable) {
         this.posTable = posTable;
     }
-
-//    public Transition getTransition() {
-//        return transition;
-//    }
 
     public void setTransition(Transition transition) {
         this.transition = transition;
@@ -476,9 +494,6 @@ public class Lattice {
         int prevLatticeEndIndex = latticeNode.getEndIdx();
         while (true) {
             latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
-            //			shortestPathList.add(new Pair<>(this.unitParser.combine(latticeNode.getMorphTag().getMorph()),latticeNode.getMorphTag().getTag()));
-//			latticeNode.setMorph(this.unitParser.combine(latticeNode.getMorphTag().getMorph()));
-//			latticeNode.setMorph(latticeNode.getMorphTag().getMorph());
             if (latticeNode.getEndIdx() < 0) {
                 latticeNode.setEndIdx(prevLatticeEndIndex);
             }
@@ -518,20 +533,8 @@ public class Lattice {
         }
     }
 
-//    public Observation getObservation() {
-//        return observation;
-//    }
-
     public void setObservation(Observation observation) {
         this.observation = observation;
-    }
-
-//    public KoreanUnitParser getUnitParser() {
-//        return unitParser;
-//    }
-
-    public void setUnitParser(KoreanUnitParser unitParser) {
-        this.unitParser = unitParser;
     }
 
     public List<List<LatticeNode>> findNBestPath() {
@@ -548,9 +551,6 @@ public class Lattice {
             LatticeNode latticeNode = endNode;
             while (true) {
                 latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
-                //			shortestPathList.add(new Pair<>(this.unitParser.combine(latticeNode.getMorphTag().getMorph()),latticeNode.getMorphTag().getTag()));
-//			latticeNode.setMorph(this.unitParser.combine(latticeNode.getMorphTag().getMorph()));
-//			latticeNode.setMorph(latticeNode.getMorphTag().getMorph());
                 if (latticeNode.getEndIdx() < 0) {
                     latticeNode.setEndIdx(prevLatticeEndIndex);
                 }
@@ -567,12 +567,4 @@ public class Lattice {
 
         return nBestShortestPathList;
     }
-
-//    public void appendStartNode(int beginIdx) {
-//        this.put(beginIdx, beginIdx + 1, SYMBOL.START, SYMBOL.START, this.getPosTable().getId(SYMBOL.START), 0);
-//    }
-
-//    public void appendMidtermEndNode() {
-//        this.put(this.lastIdx, this.lastIdx + 1, SYMBOL.START, SYMBOL.START, this.getPosTable().getId(SYMBOL.END), 0);
-//    }
 }
