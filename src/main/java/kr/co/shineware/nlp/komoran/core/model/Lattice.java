@@ -64,8 +64,20 @@ public class Lattice {
         }
     }
 
-    public Map<String, List<ScoredTag>> retrievalObservation(char jaso){
+    public Map<String, List<ScoredTag>> retrievalObservation(char jaso) {
         return this.observation.getTrieDictionary().get(this.observationFindContext, jaso);
+    }
+
+    public Map<String, List<IrregularNode>> retrievalIrregularNodes(char jaso) {
+        return this.irregularTrie.getTrieDictionary().get(this.irregularFindContext, jaso);
+    }
+
+    public Map<String, List<ScoredTag>> retrievalUserDicObservation(char jaso) {
+        if (this.userDicObservation == null) {
+            return null;
+        }
+
+        return this.userDicObservation.getTrieDictionary().get(this.userDicFindContext, jaso);
     }
 
     private void init() {
