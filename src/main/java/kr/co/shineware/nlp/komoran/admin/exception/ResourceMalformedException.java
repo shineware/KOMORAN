@@ -14,6 +14,6 @@ public class ResourceMalformedException extends GlobalBaseException {
     }
 
     public ResourceMalformedException(String invalidResource, Throwable cause) {
-        super(ErrorType.BAD_REQUEST, String.format("잘못된 [%s]", invalidResource), cause);
+        super(ErrorType.BAD_REQUEST, String.format("Malformed Resource : [%s]", invalidResource), cause);
     }
 }

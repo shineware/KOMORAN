@@ -10,6 +10,6 @@ public class UnknownException extends GlobalBaseException {
     }
 
     public UnknownException(String message, Throwable cause) {
-        super(ErrorType.UNKNOWN, "알 수 없는 오류", cause);
+        super(ErrorType.UNKNOWN, "Unknown Error", cause);
     }
 }

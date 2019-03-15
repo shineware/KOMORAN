@@ -14,6 +14,6 @@ public class ResourceNotFoundException extends GlobalBaseException {
     }
 
     public ResourceNotFoundException(String resource, Throwable cause) {
-        super(ErrorType.NOT_FOUND, String.format("존재하지 않는 [%s]", resource), cause);
+        super(ErrorType.NOT_FOUND, String.format("Resource Not Found : [%s]", resource), cause);
     }
 }

@@ -14,6 +14,6 @@ public class ParameterInvalidException extends GlobalBaseException {
     }
 
     public ParameterInvalidException(String invalidResource, Throwable cause) {
-        super(ErrorType.BAD_REQUEST, String.format("잘못된 요청 [%s]", invalidResource), cause);
+        super(ErrorType.BAD_REQUEST, String.format("Invalid Request : [%s]", invalidResource), cause);
     }
 }

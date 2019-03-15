@@ -13,6 +13,6 @@ public class ServerErrorException extends GlobalBaseException {
     }
 
     public ServerErrorException(String message, Throwable cause) {
-        super(ErrorType.BAD_REQUEST, String.format("서버 에러 [%s]", message), cause);
+        super(ErrorType.BAD_REQUEST, String.format("Server Error : [%s]", message), cause);
     }
 }

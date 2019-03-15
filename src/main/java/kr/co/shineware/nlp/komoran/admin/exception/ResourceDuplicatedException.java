@@ -14,6 +14,6 @@ public class ResourceDuplicatedException extends GlobalBaseException {
     }
 
     public ResourceDuplicatedException(String resource, Throwable cause) {
-        super(ErrorType.BAD_REQUEST, String.format("중복된 [%s]", resource), cause);
+        super(ErrorType.BAD_REQUEST, String.format("Duplicated Resource : [%s]", resource), cause);
     }
 }
