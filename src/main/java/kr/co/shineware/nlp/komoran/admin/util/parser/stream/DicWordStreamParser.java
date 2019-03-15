@@ -2,6 +2,7 @@ package kr.co.shineware.nlp.komoran.admin.util.parser.stream;
 
 import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.PosType;
+import kr.co.shineware.nlp.komoran.admin.exception.ResourceMalformedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +15,9 @@ public class DicWordStreamParser implements StreamParser {
         String[] elements = input.split("\t");
         List<DicWord> resultItems = new ArrayList<>();
 
-        // SKIP::INVALID FORM
+        // INVALID FORM
         if (elements.length < 2) {
-            return null;
+            throw new ResourceMalformedException("Tab 구분자 오류, " + input);
         }
 
         String token = elements[0];
@@ -26,9 +27,9 @@ public class DicWordStreamParser implements StreamParser {
             DicWord tmpItem = new DicWord();
             String[] tmpAttr = anAttr.split(":");
 
-            // SKIP::INVALID FORM
+            // INVALID FORM
             if (tmpAttr.length < 2) {
-                continue;
+                throw new ResourceMalformedException(": 구분자 오류, " + input);
             }
 
             PosType pos;
@@ -37,9 +38,8 @@ public class DicWordStreamParser implements StreamParser {
             try {
                 pos = PosType.valueOf(tmpAttr[0].toUpperCase());
                 tf = Integer.valueOf(tmpAttr[1]);
-            }
-            catch(IllegalArgumentException e) {
-                continue;
+            } catch (IllegalArgumentException e) {
+                throw new ResourceMalformedException("잘못된 품사/빈도, " + input);
             }
 
             tmpItem.setToken(token);

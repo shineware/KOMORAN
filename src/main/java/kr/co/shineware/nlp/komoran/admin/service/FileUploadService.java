@@ -1,17 +1,15 @@
 package kr.co.shineware.nlp.komoran.admin.service;
 
+import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
 public class FileUploadService {
@@ -55,21 +53,19 @@ public class FileUploadService {
 
     private Path saveUploadedFile(MultipartFile uploadedFile, String filenameToSave) throws IOException, SecurityException {
         if (uploadedFile.isEmpty()) {
-            return null;
+            throw new ParameterInvalidException("파일이 존재하지 않음");
         }
 
-        if (!(new File(UPLOAD_BASEDIR)).exists()) {
-            (new File(UPLOAD_BASEDIR)).mkdirs();
+        File pathToSave = new File(UPLOAD_BASEDIR);
+
+        if (!pathToSave.exists()) {
+            pathToSave.mkdirs();
         }
 
-        byte[] fileData = uploadedFile.getBytes();
-        Path savedPath = Paths.get((new ClassPathResource(UPLOAD_BASEDIR + filenameToSave)).getURI());
+        File fileToSave = new File(UPLOAD_BASEDIR + filenameToSave).getAbsoluteFile();
 
-        logger.debug(savedPath.toString());
-        Files.write(savedPath, fileData);
+        uploadedFile.transferTo(fileToSave);
 
-        logger.debug("File Saved @ "+ savedPath);
-
-        return savedPath;
+        return fileToSave.toPath();
     }
 }

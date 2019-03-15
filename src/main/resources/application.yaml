@@ -9,7 +9,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-#    url: jdbc:h2:mem:AdminDB;
+    #    url: jdbc:h2:mem:AdminDB;
     url: jdbc:h2:./AdminDB;
     driverClassName: org.h2.Driver
     username: sa
@@ -20,7 +20,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
+        show_sql: false
         use_sql_comments: false
         format_sql: true
         jdbc:
@@ -35,9 +35,9 @@ spring:
 
 files:
   default:
-    basedir: defaults/
+    basedir: defaults/    # should exist under src/main/resources
   upload:
-    basedir: uploads/
+    basedir: uploads/     # will be created under Project Root
   name:
     dicword: dic.word
     grammarin: grammar.in

@@ -145,7 +145,6 @@ public class DicWordController {
                 throw new ServerErrorException("업로드 파일을 찾지 못함");
             }
 
-            // TODO: 파일 업로드 시 문제 해결 방법 변경 #2
             dicWordService.importFromFile(savedFilePath);
         } catch (IOException e) {
             throw new ServerErrorException(e.getMessage(), e.getCause());

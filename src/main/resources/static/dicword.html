@@ -258,6 +258,12 @@
                                     data.submit();
                                   });
       },
+      error: function (e, data) {
+        $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
+        $("#dictUploadMesgInModal").text("");
+        $("#dictUploadFile").val("");
+        alert(e.responseJSON.message);
+      },
       done: function (e, data) {
         $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
         location.reload();

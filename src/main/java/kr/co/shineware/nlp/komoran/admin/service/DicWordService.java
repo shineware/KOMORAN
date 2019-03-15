@@ -156,10 +156,8 @@ public class DicWordService {
     public void importFromFile(Path savedFilePath) throws Exception {
         Stream<String> lines = Files.lines(savedFilePath);
 
-        // TODO: 파일 업로드 시 문제 해결 방법 변경 #2
         // @formatter:off
         List<DicWord> dicWordsToInsert = lines.filter(line -> !line.isEmpty())
-                                              .filter(line -> line.split("\t").length >= 2)
                                               .flatMap(DicWordStreamParser::parse)
                                               .distinct()
                                               .collect(Collectors.toList());
