@@ -334,7 +334,7 @@
           dataType: "json",
           success: function (result) {
             if (result.error) {
-              alert(result.message + " (ERR_DICT_E_ADD_0)");
+              alert(result.message + " (ERR_DICWORD_E_ADD_0)");
             }
             else {
               $("#dictTable").tabulator("addData", [result.data]);
@@ -344,8 +344,8 @@
               $("#dictAddItemModalTfInput").val(0);
             }
           },
-          error: function() {
-            alert("등록 중 에러가 발생했습니다. (ERR_DICT_E_ADD_1)");
+          error: function(e) {
+            alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
           }
         });
       }
@@ -434,12 +434,12 @@
                 dataType: "json",
                 success: function (result) {
                   if (result.error) {
-                    alert(result.message + " (ERR_DICT_E_POS_0)");
+                    alert(result.message + " (ERR_DICWORD_E_POS_0)");
                     item.restoreOldValue();
                   }
                 },
-                error: function() {
-                  alert("수정 중 에러가 발생했습니다. (ERR_DICT_E_POS_1)");
+                error: function(e) {
+                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
                 }
               });
             }
@@ -463,12 +463,12 @@
                 dataType: "json",
                 success: function (result) {
                   if (result.error) {
-                    alert(result.message + " (ERR_DICT_E_POS_0)");
+                    alert(result.message + " (ERR_DICWORD_E_POS_0)");
                     item.restoreOldValue();
                   }
                 },
-                error: function() {
-                  alert("수정 중 에러가 발생했습니다. (ERR_DICT_E_TF_1)");
+                error: function(e) {
+                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
                 }
               });
             }
@@ -493,8 +493,8 @@
                     item.getRow().delete();
                   }
                 },
-                error: function() {
-                  alert("삭제 중 에러가 발생했습니다. (ERR_DICT_DEL_1)");
+                error: function(e) {
+                  alert("삭제 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
                 }
               });
             }
