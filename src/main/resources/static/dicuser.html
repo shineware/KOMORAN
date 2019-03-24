@@ -107,7 +107,7 @@
                     <button id="dictUploadBtn" class="btn btn-primary btn-flat" data-target="#dictUploadModal"><i class="fa fa-upload"></i> 올리기</button>
                   </div>
                   <div class="btn-group">
-                      <a href="/dic/word/download" class="btn btn-primary btn-flat"><i class="fa fa-download"></i> 내려받기</a>
+                      <a href="/dic/user/download" class="btn btn-primary btn-flat"><i class="fa fa-download"></i> 내려받기</a>
                   </div>
                 </div>
                 <div class="pull-right">
@@ -153,7 +153,7 @@
         <div class="row">
           <div class="col-md-12">
             <p>아래 버튼을 눌러 사전 파일을 올려주세요.</p>
-            <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두 삭제</b>됩니다. 기존 사전을 반드시 <a href="/dic/word/download"><i class="fa fa-download"></i> 내려받기</a> 해주세요.</p>
+            <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두 삭제</b>됩니다. 기존 사전을 반드시 <a href="/dic/user/download"><i class="fa fa-download"></i> 내려받기</a> 해주세요.</p>
             <input id="dictUploadFile" type="file" name="file" title="사전 파일을 선택해주세요.">
           </div>
         </div>
@@ -188,10 +188,6 @@
               <select id="dictAddItemModalPosSelect" name="pos" class="form-control " style="width: 100%;">
                 <option value="">--- 품사를 선택해주세요 ---</option>
               </select>
-            </div>
-            <div class="form-group">
-              <label>빈도</label>
-              <input type="text" id="dictAddItemModalTfInput" name="tf" class="form-control" value="0" style="width: 100%;" />
             </div>
           </div>
         </div>
@@ -250,7 +246,7 @@
       dataType: "json",
       autoUpload: false,
       replaceFileInput:false,
-      url: "/dic/word/upload",
+      url: "/dic/user/upload",
       add: function (e, data) {
         $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
                                   .click(function () {
@@ -275,24 +271,15 @@
     $("#dictAddItemModal").on("hidden.bs.modal", function() {
       $("#dictAddItemModalWordInput").val("");
       $("#dictAddItemModalPosSelect").prop("selectedIndex", 0);
-      $("#dictAddItemModalTfInput").val(0);
     });
 
     $("#dictAddItemBtn").on("click", function() {
       $("#dictAddItemModal").modal("show");
     });
 
-    $("#dictAddItemModalTfInput").on("keypress keyup blur",function (event) {
-        $(this).val($(this).val().replace(/[^\d].+/, ""));
-        if ((event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
-    });
-
     $("#dictAddItemBtnInModal").on("click", function() {
       var passWord = false;
       var passPos = false;
-      var passTf = false;
 
       if ($("#dictAddItemModalWordInput").val() === "") {
         $("#dictAddItemModalWordInput").parent().addClass("has-error");
@@ -312,36 +299,24 @@
         passPos = true;
       }
 
-      if ($("#dictAddItemModalTfInput").val() === "" || $("#dictAddItemModalTfInput").val() == 0
-          || !$.isNumeric($("#dictAddItemModalTfInput").val()) || $("#dictAddItemModalTfInput").val() < 0) {
-        $("#dictAddItemModalTfInput").parent().addClass("has-error");
-        passTf = false;
-      }
-      else {
-        $("#dictAddItemModalTfInput").parent().removeClass("has-error");
-        passTf = true;
-      }
-
-      if (passWord && passPos && passTf) {
+      if (passWord && passPos) {
         $.ajax({
           method: "POST",
-          url: "/dic/word/item",
+          url: "/dic/user/item",
           data: {
             token: $("#dictAddItemModalWordInput").val(),
-            pos: $("#dictAddItemModalPosSelect").val(),
-            tf: $("#dictAddItemModalTfInput").val()
+            pos: $("#dictAddItemModalPosSelect").val()
            },
           dataType: "json",
           success: function (result) {
             if (result.error) {
-              alert(result.message + " (ERR_DICWORD_E_ADD_0)");
+              alert(result.message + " (ERR_DICUSER_E_ADD_0)");
             }
             else {
               $("#dictTable").tabulator("addData", [result.data]);
               alert("등록되었습니다.");
               $("#dictAddItemModalWordInput").val("");
               $("#dictAddItemModalPosSelect").prop("selectedIndex", 0);
-              $("#dictAddItemModalTfInput").val(0);
             }
           },
           error: function(e) {
@@ -383,7 +358,7 @@
 
       // Draw Dict Table
       $("#dictTable").tabulator({
-        ajaxURL: "/dic/word/list",
+        ajaxURL: "/dic/user/list",
         ajaxSorting: true,
         ajaxFiltering: true,
 
@@ -429,41 +404,12 @@
               data = item.getData();
               $.ajax({
                 method: "PUT",
-                url: "/dic/word/"+ data.id +"/pos",
+                url: "/dic/user/"+ data.id +"/pos",
                 data: { pos: data.pos },
                 dataType: "json",
                 success: function (result) {
                   if (result.error) {
-                    alert(result.message + " (ERR_DICWORD_E_POS_0)");
-                    item.restoreOldValue();
-                  }
-                },
-                error: function(e) {
-                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-                }
-              });
-            }
-          },
-          {
-            title: "빈도",
-            field: "tf",
-            align: "center",
-            sorter: "number",
-            headerFilter: "number",
-            headerFilterFunc: ">=",
-            headerFilterPlaceholder: "기준 빈도(최소값)를 입력해주세요",
-            editor: "input",
-            validator: ["required", "min:0", "numeric"],
-            cellEdited: function(item) {
-              data = item.getData();
-              $.ajax({
-                method: "PUT",
-                url: "/dic/word/"+ data.id +"/tf",
-                data: { tf: data.tf },
-                dataType: "json",
-                success: function (result) {
-                  if (result.error) {
-                    alert(result.message + " (ERR_DICWORD_E_POS_0)");
+                    alert(result.message + " (ERR_DICUSER_E_POS_0)");
                     item.restoreOldValue();
                   }
                 },
@@ -484,7 +430,7 @@
               data = item.getData();
               $.ajax({
                 method: "DELETE",
-                url: "/dic/word/"+ data.id,
+                url: "/dic/user/"+ data.id,
                 success: function (result) {
                   if (result.error) {
                     alert(result.message + " (ERR_DICT_DEL_0)");

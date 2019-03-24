@@ -35,7 +35,7 @@ public interface DicWordRepository extends JpaRepository<DicWord, Long> {
 
     // export all data with specified form
     @Query(value = "SELECT CONCAT(token, '\t', GROUP_CONCAT(pos || ':' || tf SEPARATOR '\t')) " +
-            "FROM DicWord " +
+            "FROM DICWORD " +
             "GROUP BY token " +
             "ORDER BY token",
             nativeQuery = true)
@@ -44,6 +44,6 @@ public interface DicWordRepository extends JpaRepository<DicWord, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "TRUNCATE TABLE DicWord", nativeQuery = true)
+    @Query(value = "TRUNCATE TABLE DICWORD", nativeQuery = true)
     void deleteAll();
 }
