@@ -8,11 +8,13 @@ public class CorpusBuilderTest {
     public void buildCorpus() {
         CorpusBuilder corpusBuilder = new CorpusBuilder();
 
+//        corpusBuilder.setExclusiveIrrRule("resources/irrDic.remove.txt");
+
         corpusBuilder.appendUserDicPath("corpus_builder_example_data/userdic/cities", "txt");
         corpusBuilder.appendUserDic("corpus_builder_example_data/userdic/president.txt");
 
-        corpusBuilder.build("corpus_builder_example_data/tagged_corpus.txt");
-        corpusBuilder.buildPath("corpus_builder_example_data/");
-        corpusBuilder.buildPath("corpus_builder_example_data/", "txt");
+        corpusBuilder.build("corpus_builder_example_data/corpus/tagged_corpus.txt");
+
+        corpusBuilder.save("user_model");
     }
 }

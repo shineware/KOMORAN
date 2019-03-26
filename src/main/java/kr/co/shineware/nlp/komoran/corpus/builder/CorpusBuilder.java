@@ -70,6 +70,8 @@ public class CorpusBuilder {
         wordDic = new Dictionary();
         irrDic = new Dictionary();
         grammar = new Grammar();
+
+        irrExclusiveSet = new HashSet<>();
     }
 
     /**
