@@ -10,10 +10,10 @@ public class CorpusBuilderTest {
 
 //        corpusBuilder.setExclusiveIrrRule("resources/irrDic.remove.txt");
 
-        corpusBuilder.appendUserDicPath("corpus_builder_example_data/userdic/cities", "txt");
-        corpusBuilder.appendUserDic("corpus_builder_example_data/userdic/president.txt");
+        corpusBuilder.appendUserDicPath("src/test/resources/userdic/cities", "txt");
+        corpusBuilder.appendUserDic("src/test/resources/userdic/president.txt");
 
-        corpusBuilder.build("corpus_builder_example_data/corpus/tagged_corpus.txt");
+        corpusBuilder.build("src/test/resources/training/tagged_corpus.txt");
 
         corpusBuilder.save("user_model");
     }
