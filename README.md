@@ -1,7 +1,7 @@
 # (WIP) KOMORAN Admin
 
 * 사전 관리 도구인 KOMORAN Admin은 현재 개발 진행 중입니다.
-* 필요한 기능이 있으신가요? [기능 추가 요청](https://github.com/komoran/admin/issues/new?template=FEATURE_REQUEST.md)을 남겨주세요!
+* 필요한 기능이 있으신가요? [기능 추가 요청](https://github.com/shineware/KOMORANAdmin/issues/new?template=FEATURE_REQUEST.md)을 남겨주세요!
 
 ## 개요
 
@@ -20,11 +20,11 @@
 * Git을 이용하여 komoran/admin 저장소를 복제합니다.
 
 ```sh
-  git clone https://github.com/komoran/admin KOMORANAdmin
+  git clone https://github.com/shineware/KOMORANAdmin
   cd KOMORANAdmin
   git checkout development
 ```
-  
+
 * `./gradlew bootRun`을 실행합니다.
 
 ```sh
