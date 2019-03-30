@@ -563,6 +563,7 @@ public class Lattice {
             LatticeNode latticeNode = endNode;
             while (true) {
                 latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
+                //불규칙이거나 multi token 기분석 사전인 경우
                 if (latticeNode.getEndIdx() < 0) {
                     latticeNode.setEndIdx(prevLatticeEndIndex);
                 }

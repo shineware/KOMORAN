@@ -163,8 +163,12 @@ public class KomoranTest {
 
     @Test
     public void setFWDic() {
+        KomoranResult komoranResult = this.komoran.analyze("감기는");
+        System.out.println(komoranResult.getTokenList());
         this.komoran.setFWDic("user_data/fwd.user");
         this.komoran.analyze("감사합니다! 바람과 함께 사라지다는 진짜 재밌었어요! nice good!");
+        komoranResult = this.komoran.analyze("감기는");
+        System.out.println(komoranResult.getTokenList());
     }
 
     @Test
