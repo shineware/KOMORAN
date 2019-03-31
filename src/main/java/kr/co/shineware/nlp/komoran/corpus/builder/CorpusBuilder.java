@@ -128,7 +128,8 @@ public class CorpusBuilder {
             if (suffix != null && filename.endsWith("." + suffix)) {
                 System.out.println(filename);
                 this.build(filename);
-            } else {
+            }
+            if (suffix == null) {
                 System.out.println(filename);
                 this.build(filename);
             }

@@ -17,7 +17,6 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
-import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.constant.FILENAME;
 import kr.co.shineware.nlp.komoran.constant.SCORE;
@@ -317,7 +316,7 @@ public class Komoran implements Cloneable {
             List<Pair<String, String>> fwdResultList = this.fwd.get(targetWord);
 
             if (fwdResultList != null) {
-                this.insertLatticeForFwd(lattice, curJasoIndex, wordEndIdx, fwdResultList);
+                this.insertLatticeForFwd(lattice, curJasoIndex, wordEndIdx, fwdResultList, targetWord);
                 return wordEndIdx;
             }
         }
@@ -325,8 +324,27 @@ public class Komoran implements Cloneable {
     }
 
     private void insertLatticeForFwd(Lattice lattice, int beginIdx, int endIdx,
-                                     List<Pair<String, String>> fwdResultList) {
-        lattice.put(beginIdx, endIdx, fwdResultList);
+                                     List<Pair<String, String>> fwdResultList, String targetWord) {
+
+        //기분석 사전과 targetWord의 문자열이 일치하는 경우
+        if (hasRegularFWDValues(fwdResultList, targetWord)) {
+            for (Pair<String, String> morphPosPair : fwdResultList) {
+                lattice.put(beginIdx, beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length(), morphPosPair.getFirst(), morphPosPair.getSecond(), this.resources.getTable().getId(morphPosPair.getSecond()), 0.0);
+                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
+            }
+        } else {
+            lattice.put(beginIdx, endIdx, fwdResultList);
+        }
+    }
+
+    private boolean hasRegularFWDValues(List<Pair<String, String>> fwdResultList, String targetWord) {
+        StringBuilder fwdMorphs = new StringBuilder();
+
+        for (Pair<String, String> morphPosPair : fwdResultList) {
+            fwdMorphs.append(this.unitParser.parse(morphPosPair.getFirst()));
+        }
+
+        return fwdMorphs.toString().equals(targetWord);
     }
 
     private void continuousSymbolParsing(Lattice lattice, char charAt, int i, ContinuousSymbolBuffer continuousSymbolBuffer) {

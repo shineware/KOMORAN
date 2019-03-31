@@ -71,6 +71,7 @@ public class KomoranResult {
             if (latticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
                 continue;
             }
+            //불규칙이거나 multi token 기분석 사전인 경우
             if (latticeNode.getBeginIdx() < 0) {
                 latticeNode.setBeginIdx(prevBeginIdx);
             }
