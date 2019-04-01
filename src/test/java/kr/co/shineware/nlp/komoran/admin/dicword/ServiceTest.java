@@ -3,10 +3,12 @@ package kr.co.shineware.nlp.komoran.admin.dicword;
 import kr.co.shineware.nlp.komoran.admin.KOMORANAdminApplication;
 import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.PosType;
+import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
+import kr.co.shineware.nlp.komoran.admin.exception.ResourceDuplicatedException;
+import kr.co.shineware.nlp.komoran.admin.exception.ResourceNotFoundException;
 import kr.co.shineware.nlp.komoran.admin.repository.DicWordRepository;
 import kr.co.shineware.nlp.komoran.admin.service.DicWordService;
 import org.hamcrest.MatcherAssert;
-import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,35 +33,51 @@ public class ServiceTest {
         dicWordRepository.deleteAll();
     }
 
+
     @Test
     public void AddItem_Test() {
-        JSONObject result = dicWordService.addItem("테스트", PosType.NNG, 10);
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 10);
 
-        assertThat(result.get("success"), is(true));
-        assertThat(result.get("error"), is(false));
-
-
-        result = dicWordService.addItem("테스트", PosType.NNG, 15);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("해당 단어/품사는 이미 등록되어 있습니다."));
+        assertThat(result.getToken(), is("테스트"));
+        assertThat(result.getPos(), is(PosType.NNG));
+        assertThat(result.getTf(), is(10));
     }
+
+
+    @Test(expected = ResourceDuplicatedException.class)
+    public void AddItem_Duplicated_Test() {
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 30);
+        result = dicWordService.addItem("테스트", PosType.NNG, 50);
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void AddItem_InvalidToken_Test() {
+        DicWord result = dicWordService.addItem("", PosType.NNG, 30);
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void AddItem_InvalidTf_Test() {
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, -30);
+    }
+
 
     @Test
     public void CheckGivenTokenAndPosTypeExist_Test() {
-        JSONObject result = dicWordService.checkGivenTokenAndPosTypeExist("테스트", PosType.EC);
+        dicWordService.addItem("테스트", PosType.EC, 10);
+        DicWord result = dicWordService.checkGivenTokenAndPosTypeExist("테스트", PosType.EC);
 
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("해당하는 단어/품사가 존재하지 않습니다."));
-
-
-        result = dicWordService.addItem("테스트", PosType.EC, 10);
-
-        assertThat(result.get("success"), is(true));
-        assertThat(result.get("error"), is(false));
+        assertThat(result.getToken(), is("테스트"));
+        assertThat(result.getPos(), is(PosType.EC));
+        assertThat(result.getTf(), is(10));
     }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void CheckGivenTokenAndPosTypeExist_NotExsited_Test() {
+        dicWordService.checkGivenTokenAndPosTypeExist("존재하지 않는 이름", PosType.EC);
+    }
+
 
     @Test
     public void PurgeAllData_Test() {
@@ -72,87 +90,90 @@ public class ServiceTest {
         assertThat(dicWordRepository.count(), is(0L));
     }
 
+
     @Test
     public void UpdateTfById_Test() {
-        JSONObject result = dicWordService.addItem("테스트", PosType.NNG, 20);
-        int idToTest = ((DicWord) result.get("data")).getId();
-
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 20);
+        int idToTest = result.getId();
 
         result = dicWordService.updateTfById(idToTest, 999);
 
-        assertThat(result.get("success"), is(true));
-        assertThat(result.get("error"), is(false));
-        MatcherAssert.assertThat(dicWordRepository.findById(idToTest).getTf(), is(999));
+        assertThat(result.getId(), is(idToTest));
+        assertThat(result.getToken(), is("테스트"));
+        assertThat(result.getPos(), is(PosType.NNG));
+        assertThat(result.getTf(), is(999));
 
-
-        result = dicWordService.updateTfById(idToTest, -999);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("잘못된 빈도입니다."));
-        MatcherAssert.assertThat(dicWordRepository.findById(idToTest).getTf(), is(999));
-
-
-        result = dicWordService.updateTfById(-1, 999);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("ID가 존재하지 않습니다."));
+        assertThat(dicWordRepository.findById(idToTest).getTf(), is(999));
     }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdateTfById_InvalidId_Test() {
+        DicWord result = dicWordService.updateTfById(-1, 999);
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdateTfById_InvalidTf_Test() {
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 20);
+        int idToTest = result.getId();
+
+        result = dicWordService.updateTfById(idToTest, -1);
+    }
+
 
     @Test
     public void UpdatePosById_Test() {
-        dicWordService.addItem("테스트", PosType.NNB, 10);
-        JSONObject result = dicWordService.addItem("테스트", PosType.NNG, 20);
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 20);
+        int idToTest = result.getId();
 
-        int idToTest = ((DicWord) result.get("data")).getId();
+        result = dicWordService.updatePosById(idToTest, PosType.NNP);
 
-        result = dicWordService.updatePosById(idToTest, PosType.NP);
+        assertThat(result.getId(), is(idToTest));
+        assertThat(result.getToken(), is("테스트"));
+        assertThat(result.getPos(), is(PosType.NNP));
+        assertThat(result.getTf(), is(20));
 
-        assertThat(result.get("success"), is(true));
-        assertThat(result.get("error"), is(false));
-        MatcherAssert.assertThat(dicWordRepository.findById(idToTest).getPos(), is(PosType.NP));
+        assertThat(dicWordRepository.findById(idToTest).getPos(), is(PosType.NNP));
+    }
 
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdatePosById_InvalidId_Test() {
+        DicWord result = dicWordService.updatePosById(-1, PosType.NP);
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdatePosById_InvalidPos_Test() {
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 20);
+        int idToTest = result.getId();
 
         result = dicWordService.updatePosById(idToTest, null);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("존재하지 않는 품사입니다."));
-
-
-        result = dicWordService.updatePosById(-1, PosType.EC);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("ID가 존재하지 않습니다."));
-
-
-        result = dicWordService.updatePosById(idToTest, PosType.NNB);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("해당 단어/품사는 이미 등록되어 있습니다."));
     }
+
 
     @Test
     public void DeleteItemById_Test() {
         dicWordService.addItem("테스트", PosType.NNB, 10);
-        JSONObject result = dicWordService.addItem("테스트", PosType.NNG, 20);
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 20);
 
-        int idToTest = ((DicWord) result.get("data")).getId();
-
-
-        result = dicWordService.deleteItemById(-1);
-
-        assertThat(result.get("success"), is(false));
-        assertThat(result.get("error"), is(true));
-        assertThat(result.get("message"), is("ID가 존재하지 않습니다."));
-
+        int idToTest = result.getId();
 
         result = dicWordService.deleteItemById(idToTest);
 
-        assertThat(result.get("success"), is(true));
-        assertThat(result.get("error"), is(false));
+        assertThat(result.getId(), is(idToTest));
     }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void DeleteItemById_InvalidId_Test() {
+        dicWordService.addItem("테스트", PosType.NNB, 10);
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 20);
+
+        int idToTest = result.getId();
+
+        result = dicWordService.deleteItemById(-1);
+    }
+
 }

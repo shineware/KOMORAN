@@ -2,6 +2,7 @@ package kr.co.shineware.nlp.komoran.admin.dicword;
 
 import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.PosType;
+import kr.co.shineware.nlp.komoran.admin.exception.ResourceMalformedException;
 import kr.co.shineware.nlp.komoran.admin.util.parser.stream.DicWordStreamParser;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -25,7 +26,7 @@ public class ParserTest {
     }
 
     @Test
-    public void DicWordParserTest() {
+    public void DicWordParser_Test() {
         String strToTest = "탄로\tNNG:10\tNNP:20\tNNP:10";
         List<DicWord> result = DicWordStreamParser.parse(strToTest).collect(Collectors.toList());
 
@@ -38,4 +39,31 @@ public class ParserTest {
         assertThat(result.get(1).getTf(), is(20));
     }
 
+
+    @Test(expected = ResourceMalformedException.class)
+    public void DicWordParser_Malformed_Test() {
+        String strToTest = "탄로";
+        List<DicWord> result = DicWordStreamParser.parse(strToTest).collect(Collectors.toList());
+    }
+
+
+    @Test(expected = ResourceMalformedException.class)
+    public void DicWordParser_PosNotExist_Test() {
+        String strToTest = "탄로\tABC:10\tNNP:20\tNNP:10";
+        List<DicWord> result = DicWordStreamParser.parse(strToTest).collect(Collectors.toList());
+    }
+
+
+    @Test(expected = ResourceMalformedException.class)
+    public void DicWordParser_InvalidTf_Test() {
+        String strToTest = "탄로\tNNP:10\tNNP:20\tNNP:-10";
+        List<DicWord> result = DicWordStreamParser.parse(strToTest).collect(Collectors.toList());
+    }
+
+
+    @Test(expected = ResourceMalformedException.class)
+    public void DicWordParser_NotNumericTf_Test() {
+        String strToTest = "탄로\tNNP:10\tNNP:TF\tNNP:10";
+        List<DicWord> result = DicWordStreamParser.parse(strToTest).collect(Collectors.toList());
+    }
 }
