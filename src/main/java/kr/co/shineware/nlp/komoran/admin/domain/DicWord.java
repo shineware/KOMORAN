@@ -6,14 +6,12 @@ import java.io.Serializable;
 @Entity
 @Table(name = "DICWORD",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"token", "pos"})
-})
+                @UniqueConstraint(columnNames = {"token", "pos"})
+        })
 public class DicWord implements Serializable {
     @Id
     @Column(name = "id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MY_ENTITY_SEQ")
-    @SequenceGenerator(name = "MY_ENTITY_SEQ", sequenceName = "MY_ENTITY_SEQ", allocationSize = 200)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "token")
@@ -65,7 +63,8 @@ public class DicWord implements Serializable {
                 '}';
     }
 
-    public DicWord() { }
+    public DicWord() {
+    }
 
     public DicWord(String token, PosType pos, int tf) {
         this.token = token;
@@ -75,7 +74,7 @@ public class DicWord implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if(obj instanceof DicWord){
+        if (obj instanceof DicWord) {
             DicWord newItem = (DicWord) obj;
             if (this.token.equals(newItem.getToken()) && (this.pos == newItem.getPos())) {
                 return true;
@@ -89,8 +88,10 @@ public class DicWord implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+
         result = prime * result + ((token == null) ? 0 : token.hashCode());
         result = prime * result + ((pos == null) ? 0 : pos.hashCode());
+
         return result;
     }
 

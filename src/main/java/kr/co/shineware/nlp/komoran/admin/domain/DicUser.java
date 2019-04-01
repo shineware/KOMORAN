@@ -6,8 +6,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "DICUSER",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"token", "pos"})
-})
+                @UniqueConstraint(columnNames = {"token", "pos"})
+        })
 public class DicUser implements Serializable {
     @Id
     @Column(name = "id")
@@ -51,7 +51,8 @@ public class DicUser implements Serializable {
                 '}';
     }
 
-    public DicUser() { }
+    public DicUser() {
+    }
 
     public DicUser(String token, PosType pos) {
         this.token = token;
@@ -60,7 +61,7 @@ public class DicUser implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if(obj instanceof DicUser){
+        if (obj instanceof DicUser) {
             DicUser newItem = (DicUser) obj;
             if (this.token.equals(newItem.getToken()) && (this.pos == newItem.getPos())) {
                 return true;
@@ -74,8 +75,10 @@ public class DicUser implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+
         result = prime * result + ((token == null) ? 0 : token.hashCode());
         result = prime * result + ((pos == null) ? 0 : pos.hashCode());
+
         return result;
     }
 
