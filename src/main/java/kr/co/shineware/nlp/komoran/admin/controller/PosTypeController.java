@@ -12,16 +12,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/pos")
-public class PosController {
-    private static final Logger logger = LoggerFactory.getLogger(PosController.class);
+@RequestMapping("/pos/type")
+public class PosTypeController {
+    private static final Logger logger = LoggerFactory.getLogger(PosTypeController.class);
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<PosType, String> getAllPosTypes() {
         Map<PosType, String> allTypes = new LinkedHashMap<>();
 
         for (PosType p : PosType.values()) {
-            allTypes.put(p, p.getPosName());
+            allTypes.put(p, p.name() +"("+ p.getPosName() +")");
         }
 
         return allTypes;
