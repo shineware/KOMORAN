@@ -26,3 +26,5 @@
 /.nb-gradle/
 
 AdminDB.*.db
+bin/
+uploads/
