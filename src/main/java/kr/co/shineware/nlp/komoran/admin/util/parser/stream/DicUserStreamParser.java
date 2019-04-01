@@ -23,7 +23,7 @@ public class DicUserStreamParser implements StreamParser {
             pos = PosType.valueOf("NNP");
         }
         // TOKEN & POS
-        else {
+        else if (elements.length == 2){
             token = elements[0];
             String posInRaw = elements[1];
 
@@ -32,6 +32,9 @@ public class DicUserStreamParser implements StreamParser {
             } catch (IllegalArgumentException e) {
                 throw new ResourceMalformedException("잘못된 품사, " + input);
             }
+        }
+        else {
+            throw new ResourceMalformedException("잘못된 입력, " + input);
         }
 
         anItem.setToken(token);

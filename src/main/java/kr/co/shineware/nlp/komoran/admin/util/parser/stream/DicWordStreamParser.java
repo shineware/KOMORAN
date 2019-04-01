@@ -38,8 +38,12 @@ public class DicWordStreamParser implements StreamParser {
             try {
                 pos = PosType.valueOf(tmpAttr[0].toUpperCase());
                 tf = Integer.valueOf(tmpAttr[1]);
+
+                if (tf < 0) {
+                    throw new ResourceMalformedException("잘못된 빈도, " + input);
+                }
             } catch (IllegalArgumentException e) {
-                throw new ResourceMalformedException("잘못된 품사/빈도, " + input);
+                throw new ResourceMalformedException("잘못된 품사 또는 빈도, " + input);
             }
 
             tmpItem.setToken(token);
