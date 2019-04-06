@@ -157,11 +157,6 @@ public class KomoranTest {
     }
 
     @Test
-    public void load() {
-        this.komoran.load("models_full");
-    }
-
-    @Test
     public void setFWDic() {
         KomoranResult komoranResult = this.komoran.analyze("감기는");
         System.out.println(komoranResult.getTokenList());

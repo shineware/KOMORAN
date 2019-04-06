@@ -75,9 +75,10 @@ public class CorpusBuilder {
     }
 
     /**
-     * 빌드된 데이터(단어 사전, 문법, 기분석 사전, 불규칙 사전)를 savePath에 저장
+     * 빌드한 코퍼스를 savePathName 디렉토리에 저장합니다. </p>
+     * savePathName 디렉토리에는 dic.irregular, dic.word, grammar.in 파일이 저장됩니다.
      *
-     * @param savePathName
+     * @param savePathName 빌드 데이터가 저장될 디렉토리
      */
     public void save(String savePathName) {
         File savePath = new File(savePathName);
@@ -97,8 +98,8 @@ public class CorpusBuilder {
 
     @Deprecated
     /**
-     * loadPath에 있는 데이터(단어 사전, 문법, 기분석 사전, 불규칙 사전)를 로드
-     * @param loadPath
+     * 빌드된 코퍼스를 로드합니다. loadPath 디렉토리 아래에는 dic.irregular, dic.word, grammar.in 파일이 있어야 합니다.
+     * @param loadPath 저장된 빌드 데이터의 디렉토리 경로
      */
     public void load(String loadPath) {
         wordDic.load(loadPath + File.separator + FILENAME.WORD_DIC);
@@ -107,20 +108,21 @@ public class CorpusBuilder {
     }
 
     /**
-     * 코퍼스에 포함된 각 학습 파일로부터 데이터(단어 사전, 문법, 기분석 사전, 불규칙 사전) 생성
+     * coporaPath 밑에 있는 모든 파일을 빌드합니다. </p>
+     * 모든 서브 디렉토리에 있는 파일들도 빌드됩니다.
      *
-     * @param corporaPath
+     * @param corporaPath 빌드 대상 파일들이 포함된 최상위 디렉토리 경로
      */
     public void buildPath(String corporaPath) {
         this.buildPath(corporaPath, null);
     }
 
     /**
-     * 코퍼스에 포함된 각 학습 파일로부터 데이터(단어 사전, 문법, 기분석 사전, 불규칙 사전) 생성<br>
-     * 파일 확장자가 suffix와 일치하는 파일만 이용
+     * coporaPath 밑에 있는 모든 파일 중 파일 확장자가 suffix로 끝나는 파일들만 빌드합니다. </p>
+     * 모든 서브 디렉토리에 있는 파일들도 빌드됩낟.
      *
-     * @param corporaPath
-     * @param suffix
+     * @param corporaPath 빌드 대상 파일들이 포함된 최상위 디렉토리 경로
+     * @param suffix 빌드 대상 파일확장자
      */
     public void buildPath(String corporaPath, String suffix) {
         List<String> filenames = FileUtil.getFileNames(corporaPath);
@@ -137,9 +139,9 @@ public class CorpusBuilder {
     }
 
     /**
-     * 파일로부터 데이터 생성
+     * filename에 해당하는 파일을 빌드합니다.
      *
-     * @param filename
+     * @param filename 빌드 대상 파일 경로
      */
     public void build(String filename) {
         try {
@@ -342,6 +344,12 @@ public class CorpusBuilder {
         }
     }
 
+    /**
+     * filename에 해당하는 사용자 사전을 추가합니다. </p>
+     * 사용자 사전은 코퍼스 빌드 시 함께 빌드됩니다.
+     *
+     * @param filename 사용자 사전 경로
+     */
     public void appendUserDic(String filename) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -360,6 +368,12 @@ public class CorpusBuilder {
         }
     }
 
+    /**
+     * path 밑에 있는 모든 파일 중 확장자가 suffix로 끝나는 파일들만 사용자 사전으로 추가합니다. </p>
+     * 추가된 사용자 사전들은 코퍼스 빌드 시 함께 빌드됩니다.
+     * @param path 사용자 사전들이 포함된 최상위 디렉토리 경로
+     * @param suffix 사용자 사전의 파일확장자
+     */
     public void appendUserDicPath(String path, String suffix) {
         List<String> filenames = FileUtil.getFileNames(path);
         for (String filename : filenames) {

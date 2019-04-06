@@ -44,6 +44,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * KOMORAN core 클래스입니다.
+ */
 public class Komoran implements Cloneable {
 
     private Resources resources;
@@ -52,12 +55,25 @@ public class Komoran implements Cloneable {
 
     private HashMap<String, List<Pair<String, String>>> fwd;
 
+    /**
+     * modelPath 디렉토리에 있는 모델 파일들을 로딩하여 객체를 생성합니다. </p>
+     * modelPath 디렉토리에는 pos.table, observation.model, transition.model, irregular.model 파일이 포함되어 있어야 합니다. </p>
+     * 각 파일은 ModelBuilder를 통해 생성됩니다.
+     *
+     * @param modelPath 모델 파일들이 포함되어 있는 디렉토리 경로
+     */
     public Komoran(String modelPath) {
         this.resources = new Resources();
         this.load(modelPath);
         this.unitParser = new KoreanUnitParser();
     }
 
+    /**
+     * Komoran에서 기본으로 제공되는 모델을 로딩하여 객체를 생성합니다. </p>
+     * 별도의 경로를 지정할 필요가 없습니다.
+     *
+     * @param modelType 기본으로 제공되는 모델의 타입
+     */
     public Komoran(DEFAULT_MODEL modelType) {
 
         this.resources = new Resources();
@@ -92,6 +108,13 @@ public class Komoran implements Cloneable {
         return getClass().getClassLoader().getResourceAsStream(path);
     }
 
+    /**
+     * 파일 단위로 형태소 분석을 진행합니다.
+     *
+     * @param inputFilename  분석할 파일 경로
+     * @param outputFilename 분석 결과가 저장될 파일 경로
+     * @param thread         분석 시 사용할 thread 수
+     */
     public void analyzeTextFile(String inputFilename, String outputFilename, int thread) {
 
         try {
@@ -120,6 +143,12 @@ public class Komoran implements Cloneable {
 
     }
 
+    /**
+     * 여러 문장을 입력 받아 형태소 분석을 진행합니다.
+     * @param sentences 분석할 문장들이 담긴 List. 각 원소는 하나의 문장이라고 간주합니다.
+     * @param thread 분석 시 사용할 thread 수
+     * @return 문장 별 형태소 분석 결과가 담긴 List
+     */
     public List<KomoranResult> analyze(List<String> sentences, int thread) {
 
         List<KomoranResult> komoranResultList = new ArrayList<>();
@@ -145,10 +174,21 @@ public class Komoran implements Cloneable {
         return komoranResultList;
     }
 
+    /**
+     * 입력된 문장에 대해서 형태소 분석을 진행합니다.
+     * @param sentence 분석 대상 문장
+     * @return 형태소 분석 결과
+     */
     public KomoranResult analyze(String sentence) {
         return this.analyze(sentence, 1).get(0);
     }
 
+    /**
+     * 입력된 문장에 대해서 형태소 분석을 진행 후 n-best 결과를 반환합니다.
+     * @param sentence 분석 대상 문장
+     * @param nbest 분석 결과 중 추출할 상위 n개의 수
+     * @return 형태소 분석 결과 중 nbest 수 만큼의 결과
+     */
     public List<KomoranResult> analyze(String sentence, int nbest) {
 
         sentence = sentence.replaceAll("[ ]+", " ").trim();
@@ -544,11 +584,20 @@ public class Komoran implements Cloneable {
         }
     }
 
-    public void load(String modelPath) {
+    private void load(String modelPath) {
         this.resources.load(modelPath);
     }
 
-    //기분석 사전
+    /**
+     * 형태소 분석 시 사용될 기분석 사전을 로드합니다. </p>
+     * 형태소 분석 진행 전에 로드되어야 합니다. </p>
+     * <pre>
+     *     Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+     *     komoran.setFWDic("user_data/fwd.user");
+     *     KomoranResult komoranResult = komoran.analyze("감기는 자주 걸리는 병이다");
+     * </pre>
+     * @param filename 기분석 사전 파일 경로
+     */
     public void setFWDic(String filename) {
         try {
             CorpusParser corpusParser = new CorpusParser();
@@ -578,6 +627,16 @@ public class Komoran implements Cloneable {
         }
     }
 
+    /**
+     * 형태소 분석 시 사용될 사용자 사전을 로드합니다. </p>
+     * 형태소 분석 진행 전에 로드되어야 합니다.
+     * <pre>
+     *     Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+     *     komoran.setUserDic("user_date/dic.user");
+     *     KomoranResult komoranResult = komoran.analyze("바람과 함께 사라지다를 봤어");
+     * </pre>
+     * @param userDic 사용자 사전 파일 경로
+     */
     public void setUserDic(String userDic) {
         try {
 

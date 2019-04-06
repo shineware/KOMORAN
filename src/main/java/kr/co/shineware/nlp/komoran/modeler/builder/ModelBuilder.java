@@ -279,8 +279,10 @@ public class ModelBuilder {
     }
 
 	/**
-	 * build된 모델들(transition, observation, pos_table)을 path 폴더에 저장
-	 * @param path
+	 * 본 메소드 호출 전에 반드시 buildPath 메소드를 실행해야합니다. </p>
+	 * build된 모델들(transition, observation, pos_table)을 path 디렉토리에 저장합니다. </p>
+	 * path 디렉토리에는 irregular.model, observation.model, pos.table, transition.model 파일이 생성됩니다.
+	 * @param path 빌드된 데이터가 저장될 디렉토리
 	 */
 	public void save(String path){
 		FileUtil.makePath(path);
@@ -290,6 +292,13 @@ public class ModelBuilder {
 		this.irrTrie.save(path+File.separator+FILENAME.IRREGULAR_MODEL);
 	}
 
+	/**
+	 * 본 메소드는 반드시 buildPath 메소드 호출 전에만 사용가능합니다. </p>
+	 * externalDic 경로에 있는 외부 사전을 추가하여 모델을 빌드합니다. </p>
+	 * 외부 사전에 등록된 단어들의 빈도수는 50으로 초기화되어 모델에 반영됩니다.
+	 *
+	 * @param externalDic
+	 */
 	public void setExternalDic(String externalDic) {
 		this.externalDic = externalDic;
 	}
