@@ -18,8 +18,9 @@
 package kr.co.shineware.nlp.komoran.constant;
 
 /**
- * Parsing에서 사용할 품사별 score 점수
+ * Parsing에서 사용할 품사별 score 점수 <br>
  * 단, SL, SN, SH는 rule parsing 에서만 사용함
+ *
  * @author Junsoo Shin
  * @version 2.1.1
  * @since 2.1.1

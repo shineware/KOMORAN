@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>3분 만에 형태소 분석 따라하기 &mdash; KOMORAN 3.3.4 documentation</title>
+
+
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
+    <link rel="index" title="Index" href="../genindex.html"/>
+    <link rel="search" title="Search" href="../search.html"/>
+    <link rel="next" title="Gradle/Maven 없이 형태소 분석 따라하기" href="tutorial-java.html"/>
+    <link rel="prev" title="설치하기" href="installation.html"/>
+
+
+    <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+
+<div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
+
+
+                <a href="../index.html" class="icon icon-home"> KOMORAN
+
+
+                </a>
+
+
+                <div class="version">
+                    3.3.4
+                </div>
+
+
+                <div role="search">
+                    <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+                        <input type="text" name="q" placeholder="Search docs"/>
+                        <input type="hidden" name="check_keywords" value="yes"/>
+                        <input type="hidden" name="area" value="default"/>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+                <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="installation.html">설치하기</a></li>
+                    <li class="toctree-l1 current"><a class="current reference internal" href="#">3분 만에 형태소 분석 따라하기</a>
+                        <ul>
+                            <li class="toctree-l2"><a class="reference internal" href="#id2">프로젝트 시작하기</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#id3">의존성 추가하기</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#id4">형태소 분석하기</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#id5">결론</a></li>
+                        </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="tutorial-java.html">Gradle/Maven 없이 형태소
+                        분석 따라하기</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="postypes.html">품사표 (PoS Table)</a></li>
+                </ul>
+                <p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../examples/analyze.html">분석 예제</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../examples/train-model.html">모델 학습
+                        예제</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석
+                        예제 (Scala)</a></li>
+                </ul>
+                <p class="caption"><span class="caption-text">API</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+        <nav class="wy-nav-top" aria-label="top navigation">
+
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <a href="../index.html">KOMORAN</a>
+
+        </nav>
+
+
+        <div class="wy-nav-content">
+
+            <div class="rst-content">
+
+
+                <div role="navigation" aria-label="breadcrumbs navigation">
+
+                    <ul class="wy-breadcrumbs">
+
+                        <li><a href="../index.html">Docs</a> &raquo;</li>
+
+                        <li>3분 만에 형태소 분석 따라하기</li>
+
+
+                        <li class="wy-breadcrumbs-aside">
+
+
+                            <a href="../_sources/firststep/tutorial.rst.txt" rel="nofollow"> View page source</a>
+
+
+                        </li>
+
+                    </ul>
+
+
+                    <hr/>
+                </div>
+                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                    <div itemprop="articleBody">
+
+                        <div class="section" id="id1">
+                            <h1>3분 만에 형태소 분석 따라하기<a class="headerlink" href="#id1"
+                                                    title="Permalink to this headline">¶</a></h1>
+                            <p>이 문서에서는 KOMORAN을 이용한 간단한 형태소 분석을 해보도록 하겠습니다.
+                                만약 gradle이나 maven과 같은 프로젝트 관리도구를 사용하고 있지 않다면,
+                                <a class="reference internal" href="tutorial-java.html"><span class="doc">Gradle/Maven 없이 형태소 분석 따라하기</span></a>
+                                문서를 참고해주세요.</p>
+                            <div class="admonition note">
+                                <p class="first admonition-title">Note</p>
+                                <p class="last">문서의 내용 중 지원되지 않거나 잘못된 내용을 발견하실 경우,
+                                    <a class="reference external"
+                                       href="https://github.com/shineware/KOMORANDocs/issues">KOMORAN 문서 프로젝트에 이슈</a> 를
+                                    남겨주세요.</p>
+                            </div>
+                            <hr class="docutils"/>
+                            <div class="section" id="id2">
+                                <h2>프로젝트 시작하기<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a>
+                                </h2>
+                                <p>일반 Java 프로젝트를 시작한 상황을 가정해보도록 하겠습니다.
+                                    먼저 Gradle에 KOMORAN 의존성을 추가한 후, 객체를 생성하여 분석 결과를 출력해보도록 하겠습니다.</p>
+                                <p>전체 프로젝트 구조는 다음과 같습니다.</p>
+                                <div class="highlight-default notranslate">
+                                    <div class="highlight"><pre><span></span>.
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    └── main
+        └── java
+            └── kr
+                └── co
+                    └── shineware
+                        └── komoran
+                            └── tutorials
+                                └── App.java
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section" id="id3">
+                                <h2>의존성 추가하기<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a>
+                                </h2>
+                                <p>먼저 <code class="docutils literal notranslate"><span
+                                        class="pre">build.gradle</span></code> 파일을 다음과 같이 수정하여 의존성을 추가하였습니다.</p>
+                                <div class="highlight-groovy notranslate">
+                                    <table class="highlighttable">
+                                        <tr>
+                                            <td class="linenos">
+                                                <div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre>
+                                                </div>
+                                            </td>
+                                            <td class="code">
+                                                <div class="highlight"><pre><span></span><span class="n">plugins</span> <span
+                                                        class="o">{</span>
+    <span class="n">id</span> <span class="s1">&#39;java&#39;</span>
+<span class="o">}</span>
+
+<span class="n">group</span> <span class="s1">&#39;kr.co.shineware.komoran.tutorials&#39;</span>
+<span class="n">version</span> <span class="s1">&#39;0.0.1-SNAPSHOT&#39;</span>
+
+<span class="n">sourceCompatibility</span> <span class="o">=</span> <span class="mf">1.8</span>
+
+<span class="n">repositories</span> <span class="o">{</span>
+    <span class="n">mavenCentral</span><span class="o">()</span>
+<span class="hll">    <span class="n">maven</span> <span class="o">{</span> <span class="n">url</span> <span class="s1">&#39;https://jitpack.io&#39;</span> <span
+        class="o">}</span>
+</span><span class="o">}</span>
+
+<span class="n">dependencies</span> <span class="o">{</span>
+<span class="hll">    <span class="n">implementation</span> <span
+        class="s1">&#39;com.github.shin285:KOMORAN:3.3.4&#39;</span>
+</span><span class="o">}</span>
+</pre>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <p><a class="reference internal" href="installation.html"><span class="doc">설치하기</span></a>
+                                    에서 살펴봤던 것과 같이, 13번째 줄과 15번째 줄에 저장소와 의존성을 추가하였습니다.
+                                    이렇게 하면, Gradle이 의존성에 추가된 Library를 저장소에서 찾아 프로젝트의 외부 Library로 추가합니다.</p>
+                            </div>
+                            <div class="section" id="id4">
+                                <h2>형태소 분석하기<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a>
+                                </h2>
+                                <p>이제 Java 클래스를 하나 만들어 형태소 분석을 해보도록 하겠습니다.
+                                    여기에서는 <code class="docutils literal notranslate"><span class="pre">kr.co.shineware.komoran.tutorials</span></code>&nbsp;패키지에
+                                    <code class="docutils literal notranslate"><span class="pre">App</span></code> 클래스를
+                                    추가하였습니다.</p>
+                                <p>전체 코드는 다음과 같습니다.</p>
+                                <div class="highlight-java notranslate">
+                                    <table class="highlighttable">
+                                        <tr>
+                                            <td class="linenos">
+                                                <div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre>
+                                                </div>
+                                            </td>
+                                            <td class="code">
+                                                <div class="highlight"><pre><span></span><span class="kn">import</span> <span
+                                                        class="nn">kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL</span><span
+                                                        class="o">;</span>
+<span class="kn">import</span> <span class="nn">kr.co.shineware.nlp.komoran.core.Komoran</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">kr.co.shineware.nlp.komoran.model.KomoranResult</span><span
+                                                            class="o">;</span>
+<span class="kn">import</span> <span class="nn">kr.co.shineware.nlp.komoran.model.Token</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">App</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span
+                                                            class="nf">main</span><span class="o">(</span><span
+                                                            class="n">String</span><span class="o">[]</span> <span
+                                                            class="n">args</span><span class="o">)</span> <span
+                                                            class="o">{</span>
+<span class="hll">        <span class="n">Komoran</span> <span class="n">komoran</span> <span class="o">=</span> <span
+        class="k">new</span> <span class="n">Komoran</span><span class="o">(</span><span
+        class="n">DEFAULT_MODEL</span><span class="o">.</span><span class="na">FULL</span><span class="o">);</span>
+</span>        <span class="n">String</span> <span class="n">strToAnalyze</span> <span class="o">=</span> <span
+                                                            class="s">&quot;대한민국은 민주공화국이다.&quot;</span><span
+                                                            class="o">;</span>
+
+<span class="hll">        <span class="n">KomoranResult</span> <span class="n">analyzeResultList</span> <span class="o">=</span> <span
+        class="n">komoran</span><span class="o">.</span><span class="na">analyze</span><span class="o">(</span><span
+        class="n">strToAnalyze</span><span class="o">);</span>
+</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span
+                                                            class="na">println</span><span class="o">(</span><span
+                                                            class="n">analyzeResultList</span><span
+                                                            class="o">.</span><span class="na">getPlainText</span><span
+                                                            class="o">());</span>
+
+<span class="hll">        <span class="n">List</span><span class="o">&lt;</span><span class="n">Token</span><span
+        class="o">&gt;</span> <span class="n">tokenList</span> <span class="o">=</span> <span class="n">analyzeResultList</span><span
+        class="o">.</span><span class="na">getTokenList</span><span class="o">();</span>
+</span>        <span class="k">for</span> <span class="o">(</span><span class="n">Token</span> <span
+                                                            class="n">token</span> <span class="o">:</span> <span
+                                                            class="n">tokenList</span><span class="o">)</span> <span
+                                                            class="o">{</span>
+<span class="hll">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span
+        class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;(%2d, %2d) %s/%s\n&quot;</span><span
+        class="o">,</span> <span class="n">token</span><span class="o">.</span><span
+        class="na">getBeginIndex</span><span class="o">(),</span> <span class="n">token</span><span
+        class="o">.</span><span class="na">getEndIndex</span><span class="o">(),</span> <span
+        class="n">token</span><span class="o">.</span><span class="na">getMorph</span><span class="o">(),</span> <span
+        class="n">token</span><span class="o">.</span><span class="na">getPos</span><span class="o">());</span>
+</span>        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <p>10번째 줄에서는 FULL 모델을 갖는 <code class="docutils literal notranslate"><span class="pre">Komoran</span></code>
+                                    객체를 선언하였습니다. 모델의 종류와 설명에 대해서는 이 문서를 참고해주세요.</p>
+                                <div class="admonition-todo admonition" id="index-0">
+                                    <p class="first admonition-title">Todo</p>
+                                    <p class="last">FULL / LIGHT 모델의 차이를 설명한 문서를 작성하고, 링크합니다.</p>
+                                </div>
+                                <p>13번째 줄에서 생성한 <code class="docutils literal notranslate"><span
+                                        class="pre">Komoran</span></code> 객체의 <code
+                                        class="docutils literal notranslate"><span class="pre">analyze()</span></code>
+                                    메소드의 인자로 분석할 문장을 전달하고, 그 결과를
+                                    <code class="docutils literal notranslate"><span
+                                            class="pre">KomoranResult</span></code> 객체로 저장합니다. <code
+                                            class="docutils literal notranslate"><span class="pre">KomoranResult</span></code>
+                                    객체는 분석 결과를 보여주는 몇 가지 메소드들을 갖고
+                                    있는데, 여기서는 그 중 2가지를 살펴보겠습니다.</p>
+                                <p>첫번째는 형태소 분석 결과가 태깅된 문장 형태를 받아보는 것으로, <code class="docutils literal notranslate"><span
+                                        class="pre">getPlainText()</span></code> 메소드를 호출하면 됩니다.
+                                    15번째 줄에서는 이러한 결과를 바로 출력하고 있습니다.</p>
+                                <p>두번째 결과는 각 형태소(<code class="docutils literal notranslate"><span
+                                        class="pre">Token</span></code>)를 원소로 갖는 목록(List)으로 받는 것으로, <code
+                                        class="docutils literal notranslate"><span
+                                        class="pre">getTokenList()</span></code> 메소드를
+                                    호출하면 됩니다. <code class="docutils literal notranslate"><span class="pre">Token</span></code>
+                                    은 형태소와 품사, 그리고 시작/끝 지점을 갖는 객체로, KOMORAN에서 사용하는 모델입니다.</p>
+                                <div class="admonition-todo admonition" id="index-1">
+                                    <p class="first admonition-title">Todo</p>
+                                    <p class="last">KOMORAN에서 사용하는 다양한 모델(Tag, Token 및 KomoranResult 등)에 대한 문서를 추가한 후,
+                                        링크합니다.</p>
+                                </div>
+                                <p>20번째 줄에서는 각 형태소별 시작/끝 지점 및 형태소와 품사를 형식에 맞춰 줄력하고 있습니다.</p>
+                                <p>위와 같이 실행한 결과는 다음과 같습니다.</p>
+                                <div class="highlight-default notranslate">
+                                    <div class="highlight"><pre><span></span><span class="n">대한민국</span><span class="o">/</span><span
+                                            class="n">NNP</span> <span class="n">은</span><span class="o">/</span><span
+                                            class="n">JX</span> <span class="n">민주공화국</span><span
+                                            class="o">/</span><span class="n">NNP</span> <span class="n">이</span><span
+                                            class="o">/</span><span class="n">VCP</span> <span class="n">다</span><span
+                                            class="o">/</span><span class="n">EF</span> <span class="o">./</span><span
+                                            class="n">SF</span>
+<span class="p">(</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">4</span><span
+                                                class="p">)</span> <span class="n">대한민국</span><span
+                                                class="o">/</span><span class="n">NNP</span>
+<span class="p">(</span> <span class="mi">4</span><span class="p">,</span>  <span class="mi">5</span><span
+                                                class="p">)</span> <span class="n">은</span><span class="o">/</span><span
+                                                class="n">JX</span>
+<span class="p">(</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span
+                                                class="p">)</span> <span class="n">민주공화국</span><span
+                                                class="o">/</span><span class="n">NNP</span>
+<span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span
+                                                class="p">)</span> <span class="n">이</span><span class="o">/</span><span
+                                                class="n">VCP</span>
+<span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span
+                                                class="p">)</span> <span class="n">다</span><span class="o">/</span><span
+                                                class="n">EF</span>
+<span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span
+                                                class="p">)</span> <span class="o">./</span><span class="n">SF</span>
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section" id="id5">
+                                <h2>결론<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+                                <p>지금까지 Gradle을 이용하여 의존성을 추가하고, KOMORAN을 이용하여 형태소 분석을 하는 간단한 예제를 살펴보았습니다.
+                                    GitHub 저장소에서 <a class="reference external"
+                                                    href="https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-gradle">Gradle
+                                        버전</a> 과
+                                    <a class="reference external"
+                                       href="https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-gradle">Maven
+                                        버전</a> 의 전체 코드를 확인하실 수
+                                    있습니다.</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <footer>
+
+                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+                        <a href="tutorial-java.html" class="btn btn-neutral float-right"
+                           title="Gradle/Maven 없이 형태소 분석 따라하기" accesskey="n" rel="next">Next <span
+                                class="fa fa-arrow-circle-right"></span></a>
+
+
+                        <a href="installation.html" class="btn btn-neutral" title="설치하기" accesskey="p" rel="prev"><span
+                                class="fa fa-arrow-circle-left"></span> Previous</a>
+
+                    </div>
+
+
+                    <hr/>
+
+                    <div role="contentinfo">
+                        <p>
+                            &copy; Copyright 2019, SHINEWARE TEAM
+
+                        </p>
+                    </div>
+                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+                        href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a
+                        href="https://readthedocs.org">Read the Docs</a>.
+
+                </footer>
+
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+
+<script type="text/javascript" id="documentation_options" data-url_root="../"
+        src="../_static/documentation_options.js"></script>
+<script type="text/javascript" src="../_static/jquery.js"></script>
+<script type="text/javascript" src="../_static/underscore.js"></script>
+<script type="text/javascript" src="../_static/doctools.js"></script>
+<script type="text/javascript" src="../_static/language_data.js"></script>
+
+
+<script type="text/javascript" src="../_static/js/theme.js"></script>
+
+<script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-99586710-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>
