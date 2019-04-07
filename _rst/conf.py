@@ -24,9 +24,9 @@ copyright = '2019, SHINEWARE TEAM'
 author = 'SHINEWARE TEAM'
 
 # The short X.Y version
-version = ''
+version = '3.3.4'
 # The full version, including alpha/beta/rc tags
-release = ''
+release = version
 
 site_url = 'https://docs.komoran.kr/'
 
