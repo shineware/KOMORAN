@@ -98,7 +98,7 @@ Python과 R에서 KOMORAN을 사용할 수 있습니다.
 
 .. toctree::
    :maxdepth: 2
-   :caption: KOMORAN API
+   :caption: API
    :name: api
 
    /api/packages

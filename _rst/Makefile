@@ -16,7 +16,7 @@ api:
 
 docs:
 	make clean
-	make -B api
+#	make -B api
 	make html
 
 .PHONY: help Makefile
