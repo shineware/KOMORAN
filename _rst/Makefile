@@ -14,6 +14,11 @@ help:
 api:
 	javasphinx-apidoc -f --title "KOMORAN API" -o api/ ../src/main/java/kr/co/shineware/nlp/komoran/
 
+docs:
+	make clean
+	make -B api
+	make html
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new
