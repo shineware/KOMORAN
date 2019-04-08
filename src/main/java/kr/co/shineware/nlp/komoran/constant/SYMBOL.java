@@ -26,8 +26,8 @@ package kr.co.shineware.nlp.komoran.constant;
  */
 public class SYMBOL {
 	
-	public static final String START = "<start>";
-	public static final String END = "<end>";
+	public static final String START = "BOE";
+	public static final String END = "EOE";
 	public static final String SPACE = "<sp>";
 	public static final String NA = "NA";
 	
