@@ -12,8 +12,8 @@ public class Training {
     @Ignore
     public void training() {
         CorpusBuilder corpusBuilder = new CorpusBuilder();
-        corpusBuilder.buildPath("tagged_corpus", "tag");
         corpusBuilder.setExclusiveIrrRule("resources/irrDic.remove.txt");
+        corpusBuilder.buildPath("tagged_corpus", "tag");
         corpusBuilder.save("corpus_build");
 
         ModelBuilder modelBuilder = new ModelBuilder();
