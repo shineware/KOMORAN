@@ -63,3 +63,15 @@ publisher = {GitHub},
 journal = {GitHub repository},
 howpublished = {\url{https://github.com/shin285/KOMORAN}}
 ```
+
+
+### References
+* Ihm, S. Y., Lee, J. H., & Park, Y. H. (2019). Skip-gram-KR: Korean Word Embedding for Semantic Clustering. IEEE Access. (IF: 3.557)
+
+* Kwon, S., Ko, Y., & Seo, J. (2019). Effective vector representation for the Korean named-entity recognition. Pattern Recognition Letters, 117, 52-57. (IF: 1.952)
+
+* Song, H. J., Choi, J. E., Lee, Y. K., Yoon, J. H., Kim, J. D., Park, C. Y., & Kim, Y. S. (2019). A Web Service for Evaluating the Level of Speech in Korean. Applied Sciences, 9(3), 594. (IF: 1.689)
+
+* Han, K., Shim, H., & Yi, M. Y. (2018). A New Biomedical Passage Retrieval Framework for Laboratory Medicine: Leveraging Domain-specific Ontology, Multilevel PRF, and Negation Differential Weighting. Journal of healthcare engineering, 2018. (IF: 1.261)
+
+* Edmiston, D., & Stratos, K. (2018). Compositional Morpheme Embeddings with Affixes as Functions and Stems as Arguments. In Proceedings of the Workshop on the Relevance of Linguistic Structure in Neural Architectures for NLP (pp. 1-5).
