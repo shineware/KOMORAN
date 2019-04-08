@@ -57,7 +57,7 @@ Please refer to the '[Morphological Analysis Blitz in 3 minutes](https://docs.ko
 
 ```
 @misc{komoran,
-author = {Junsoo Shin},
+author = {Junsoo Shin, Junghwan Park, Geunho Lee},
 title = {komoran},
 publisher = {GitHub},
 journal = {GitHub repository},
