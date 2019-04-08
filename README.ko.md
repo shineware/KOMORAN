@@ -61,7 +61,7 @@ KOMORAN을 개발한 shineware에서 제공하는 참고자료입니다.
 
 ```
 @misc{komoran,
-author = {Junsoo Shin},
+author = {Junsoo Shin, Junghwan Park, Geunho Lee},
 title = {komoran},
 publisher = {GitHub},
 journal = {GitHub repository},
