@@ -102,7 +102,7 @@ public class CorpusParser{
 				throw new FileFormatException("Corpus Format Error. "+answer);
 			}else{
 				word = prevWord + word;
-				answerList.add(new Pair<String, String>(word, pos));
+				answerList.add(new Pair<String, String>(word, pos.toUpperCase()));
 			}
 			prevWord = "";
 		}
