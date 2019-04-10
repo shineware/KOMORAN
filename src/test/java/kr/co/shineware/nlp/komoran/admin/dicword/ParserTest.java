@@ -31,7 +31,7 @@ public class ParserTest {
         List<DicWord> result = DicWordStreamParser.parse(strToTest).collect(Collectors.toList());
 
         assertThat(result.get(0).getToken(), is("탄로"));
-        MatcherAssert.assertThat(result.get(0).getPos(), Matchers.is(PosType.NNG));
+        assertThat(result.get(0).getPos(), is(PosType.NNG));
         assertThat(result.get(0).getTf(), is(10));
 
         assertThat(result.get(1).getToken(), is("탄로"));
