@@ -51,7 +51,7 @@ public class GrammarInService {
 
 
     @Transactional
-    public GrammarIn checkGivenTokenAndPosTypeExist(GrammarType start, GrammarType next) {
+    public GrammarIn checkGivenStartAndNextExist(GrammarType start, GrammarType next) {
         if (start == null || start.getNodeName().equals("")) {
             throw new ParameterInvalidException("시작 품사: []");
         } else if (next == null || next.getNodeName().equals("")) {

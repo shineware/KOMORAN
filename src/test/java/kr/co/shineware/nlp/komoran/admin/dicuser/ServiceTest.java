@@ -1,4 +1,4 @@
-package kr.co.shineware.nlp.komoran.admin.dicuser.dicword;
+package kr.co.shineware.nlp.komoran.admin.dicuser;
 
 import kr.co.shineware.nlp.komoran.admin.KOMORANAdminApplication;
 import kr.co.shineware.nlp.komoran.admin.domain.DicUser;

@@ -51,7 +51,7 @@ public class GrammarInController {
 
         GrammarType start = GrammarType.valueOf(startInRaw);
         GrammarType next = GrammarType.valueOf(nextInRaw);
-        GrammarIn grammarInToFind = grammarInService.checkGivenTokenAndPosTypeExist(start, next);
+        GrammarIn grammarInToFind = grammarInService.checkGivenStartAndNextExist(start, next);
         ResponseDetail responseDetail = new ResponseDetail();
         responseDetail.setData(grammarInToFind);
 
