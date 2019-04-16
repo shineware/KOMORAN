@@ -36,21 +36,18 @@ public class KomoranTest {
     @Test
     public void notAnalyzeCombineTest() {
 
-        ElapsedTimeChecker.checkBeginTime("START");
-
-        KomoranResult komoranResult = this.komoran.analyze("업데이트했어요ㅋㅋㅋㅋ");
+        KomoranResult komoranResult = this.komoran.analyze("업데이트했어요ㅋㅋㅋㅋ 재밌네요");
         System.out.println(komoranResult.getPlainText());
         System.out.println(komoranResult.getList());
         System.out.println(komoranResult.getMorphesByTags("NA"));
         System.out.println(komoranResult.getTokenList());
 
+        komoranResult = this.komoran.analyze("하ㅎ 재밌었어요 캡틴마블");
+        System.out.println(komoranResult.getPlainText());
+
         KoreanUnitParser koreanUnitParser = new KoreanUnitParser();
         System.out.println(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ"));
         System.out.println(koreanUnitParser.combineWithType(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ")));
-        ElapsedTimeChecker.checkEndTime("START");
-
-        ElapsedTimeChecker.printTimes();
-
     }
 
     @Test

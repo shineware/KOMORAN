@@ -220,7 +220,7 @@ public class Komoran implements Cloneable {
             //띄어쓰기인 경우
             if (jasoUnits.charAt(curJasoIndex) == ' ') {
                 this.consumeContiniousSymbolParserBuffer(lattice, curJasoIndex, continuousSymbolBuffer);
-                this.bridgeToken(lattice, curJasoIndex, jasoUnits, whitespaceIndex);
+                this.bridgeToken(lattice, curJasoIndex, jasoUnits, whitespaceIndex, jasoUnitsWithType);
                 whitespaceIndex = curJasoIndex + 1;
             }
 
@@ -274,15 +274,14 @@ public class Komoran implements Cloneable {
     }
 
 
-    private void bridgeToken(Lattice lattice, int curIdx, String jasoUnits, int prevBeginSymbolIdx) {
+    private void bridgeToken(Lattice lattice, int curIdx, String jasoUnits, int prevBeginSymbolIdx, List<Pair<Character, KoreanUnitParser.UnitType>> jasoUnitsWithType) {
 
 
         if (lattice.put(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0)) {
             return;
         }
-
         //공백이라면 END 기호를 삽입
-        LatticeNode naLatticeNode = lattice.makeNode(prevBeginSymbolIdx, curIdx, jasoUnits.substring(prevBeginSymbolIdx, curIdx), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
+        LatticeNode naLatticeNode = lattice.makeNode(prevBeginSymbolIdx, curIdx, unitParser.combineWithType(jasoUnitsWithType.subList(prevBeginSymbolIdx, curIdx)), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
 
         int naNodeIndex = lattice.appendNode(naLatticeNode);
         LatticeNode endLatticeNode = lattice.makeNode(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
