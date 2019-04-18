@@ -68,7 +68,7 @@ journal = {GitHub repository},
 howpublished = {\url{https://github.com/shin285/KOMORAN}}
 ```
 
-### References
+### Related Publication
 * Ihm, S. Y., Lee, J. H., & Park, Y. H. (2019). Skip-gram-KR: Korean Word Embedding for Semantic Clustering. IEEE Access. (IF: 3.557)
 
 * Kwon, S., Ko, Y., & Seo, J. (2019). Effective vector representation for the Korean named-entity recognition. Pattern Recognition Letters, 117, 52-57. (IF: 1.952)
