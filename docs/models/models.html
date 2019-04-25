@@ -8,15 +8,14 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>KOMORAN API &mdash; KOMORAN 3.3.4 documentation</title>
+    <title>STABLE, EXP Model 차이 &mdash; KOMORAN 3.3.4 documentation</title>
 
 
     <link rel="stylesheet" href="../_static/css/theme.css" type="text/css"/>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
     <link rel="index" title="Index" href="../genindex.html"/>
     <link rel="search" title="Search" href="../search.html"/>
-    <link rel="next" title="kr.co.shineware.nlp.komoran.core"
-          href="kr/co/shineware/nlp/komoran/core/package-index.html"/>
+    <link rel="next" title="KOMORAN API" href="../api/packages.html"/>
     <link rel="prev" title="Spark2 분석 예제 (Scala)" href="../examples/spark2-scala.html"/>
 
 
@@ -79,23 +78,19 @@
                     <li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석
                         예제 (Scala)</a></li>
                 </ul>
-                <p class="caption"><span class="caption-text">API</span></p>
+                <p class="caption"><span class="caption-text">models</span></p>
                 <ul class="current">
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">KOMORAN API</a>
+                    <li class="toctree-l1 current"><a class="current reference internal" href="#">STABLE, EXP Model
+                        차이</a>
                         <ul>
-                            <li class="toctree-l2"><a class="reference internal"
-                                                      href="kr/co/shineware/nlp/komoran/core/package-index.html">kr.co.shineware.nlp.komoran.core</a>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal"
-                                                      href="kr/co/shineware/nlp/komoran/corpus/builder/package-index.html">kr.co.shineware.nlp.komoran.corpus.builder</a>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal"
-                                                      href="kr/co/shineware/nlp/komoran/model/package-index.html">kr.co.shineware.nlp.komoran.model</a>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal"
-                                                      href="kr/co/shineware/nlp/komoran/modeler/builder/package-index.html">kr.co.shineware.nlp.komoran.modeler.builder</a>
-                            </li>
+                            <li class="toctree-l2"><a class="reference internal" href="#stable">STABLE</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#exp">EXP</a></li>
                         </ul>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">API</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a>
                     </li>
                 </ul>
 
@@ -126,13 +121,13 @@
 
                         <li><a href="../index.html">Docs</a> &raquo;</li>
 
-                        <li>KOMORAN API</li>
+                        <li>STABLE, EXP Model 차이</li>
 
 
                         <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="../_sources/api/packages.rst.txt" rel="nofollow"> View page source</a>
+                            <a href="../_sources/models/models.rst.txt" rel="nofollow"> View page source</a>
 
 
                         </li>
@@ -145,44 +140,38 @@
                 <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                     <div itemprop="articleBody">
 
-                        <div class="section" id="komoran-api">
-                            <h1>KOMORAN API<a class="headerlink" href="#komoran-api" title="Permalink to this headline">¶</a>
-                            </h1>
-                            <div class="toctree-wrapper compound">
-                                <ul>
-                                    <li class="toctree-l1"><a class="reference internal"
-                                                              href="kr/co/shineware/nlp/komoran/core/package-index.html">kr.co.shineware.nlp.komoran.core</a>
-                                        <ul>
-                                            <li class="toctree-l2"><a class="reference internal"
-                                                                      href="kr/co/shineware/nlp/komoran/core/Komoran.html">Komoran</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="toctree-l1"><a class="reference internal"
-                                                              href="kr/co/shineware/nlp/komoran/corpus/builder/package-index.html">kr.co.shineware.nlp.komoran.corpus.builder</a>
-                                        <ul>
-                                            <li class="toctree-l2"><a class="reference internal"
-                                                                      href="kr/co/shineware/nlp/komoran/corpus/builder/CorpusBuilder.html">CorpusBuilder</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="toctree-l1"><a class="reference internal"
-                                                              href="kr/co/shineware/nlp/komoran/model/package-index.html">kr.co.shineware.nlp.komoran.model</a>
-                                        <ul>
-                                            <li class="toctree-l2"><a class="reference internal"
-                                                                      href="kr/co/shineware/nlp/komoran/model/KomoranResult.html">KomoranResult</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="toctree-l1"><a class="reference internal"
-                                                              href="kr/co/shineware/nlp/komoran/modeler/builder/package-index.html">kr.co.shineware.nlp.komoran.modeler.builder</a>
-                                        <ul>
-                                            <li class="toctree-l2"><a class="reference internal"
-                                                                      href="kr/co/shineware/nlp/komoran/modeler/builder/ModelBuilder.html">ModelBuilder</a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                        <div class="section" id="stable-exp-model">
+                            <h1>STABLE, EXP Model 차이<a class="headerlink" href="#stable-exp-model"
+                                                       title="Permalink to this headline">¶</a></h1>
+                            <p>KOMORAN은 사용자 편의를 위해 미리 학습이 된 두 종류의 품사 태깅 모델을 제공합니다.
+                                본 문서에서는 기본으로 제공되는 품사 태깅 모델인 STABLE 모델과 EXP 모델에 대해서 설명합니다.</p>
+                            <div class="admonition note">
+                                <p class="first admonition-title">Note</p>
+                                <p class="last">3.4 버전부터는 기존의 FULL, LIGHT 모델의 이름이 STABLE, EXP 모델로 변경되었습니다.</p>
+                            </div>
+                            <div class="section" id="stable">
+                                <h2>STABLE<a class="headerlink" href="#stable" title="Permalink to this headline">¶</a>
+                                </h2>
+                                <ul class="simple">
+                                    <li>STABLE 모델은 세종코퍼스와 추가 수집된 데이터로 학습되었습니다.</li>
+                                    <li>일상적으로 사용되는 문장들을 학습한 모델로 다양한 분야에서 사용할 수 있습니다.</li>
+                                    <li>형태소 분석기의 결과가 그대로 서비스에 노출되는 어플리케이션이 아니라면 STABLE 모델을 권장해 드립니다.</li>
                                 </ul>
+                                <div class="admonition note">
+                                    <p class="first admonition-title">Note</p>
+                                    <p class="last">STABLE 모델은 SHINEWARE에서 지속적으로 관리되고 있습니다</p>
+                                </div>
+                            </div>
+                            <div class="section" id="exp">
+                                <h2>EXP<a class="headerlink" href="#exp" title="Permalink to this headline">¶</a></h2>
+                                <ul class="simple">
+                                    <li>EXP 모델은 STABLE 모델에 사용된 학습 데이터에 위키피디아에서 추출한 타이틀을 명사로 추가한 모델입니다.</li>
+                                    <li>뉴스 분류, SNS 데이터 분석 등과 같이 신조어 및 고유명사 등이 중요한 자질로 사용되는 필요한 분야에서 사용할 수 있습니다.</li>
+                                </ul>
+                                <div class="admonition note">
+                                    <p class="first admonition-title">Note</p>
+                                    <p class="last">위키피디아 타이틀에서 추출된 명사들은 검증되지 않았습니다.</p>
+                                </div>
                             </div>
                         </div>
 
@@ -194,9 +183,8 @@
 
                     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-                        <a href="kr/co/shineware/nlp/komoran/core/package-index.html"
-                           class="btn btn-neutral float-right" title="kr.co.shineware.nlp.komoran.core" accesskey="n"
-                           rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+                        <a href="../api/packages.html" class="btn btn-neutral float-right" title="KOMORAN API"
+                           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
                         <a href="../examples/spark2-scala.html" class="btn btn-neutral" title="Spark2 분석 예제 (Scala)"
@@ -242,6 +230,7 @@
           SphinxRtdTheme.Navigation.enable(true);
       });
 
+
 </script>
 
 <script>
@@ -251,6 +240,8 @@
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-99586710-2', 'auto');
   ga('send', 'pageview');
+
+
 </script>
 
 
