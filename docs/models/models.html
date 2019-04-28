@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
     <link rel="index" title="Index" href="../genindex.html"/>
     <link rel="search" title="Search" href="../search.html"/>
-    <link rel="next" title="KOMORAN API" href="../api/packages.html"/>
-    <link rel="prev" title="Spark2 분석 예제 (Scala)" href="../examples/spark2-scala.html"/>
 
 
     <script src="../_static/js/modernizr.min.js"></script>
@@ -78,16 +76,6 @@
                     <li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석
                         예제 (Scala)</a></li>
                 </ul>
-                <p class="caption"><span class="caption-text">models</span></p>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">STABLE, EXP Model
-                        차이</a>
-                        <ul>
-                            <li class="toctree-l2"><a class="reference internal" href="#stable">STABLE</a></li>
-                            <li class="toctree-l2"><a class="reference internal" href="#exp">EXP</a></li>
-                        </ul>
-                    </li>
-                </ul>
                 <p class="caption"><span class="caption-text">API</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a>
@@ -144,7 +132,10 @@
                             <h1>STABLE, EXP Model 차이<a class="headerlink" href="#stable-exp-model"
                                                        title="Permalink to this headline">¶</a></h1>
                             <p>KOMORAN은 사용자 편의를 위해 미리 학습이 된 두 종류의 품사 태깅 모델을 제공합니다.
-                                본 문서에서는 기본으로 제공되는 품사 태깅 모델인 STABLE 모델과 EXP 모델에 대해서 설명합니다.</p>
+                                본 문서에서는 기본으로 제공되는 품사 태깅 모델인 <code class="docutils literal notranslate"><span
+                                        class="pre">STABLE</span> <span class="pre">모델</span></code> 과 <code
+                                        class="docutils literal notranslate"><span class="pre">EXP</span> <span
+                                        class="pre">모델</span></code> 에 대해서 설명합니다.</p>
                             <div class="admonition note">
                                 <p class="first admonition-title">Note</p>
                                 <p class="last">3.4 버전부터는 기존의 FULL, LIGHT 모델의 이름이 STABLE, EXP 모델로 변경되었습니다.</p>
@@ -153,7 +144,7 @@
                                 <h2>STABLE<a class="headerlink" href="#stable" title="Permalink to this headline">¶</a>
                                 </h2>
                                 <ul class="simple">
-                                    <li>STABLE 모델은 세종코퍼스와 추가 수집된 데이터로 학습되었습니다.</li>
+                                    <li>STABLE 모델은 세종코퍼스의 일부 데이터와 추가 수집된 데이터로 학습되었습니다.</li>
                                     <li>일상적으로 사용되는 문장들을 학습한 모델로 다양한 분야에서 사용할 수 있습니다.</li>
                                     <li>형태소 분석기의 결과가 그대로 서비스에 노출되는 어플리케이션이 아니라면 STABLE 모델을 권장해 드립니다.</li>
                                 </ul>
@@ -180,17 +171,6 @@
 
                 </div>
                 <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-                        <a href="../api/packages.html" class="btn btn-neutral float-right" title="KOMORAN API"
-                           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-
-
-                        <a href="../examples/spark2-scala.html" class="btn btn-neutral" title="Spark2 분석 예제 (Scala)"
-                           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
 
 
                     <hr/>
@@ -230,7 +210,6 @@
           SphinxRtdTheme.Navigation.enable(true);
       });
 
-
 </script>
 
 <script>
@@ -240,8 +219,6 @@
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-99586710-2', 'auto');
   ga('send', 'pageview');
-
-
 </script>
 
 
