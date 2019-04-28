@@ -49,6 +49,11 @@ KOMORAN을 개발한 shineware에서 제공하는 참고자료입니다.
 * [KOMORAN 공식 문서](https://docs.komoran.kr?utm_source=komoran-repo&utm_medium=Referral&utm_campaign=github-demo)에서 KOMORAN 설치 및 사용 방법 등을 참고하실 수 있습니다
 * [KOMORAN Slack](https://komoran.slack.com/join/shared_invite/MTc3NTMzMDQ1NTY5LTE0OTM4MjE5MzktNDE3NmQ4NDNkNw)에 방문하셔서 사용법과 팁 등을 공유해주세요.
 
+### 공식 Wrapper 자료
+
+shineware에서 개발한 공식 wrapper 자료입니다.
+* [PyKOMORAN](https://github.com/shineware/PyKOMORAN)에서 Python용 KOMORAN을 사용하실 수 있습니다.
+
 ### 그 외 참고 자료
 
 사용자 분들께서 만들어주신 참고자료입니다.
