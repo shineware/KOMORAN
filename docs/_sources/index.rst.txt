@@ -98,6 +98,13 @@ Python과 R에서 KOMORAN을 사용할 수 있습니다.
 
 .. toctree::
    :maxdepth: 2
+   :caption: models
+   :name: models
+
+   /models/models
+
+.. toctree::
+   :maxdepth: 2
    :caption: API
    :name: api
 
