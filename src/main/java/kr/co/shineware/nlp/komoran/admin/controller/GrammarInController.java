@@ -78,7 +78,7 @@ public class GrammarInController {
 
     @PutMapping(value = "/{id}/start")
     public ResponseDetail updateStartById(@PathVariable("id") int id,
-                                          @RequestParam("next") String startInRaw) {
+                                          @RequestParam("start") String startInRaw) {
         if (id <= 0) {
             throw new ParameterInvalidException("ID: " + id);
         } else if (!GrammarType.contains(startInRaw)) {
@@ -127,8 +127,8 @@ public class GrammarInController {
 
 
     @PostMapping(value = "/item")
-    public ResponseDetail addItem(@PathVariable("start") String startInRaw,
-                                  @PathVariable("next") String nextInRaw,
+    public ResponseDetail addItem(@RequestParam("start") String startInRaw,
+                                  @RequestParam("next") String nextInRaw,
                                   @RequestParam("tf") int tf) {
         if (!GrammarType.contains(startInRaw)) {
             throw new ParameterInvalidException("시작 품사: " + startInRaw);

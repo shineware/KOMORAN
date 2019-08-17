@@ -337,7 +337,7 @@
           method: "POST",
           url: "/grammar/in/item",
           data: {
-            start: $("#dictAddItemModalStartInput").val(),
+            start: $("#dictAddItemModalStartSelect").val(),
             next: $("#dictAddItemModalNextSelect").val(),
             tf: $("#dictAddItemModalTfInput").val()
            },
@@ -349,7 +349,7 @@
             else {
               $("#dictTable").tabulator("addData", [result.data]);
               alert("등록되었습니다.");
-              $("#dictAddItemModalStartInput").prop("selectedIndex", 0);
+              $("#dictAddItemModalStartSelect").prop("selectedIndex", 0);
               $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
               $("#dictAddItemModalTfInput").val(0);
             }
@@ -466,7 +466,7 @@
               $.ajax({
                 method: "PUT",
                 url: "/grammar/in/"+ data.id +"/next",
-                data: { pos: data.pos },
+                data: { next: data.next },
                 dataType: "json",
                 success: function (result) {
                   if (result.error) {
