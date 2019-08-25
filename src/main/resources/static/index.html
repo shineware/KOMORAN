@@ -103,12 +103,97 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-6">
+          <div class="box box-solid">
+            <div class="box-header with-border">
+              <i class="fa fa-columns"></i>
 
+              <h3 class="box-title">KOMORAN 관리 도구 소개</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <p>KOMORAN 관리 도구는 한국어 형태소 분석기인 KOMORAN(KOrean MORphological ANalyzer)을 잘 사용할 수 있게 도와주는 도구입니다.</p>
+              <p>KOMORAN 관리 도구는 SHINEWARE 팀에서 <a href="https://github.com/shineware/KOMORANAdmin" target="_blank">GitHub 저장소</a>를 통하여 배포 및 관리합니다.</p>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <div class="box box-solid">
+            <div class="box-header with-border">
+              <i class="fa fa-list"></i>
+
+              <h3 class="box-title">주요 기능</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <p>KOMORAN 관리 도구는 크게 '분석 - 조정 - 비교'의 주기로 사용한 후 '배포'를 할 수 있는 기능을 제공합니다.</p>
+              <p>각각의 기능은 다음과 같습니다.</p>
+
+              <h4>분석</h4>
+              <p>KOMORAN이 기본으로 제공하는 LIGHT 모델로 말뭉치를 직접 형태소 분석할 수 있습니다.</p>
+
+              <h4>보정</h4>
+              <p>단어 빈도 관리, 품사 빈도 관리 및 사용자 사전과 기분석 사전 관리 메뉴에서 사용자 모델 생성을 위한 기초 데이터를 생성합니다.</p>
+
+              <h4>비교</h4>
+              <p>위 보정 메뉴에서 생성한 기초 데이터로 사용자 모델을 생성하고, 이 모델을 이용하여 입력된 문장(들)에 대해서 형태소 분석을 진행합니다. 이 때, KOMORAN에서 기본으로 제공하는 모델을 사용한 형태소 분석 결과와 사용자 모델의 형태소 분석 결과를 일목요연하게 비교하여 볼 수 있도록 합니다.</p>
+
+              <h4>배포</h4>
+              <p>이상의 '분석 - 조정 - 비교' 기능들을 여러 번 사용하여 원하는 분석 결과를 갖는 모델을 배포하는 과정을 가이드합니다. 배포 메뉴는 조정 메뉴에서 최적화한 각각의 사전들을 다운로드받은 후 기존의 소프트웨어에 적용하는 방법이 기재되어 있습니다.</p>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-6">
+          <div class="box box-solid">
+            <div class="box-header with-border">
+              <i class="fa fa-th"></i>
+
+              <h3 class="box-title">KOMORAN 소개 및 특징</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <p>KOMORAN은 SHINEWARE 팀에서 연구 및 개발한 한국어 형태소 분석기입니다. 타 형태소 분석기와 달리 여러 어절을 하나의 품사로 분석 가능함으로써 형태소 분석기의 적용 분야에 따라 공백이 포함된 고유명사(영화 제목, 음식점명, 노래 제목, 전문 용어 등)를 더 정확하게 분석할 수 있습니다.</p>
+              <p>KOMORAN의 주요 특징은 다음과 같습니다.</p>
+              <ul>
+                <li>Pure Java
+                  <ul><li>100% Java로만 개발되었기 때문에 Java가 설치된 환경이라면 어디서든지 사용 가능합니다.</li></ul></li>
+                <li>외부 라이브러리 독립적
+                  <ul><li>자체 제작한 Library들만을 사용하여 외부 Library와의 의존성 문제가 없습니다.</li></ul></li>
+                <li>경량화
+                  <ul><li>자소 단위 처리, TRIE 사전 등으로 약 50MB 메모리 상에서도 동작 가능합니다.</li></ul></li>
+                <li>Easy to Use
+                  <ul><li>Library 적용 후 소스 코드 내 1줄만 추가하여 형태소 분석기를 사용할 수 있습니다.</li></ul></li>
+                <li>사전 관리 용이
+                  <ul><li>일반 텍스트 파일의 형태로 구성되어 가독성이 높으며 바로 편집이 가능합니다.</li></ul></li>
+                <li>새로운 분석 결과
+                  <ul><li>타 형태소 분석기와 달리 공백이 포함된 형태소 단위로 분석이 가능합니다.</li></ul></li>
+
+                <p>KOMORAN과 관련된 더 자세한 정보는 <a href="https://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&utm_medium=Referral&utm_campaign=url-redirect" target="_blank">SHINEWARE 홈페이지</a>
+                  또는 <a href="https://docs.komoran.kr?utm_source=komoran-admin&utm_medium=Referral&utm_campaign=url-redirect" target="_blank">KOMORAN 문서 사이트</a>에서 얻으실 수 있습니다.</p>
+              </ul>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <div class="box box-solid">
+            <div class="box-header with-border">
+              <i class="fa fa-book"></i>
+
+              <h3 class="box-title">LICENSE</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <p>
+                KOMORAN과 KOMORAN 관리 도구는 Apache License 2.0에 따라 배포되고 있습니다. Apache License 2.0의 전문은 <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">여기</a>에서 보실 수 있습니다.
+              </p>
+            </div>
+            <!-- /.box-body -->
+          </div>
         </div>
         <!-- /.col -->
       </div>
       <!-- /.row -->
+
     </section>
     <!-- /.content -->
   </div>
