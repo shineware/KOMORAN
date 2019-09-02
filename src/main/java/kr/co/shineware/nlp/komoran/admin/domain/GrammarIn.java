@@ -1,7 +1,5 @@
 package kr.co.shineware.nlp.komoran.admin.domain;
 
-import antlr.Grammar;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

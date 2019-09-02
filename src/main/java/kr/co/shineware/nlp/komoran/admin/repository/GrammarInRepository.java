@@ -1,9 +1,7 @@
 package kr.co.shineware.nlp.komoran.admin.repository;
 
-import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.GrammarIn;
 import kr.co.shineware.nlp.komoran.admin.domain.GrammarType;
-import kr.co.shineware.nlp.komoran.admin.domain.PosType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
