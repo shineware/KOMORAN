@@ -21,12 +21,10 @@ public class MorphAnalyzeController {
 
 
     @PostMapping(value = "/")
-    public ResponseDetail analyzeStr(@RequestParam("strToAnalyze") String strToAnalyze,
-                                     @RequestParam("useFullOrNot") String useFullOrNot) {
+    public ResponseDetail analyzeStr(@RequestParam("strToAnalyze") String strToAnalyze) {
         ResponseDetail responseDetail = new ResponseDetail();
 
-        boolean useFullModel = "true".equals(useFullOrNot.toLowerCase()) ? true : false;
-        String analyzedResult = morphAnalyzeService.analyze(strToAnalyze, useFullModel);
+        String analyzedResult = morphAnalyzeService.analyze(strToAnalyze);
 
         responseDetail.setData(analyzedResult);
 

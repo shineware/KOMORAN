@@ -71,9 +71,10 @@
         <li class="header">분석</li>
           <li class="active"><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
         <li class="header">보정</li>
-          <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
           <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
           <li><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
+          <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
+          <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
           <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
         <li class="header">배포</li>
@@ -109,18 +110,11 @@
 
           <div class="box">
             <div class="box-body">
-              <p><strong>[사용법]</strong> 분석을 원하시는 문장을 입력하시고 모델을 선택하시면 KOMORAN의 형태소 분석 결과를 보실 수 있습니다.</p>
+              <p><strong>[사용법]</strong> 분석을 원하시는 문장을 입력하시면 KOMORAN의 형태소 분석 결과를 보실 수 있습니다.</p>
 
               <div class="form-group">
                 <label for="strToAnalyze"><h4>입력 문장</h4></label>
                 <input type="text" class="form-control" id="strToAnalyze" name="strToAnalyze" placeholder="형태소 분석할 문장을 입력하세요.">
-              </div>
-              <div class="form-group">
-                <label for="useFullOrNot"><h4>적용 모델</h4></label>
-                <div class="radio" id="useFullOrNot">
-                  <label><input type="radio" name="useFullOrNot" value="false" checked>Light 모델</label>&nbsp;&nbsp;
-                  <label><input type="radio" name="useFullOrNot" value="true" >Full 모델</label>
-                </div>
               </div>
               <div class="pull-right">
                 <div class="btn-group">
@@ -179,7 +173,6 @@
     // Analyze
     $("#analyzeBtn").on("click", function() {
       var passStrToAnalyze = false;
-      var passModelSelect = false;
 
       if ($("#strToAnalyze").val() === "") {
         $("#strToAnalyze").parent().addClass("has-error");
@@ -190,22 +183,12 @@
         passStrToAnalyze = true;
       }
 
-      if ($("input[type=radio][name=useFullOrNot]:checked").length == 0) {
-        $("#useFullOrNot").parent().addClass("has-error");
-        passModelSelect = false;
-      }
-      else {
-        $("#useFullOrNot").parent().removeClass("has-error");
-        passModelSelect = true;
-      }
-
-      if (passStrToAnalyze && passModelSelect) {
+      if (passStrToAnalyze) {
         $.ajax({
           method: "POST",
           url: "/analyze/",
           data: {
-            strToAnalyze: $("#strToAnalyze").val(),
-            useFullOrNot: $("input[type=radio][name=useFullOrNot]:checked").val()
+            strToAnalyze: $("#strToAnalyze").val()
            },
           dataType: "json",
           success: function (result) {

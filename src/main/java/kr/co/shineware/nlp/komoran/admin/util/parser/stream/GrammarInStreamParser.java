@@ -1,14 +1,10 @@
 package kr.co.shineware.nlp.komoran.admin.util.parser.stream;
 
-import antlr.Grammar;
-import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.GrammarIn;
 import kr.co.shineware.nlp.komoran.admin.domain.GrammarType;
-import kr.co.shineware.nlp.komoran.admin.domain.PosType;
 import kr.co.shineware.nlp.komoran.admin.exception.ResourceMalformedException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 

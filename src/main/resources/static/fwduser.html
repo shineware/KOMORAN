@@ -73,8 +73,8 @@
         <li class="header">보정</li>
           <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
           <li><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
-          <li class="active"><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
-          <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
+          <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
+          <li class="active"><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
           <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
         <li class="header">배포</li>
@@ -93,12 +93,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        사용자 사전 관리
-        <small>User Dictionary</small>
+        기분석 사전 관리
+        <small>Full Word-phrase Dictionary</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="./"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">사용자 사전 관리</li>
+        <li class="active">기분석 사전 관리</li>
       </ol>
     </section>
 
@@ -109,14 +109,14 @@
 
           <div class="box">
             <div class="box-body">
-              <p><strong>[사용법]</strong> 올리기 / 내려받기 버튼을 이용하여 사용자 사전을 올리거나 내려받을 수 있습니다. 또한, 각 단어의 품사를 클릭하여 값을 변경할 수 있습니다.</p>
+              <p><strong>[사용법]</strong> 올리기 / 내려받기 버튼을 이용하여 기분석 사전을 올리거나 내려받을 수 있습니다. 또한, 각 기분석 어절 또는 기분석 결과 값을 클릭하여 값을 변경할 수 있습니다.</p>
               <div class="row btn-row">
                 <div class="pull-left">
                   <div class="btn-group">
                     <button id="dictUploadBtn" class="btn btn-primary btn-flat" data-target="#dictUploadModal"><i class="fa fa-upload"></i> 올리기</button>
                   </div>
                   <div class="btn-group">
-                      <a href="/dic/user/download" class="btn btn-primary btn-flat"><i class="fa fa-download"></i> 내려받기</a>
+                      <a href="/fwd/user/download" class="btn btn-primary btn-flat"><i class="fa fa-download"></i> 내려받기</a>
                   </div>
                 </div>
                 <div class="pull-right">
@@ -162,7 +162,7 @@
         <div class="row">
           <div class="col-md-12">
             <p>아래 버튼을 눌러 사전 파일을 올려주세요.</p>
-            <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두 삭제</b>됩니다. 기존 사전을 반드시 <a href="/dic/user/download"><i class="fa fa-download"></i> 내려받기</a> 해주세요.</p>
+            <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두 삭제</b>됩니다. 기존 사전을 반드시 <a href="/fwd/user/download"><i class="fa fa-download"></i> 내려받기</a> 해주세요.</p>
             <input id="dictUploadFile" type="file" name="file" title="사전 파일을 선택해주세요.">
           </div>
         </div>
@@ -182,21 +182,19 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="dictAddItemModalTitle">새로운 단어 등록하기</h4>
+        <h4 class="modal-title" id="dictAddItemModalTitle">새로운 기분석 어절 등록하기</h4>
       </div>
       <form role="form">
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label>단어</label>
-              <input type="text" id="dictAddItemModalWordInput" name="token" class="form-control " style="width: 100%;" />
+              <label>기분석 어절</label>
+              <input type="text" id="dictAddItemModalFullInput" name="full" class="form-control " style="width: 100%;" />
             </div>
             <div class="form-group">
-              <label>품사</label>
-              <select id="dictAddItemModalPosSelect" name="pos" class="form-control " style="width: 100%;">
-                <option value="">--- 품사를 선택해주세요 ---</option>
-              </select>
+              <label>기분석 결과</label>
+              <input type="text"id="dictAddItemModalAnalyzedInput" name="analyzed" class="form-control " style="width: 100%;" />
             </div>
           </div>
         </div>
@@ -233,8 +231,6 @@
 <script src="/js/demo.js"></script>
 <!-- page script -->
 <script>
-  var posTable = {};
-  var posSearchTable = {};
   var delIcon = function(value, data, cell, row, options){
     return "<i class='fa fa-trash'></i>"
   };
@@ -255,7 +251,7 @@
       dataType: "json",
       autoUpload: false,
       replaceFileInput:false,
-      url: "/dic/user/upload",
+      url: "/fwd/user/upload",
       add: function (e, data) {
         $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
                                   .click(function () {
@@ -278,8 +274,8 @@
 
     // Add Dict Item
     $("#dictAddItemModal").on("hidden.bs.modal", function() {
-      $("#dictAddItemModalWordInput").val("");
-      $("#dictAddItemModalPosSelect").prop("selectedIndex", 0);
+      $("#dictAddItemModalFullInput").val("");
+      $("#dictAddItemModalAnalyzedInput").val("");
     });
 
     $("#dictAddItemBtn").on("click", function() {
@@ -287,45 +283,46 @@
     });
 
     $("#dictAddItemBtnInModal").on("click", function() {
-      var passWord = false;
-      var passPos = false;
+      var passFull= false;
+      var passAnalyzed = false;
 
-      if ($("#dictAddItemModalWordInput").val() === "") {
-        $("#dictAddItemModalWordInput").parent().addClass("has-error");
-        passWord = false;
+      if ($("#dictAddItemModalFullInput").val() === "") {
+        $("#dictAddItemModalFullInput").parent().addClass("has-error");
+        passFull = false;
       }
       else {
-        $("#dictAddItemModalWordInput").parent().removeClass("has-error");
-        passWord = true;
+        $("#dictAddItemModalFullInput").parent().removeClass("has-error");
+        passFull = true;
       }
 
-      if ($("#dictAddItemModalPosSelect").val() === "" || !($("#dictAddItemModalPosSelect").val() in posTable)) {
-        $("#dictAddItemModalPosSelect").parent().addClass("has-error");
-        passPos = false;
+      if ($("#dictAddItemModalAnalyzedInput").val() === "") {
+        $("#dictAddItemModalAnalyzedInput").parent().addClass("has-error");
+        passAnalyzed = false;
       }
       else {
-        $("#dictAddItemModalPosSelect").parent().removeClass("has-error");
-        passPos = true;
+        $("#dictAddItemModalAnalyzedInput").parent().removeClass("has-error");
+        passAnalyzed = true;
       }
 
-      if (passWord && passPos) {
+      if (passFull && passAnalyzed) {
         $.ajax({
           method: "POST",
-          url: "/dic/user/item",
+          url: "/fwd/user/item",
           data: {
-            token: $("#dictAddItemModalWordInput").val(),
-            pos: $("#dictAddItemModalPosSelect").val()
+            full: $("#dictAddItemModalFullInput").val(),
+            analyzed: $("#dictAddItemModalAnalyzedInput").val(),
            },
           dataType: "json",
           success: function (result) {
+            console.log(result);
             if (result.error) {
-              alert(result.message + " (ERR_DICUSER_E_ADD_0)");
+              alert(result.message + " (ERR_FWDUSER_E_ADD_0)");
             }
             else {
               $("#dictTable").tabulator("addData", [result.data]);
               alert("등록되었습니다.");
-              $("#dictAddItemModalWordInput").val("");
-              $("#dictAddItemModalPosSelect").prop("selectedIndex", 0);
+              $("#dictAddItemModalFullInput").val("");
+              $("#dictAddItemModalAnalyzedInput").val("");
             }
           },
           error: function(e) {
@@ -336,126 +333,112 @@
     });
 
 
-    // POS Table
-    var getPosTable = function() {
-      var deferred = $.Deferred();
-      $.get({
-        url: "/pos/type",
-        success: function(result) {
-          posTable = result;
-          posSearchTable = posTable;
-          posSearchTable[''] = '[전체]';
-          deferred.resolve(posTable);
+    // Draw Dict Table
+    $("#dictTable").tabulator({
+      ajaxURL: "/fwd/user/list",
+      ajaxSorting: true,
+      ajaxFiltering: true,
+
+      pagination: "remote",
+      paginationSize: 20,
+
+      selectable: false,
+      layout: "fitColumns",
+
+      initialSort:[
+        {
+          column: "full",
+          dir: "asc"
         },
-        error: function(result) {
-          deferred.reject(result);
-        }
-      });
-      return deferred.promise();
-    }
+      ],
 
-
-    getPosTable().done(function() {
-      // Add Select Options
-      $.each(posTable, function (key, val) {
-        if (key === "") return;
-        $("#dictAddItemModalPosSelect").append($('<option>', {
-          value: key,
-          text : val + "(" + key +")"
-        }));
-      });
-
-      // Draw Dict Table
-      $("#dictTable").tabulator({
-        ajaxURL: "/dic/user/list",
-        ajaxSorting: true,
-        ajaxFiltering: true,
-
-        pagination: "remote",
-        paginationSize: 20,
-
-        selectable: false,
-        layout: "fitColumns",
-
-        initialSort:[
-          {
-            column: "token",
-            dir: "asc"
-          },
-        ],
-
-        columns:[
-          {
-            title: "ID",
-            field: "id",
-            visible: false
-          },
-          {
-            title: "단어",
-            field: "token",
-            align: "center",
-            sorter: "string",
-            headerFilter: "input",
-            headerFilterPlaceholder: "검색어를 입력해주세요."
-          },
-          {
-            title: "품사",
-            field: "pos",
-            align: "center",
-            formatter: "lookup",
-            formatterParams: posTable,
-            editor:"select",
-            editorParams: posTable,
-            sorter: "string",
-            headerFilter: true,
-            headerFilterParams: posSearchTable,
-            cellEdited: function(item) {
-              data = item.getData();
-              $.ajax({
-                method: "PUT",
-                url: "/dic/user/"+ data.id +"/pos",
-                data: { pos: data.pos },
-                dataType: "json",
-                success: function (result) {
-                  if (result.error) {
-                    alert(result.message + " (ERR_DICUSER_E_POS_0)");
-                    item.restoreOldValue();
-                  }
-                },
-                error: function(e) {
-                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+      columns:[
+        {
+          title: "ID",
+          field: "id",
+          visible: false
+        },
+        {
+          title: "기분석 어절",
+          field: "full",
+          align: "center",
+          editor: "input",
+          sorter: "string",
+          headerFilter: "input",
+          headerFilterPlaceholder: "검색하려는 기분석 어절을 입력해주세요.",
+          cellEdited: function(item) {
+            data = item.getData();
+            $.ajax({
+              method: "PUT",
+              url: "/fwd/user/"+ data.id +"/full",
+              data: { full: data.full },
+              dataType: "json",
+              success: function (result) {
+                if (result.error) {
+                  alert(result.message + " (ERR_FWDUSER_E_FULL_0)");
+                  item.restoreOldValue();
                 }
-              });
-            }
-          },
-          {
-            title: "삭제",
-            formatter: delIcon,
-            headerSort: false,
-            width: 50,
-            minWidth: 40,
-            align: "center",
-            cellClick: function(ev, item) {
-              data = item.getData();
-              $.ajax({
-                method: "DELETE",
-                url: "/dic/user/"+ data.id,
-                success: function (result) {
-                  if (result.error) {
-                    alert(result.message + " (ERR_DICUSER_DEL_0)");
-                  }
-                  else {
-                    item.getRow().delete();
-                  }
-                },
-                error: function(e) {
-                  alert("삭제 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-                }
-              });
-            }
+              },
+              error: function(e) {
+                alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+              }
+            });
           }
-        ],
-      });
+        },
+        {
+          title: "기분석 결과",
+          field: "analyzed",
+          align: "center",
+          editor: "input",
+          sorter: "string",
+          headerFilter: "input",
+          headerFilterPlaceholder: "검색하려는 기분석 결과를 입력해주세요.",
+          cellEdited: function(item) {
+            data = item.getData();
+            $.ajax({
+              method: "PUT",
+              url: "/fwd/user/"+ data.id +"/analyzed",
+              data: { analyzed: data.analyzed },
+              dataType: "json",
+              success: function (result) {
+                if (result.error) {
+                  alert(result.message + " (ERR_FWDUSER_E_ANALYZED_0)");
+                  item.restoreOldValue();
+                }
+              },
+              error: function(e) {
+                alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+              }
+            });
+          }
+        },
+        {
+          title: "삭제",
+          formatter: delIcon,
+          headerSort: false,
+          width: 50,
+          minWidth: 40,
+          align: "center",
+          cellClick: function(ev, item) {
+            data = item.getData();
+            $.ajax({
+              method: "DELETE",
+              url: "/fwd/user/"+ data.id,
+              success: function (result) {
+                if (result.error) {
+                  alert(result.message + " (ERR_FWDUSER_DEL_0)");
+                }
+                else {
+                  item.getRow().delete();
+                }
+              },
+              error: function(e) {
+                alert("삭제 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+              }
+            });
+          }
+        }
+      ],
     });
   })
 </script>
