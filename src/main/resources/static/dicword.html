@@ -419,9 +419,28 @@
             title: "단어",
             field: "token",
             align: "center",
+            editor: "input",
             sorter: "string",
             headerFilter: "input",
-            headerFilterPlaceholder: "검색어를 입력해주세요."
+            headerFilterPlaceholder: "검색어를 입력해주세요.",
+            cellEdited: function(item) {
+              data = item.getData();
+              $.ajax({
+                method: "PUT",
+                url: "/dic/word/"+ data.id +"/token",
+                data: { token: data.token },
+                dataType: "json",
+                success: function (result) {
+                  if (result.error) {
+                    alert(result.message + " (ERR_DICWORD_E_TOKEN_0)");
+                    item.restoreOldValue();
+                  }
+                },
+                error: function(e) {
+                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+                }
+              });
+            }
           },
           {
             title: "품사",

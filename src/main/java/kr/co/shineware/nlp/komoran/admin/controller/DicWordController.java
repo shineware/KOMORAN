@@ -58,6 +58,23 @@ public class DicWordController {
     }
 
 
+    @PutMapping(value = "/{id}/token")
+    public ResponseDetail updateTokenById(@PathVariable("id") int id,
+                                          @RequestParam("token") String tokenInRaw) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (tokenInRaw == null || "".equals(tokenInRaw)) {
+            throw new ParameterInvalidException("단어: " + tokenInRaw);
+        }
+
+        DicWord dicWordToUpdate = dicWordService.updateTokenById(id, tokenInRaw);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicWordToUpdate);
+
+        return responseDetail;
+    }
+
+
     @PutMapping(value = "/{id}/tf")
     public ResponseDetail updateTfById(@PathVariable("id") int id,
                                        @RequestParam("tf") int tf) {
