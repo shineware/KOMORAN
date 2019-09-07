@@ -1,7 +1,9 @@
 package kr.co.shineware.nlp.komoran.admin.config;
 
 import kr.co.shineware.nlp.komoran.admin.repository.DicWordRepository;
+import kr.co.shineware.nlp.komoran.admin.repository.GrammarInRepository;
 import kr.co.shineware.nlp.komoran.admin.service.DicWordService;
+import kr.co.shineware.nlp.komoran.admin.service.GrammarInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,12 @@ public class SetupDefaultData implements ApplicationRunner {
     @Autowired
     private DicWordService dicWordService;
 
+    @Autowired
+    private GrammarInRepository grammarInRepository;
+
+    @Autowired
+    private GrammarInService grammarInService;
+
 
     private Path getDefaultFilePath(String type) {
         String filePathStr;
@@ -71,14 +79,22 @@ public class SetupDefaultData implements ApplicationRunner {
         return pathForDefaultFile;
     }
 
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         logger.debug("DicWord : " + dicWordRepository.count());
+        logger.debug("GrammarIn : " + grammarInRepository.count());
 
+        // Initialize DicWord
         if (dicWordRepository.count() <= 0 && getDefaultFilePath("dicword") != null) {
             logger.debug("Importing DicWord from file named "+ filenameDicWord);
             dicWordService.importFromFile(getDefaultFilePath("dicword"));
         }
 
+        // Initialize GrammarIn
+        if (grammarInRepository.count() <= 0 && getDefaultFilePath("grammarrin") != null) {
+            logger.debug("Importing GrammarIn from file named "+ filenameGrammarIn);
+            grammarInService.importFromFile(getDefaultFilePath("grammarin"));
+        }
     }
 }
