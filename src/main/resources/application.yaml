@@ -44,6 +44,15 @@ files:
     dicuser: dic.user
     fwduser: fwd.user
 
+
+models:
+  default:
+    basedir: models/
+    corpusdir: corpus_build/
+  model:
+    dir: model/
+
+
 logging:
   level:
     kr.co.shineware.nlp.komoran.admin: TRACE
