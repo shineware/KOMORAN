@@ -28,3 +28,4 @@
 AdminDB.*.db
 bin/
 uploads/
+models/
