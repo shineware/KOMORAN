@@ -25,10 +25,17 @@ configurations.all {
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-    compile 'com.github.shin285:KOMORAN:master-SNAPSHOT'
+    // use local version instead of mvn
+    // related issue shineware/KOMORANAdmin#14 & shin285/KOMORAN#56
+//    compile 'com.github.shin285:KOMORAN:master-SNAPSHOT'
+    compile name: 'KOMORAN-6c5ba25'
+
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
