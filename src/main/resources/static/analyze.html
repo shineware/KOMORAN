@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>KOMORAN Admin</title>
+  <title>KOMORAN 관리도구</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -19,9 +19,8 @@
   <link rel="stylesheet" href="/libs/tabulator/dist/css/bootstrap/tabulator_bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="/css/skins/_all-skins.min.css">
+  <!-- AdminLTE Skins. Used blue one-->
+  <link rel="stylesheet" href="/css/skins/skin-blue.min.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/KOMORANAdmin.css">
 
@@ -81,7 +80,7 @@
           <li><a href="./deploy.html"><i class="fa fa-code"></i> <span>모델 배포 안내</span></a></li>
         <li class="header">참조</li>
           <li><a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i class="fa fa-external-link"></i></span></a></li>
-          <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN Repo. <i class="fa fa-external-link"></i></span></a></li>
+          <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i class="fa fa-external-link"></i></span></a></li>
           <li><a href="https://github.com/9bow"><i class="fa fa-github text-aqua"></i> <span>GitHub/9bow <i class="fa fa-external-link"></i></span></a></li>
       </ul>
     </section>
@@ -123,7 +122,7 @@
               </div>
               <div class="form-group">
                 <label for="analyzeResult"><h4>분석 결과</h4></label>
-                <textarea class="form-control" id="analyzeResult" name="analyzeResult" rows="3" placeholder="분석 결과가 여기에 나타납니다."></textarea>
+                <textarea class="form-control" id="analyzeResult" name="analyzeResult" rows="18" placeholder="분석 결과가 여기에 나타납니다."></textarea>
               </div>
             </div>
             <!-- /.box-body -->
@@ -186,7 +185,7 @@
       if (passStrToAnalyze) {
         $.ajax({
           method: "POST",
-          url: "/analyze/",
+          url: "/analyze/default",
           data: {
             strToAnalyze: $("#strToAnalyze").val()
            },
