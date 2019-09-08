@@ -92,7 +92,7 @@ public class SetupDefaultData implements ApplicationRunner {
         }
 
         // Initialize GrammarIn
-        if (grammarInRepository.count() <= 0 && getDefaultFilePath("grammarrin") != null) {
+        if (grammarInRepository.count() <= 0 && getDefaultFilePath("grammarin") != null) {
             logger.debug("Importing GrammarIn from file named "+ filenameGrammarIn);
             grammarInService.importFromFile(getDefaultFilePath("grammarin"));
         }
