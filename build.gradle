@@ -39,10 +39,10 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'io.github.java-diff-utils:java-diff-utils:4.0'
 
     runtimeOnly 'com.h2database:h2'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
-
 }
