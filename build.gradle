@@ -18,20 +18,31 @@ group = 'kr.co.shineware.nlp.komoran'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-    compile 'com.github.shin285:KOMORAN:3.3.4'
+    // use local version instead of mvn
+    // related issue shineware/KOMORANAdmin#14 & shin285/KOMORAN#56
+//    compile 'com.github.shin285:KOMORAN:master-SNAPSHOT'
+    compile name: 'KOMORAN-6c5ba25'
+
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'io.github.java-diff-utils:java-diff-utils:4.0'
 
     runtimeOnly 'com.h2database:h2'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
-
 }

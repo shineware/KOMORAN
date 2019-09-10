@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>KOMORAN Admin</title>
+  <title>KOMORAN 관리도구</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -19,9 +19,8 @@
   <link rel="stylesheet" href="/libs/tabulator/dist/css/bootstrap/tabulator_bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="/css/skins/_all-skins.min.css">
+  <!-- AdminLTE Skins. Used blue one-->
+  <link rel="stylesheet" href="/css/skins/skin-blue.min.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/KOMORANAdmin.css">
 
@@ -81,7 +80,7 @@
           <li><a href="./deploy.html"><i class="fa fa-code"></i> <span>모델 배포 안내</span></a></li>
         <li class="header">참조</li>
           <li><a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i class="fa fa-external-link"></i></span></a></li>
-          <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN Repo. <i class="fa fa-external-link"></i></span></a></li>
+          <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i class="fa fa-external-link"></i></span></a></li>
           <li><a href="https://github.com/9bow"><i class="fa fa-github text-aqua"></i> <span>GitHub/9bow <i class="fa fa-external-link"></i></span></a></li>
       </ul>
     </section>
@@ -288,234 +287,9 @@
 <!-- AdminLTE App -->
 <script src="/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="/js/demo.js"></script>
+<!--<script src="/js/demo.js"></script>-->
 <!-- page script -->
 <script>
-    var posTable = {};
-    var posSearchTable = {};
-    var delIcon = function(value, data, cell, row, options){
-        return "<i class='fa fa-trash'></i>"
-    };
-
-    $(function () {
-        // Dict File Upload
-        $("#dictUploadModal").on("hidden.bs.modal", function() {
-            $("#dictUploadBtnInModal").prop("disabled", true);
-            $("#dictUploadMesgInModal").text("");
-            $("#dictUploadFile").val("");
-        });
-
-        $("#dictUploadBtn").on("click", function() {
-            $("#dictUploadModal").modal("show");
-        });
-
-        $("#dictUploadFile").fileupload({
-            dataType: "json",
-            autoUpload: false,
-            replaceFileInput:false,
-            url: "/dic/user/upload",
-            add: function (e, data) {
-                $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
-                    .click(function () {
-                        $("#dictUploadBtnInModal").prop("disabled", true).text("올리는 중...")
-                        data.submit();
-                    });
-            },
-            error: function (e, data) {
-                $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
-                $("#dictUploadMesgInModal").text("");
-                $("#dictUploadFile").val("");
-                alert(e.responseJSON.message);
-            },
-            done: function (e, data) {
-                $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
-                location.reload();
-            }
-        });
-
-
-        // Add Dict Item
-        $("#dictAddItemModal").on("hidden.bs.modal", function() {
-            $("#dictAddItemModalWordInput").val("");
-            $("#dictAddItemModalPosSelect").prop("selectedIndex", 0);
-        });
-
-        $("#dictAddItemBtn").on("click", function() {
-            $("#dictAddItemModal").modal("show");
-        });
-
-        $("#dictAddItemBtnInModal").on("click", function() {
-            var passWord = false;
-            var passPos = false;
-
-            if ($("#dictAddItemModalWordInput").val() === "") {
-                $("#dictAddItemModalWordInput").parent().addClass("has-error");
-                passWord = false;
-            }
-            else {
-                $("#dictAddItemModalWordInput").parent().removeClass("has-error");
-                passWord = true;
-            }
-
-            if ($("#dictAddItemModalPosSelect").val() === "" || !($("#dictAddItemModalPosSelect").val() in posTable)) {
-                $("#dictAddItemModalPosSelect").parent().addClass("has-error");
-                passPos = false;
-            }
-            else {
-                $("#dictAddItemModalPosSelect").parent().removeClass("has-error");
-                passPos = true;
-            }
-
-            if (passWord && passPos) {
-                $.ajax({
-                    method: "POST",
-                    url: "/dic/user/item",
-                    data: {
-                        token: $("#dictAddItemModalWordInput").val(),
-                        pos: $("#dictAddItemModalPosSelect").val()
-                    },
-                    dataType: "json",
-                    success: function (result) {
-                        if (result.error) {
-                            alert(result.message + " (ERR_DICUSER_E_ADD_0)");
-                        }
-                        else {
-                            $("#dictTable").tabulator("addData", [result.data]);
-                            alert("등록되었습니다.");
-                            $("#dictAddItemModalWordInput").val("");
-                            $("#dictAddItemModalPosSelect").prop("selectedIndex", 0);
-                        }
-                    },
-                    error: function(e) {
-                        alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-                    }
-                });
-            }
-        });
-
-
-        // POS Table
-        var getPosTable = function() {
-            var deferred = $.Deferred();
-            $.get({
-                url: "/pos/type",
-                success: function(result) {
-                    posTable = result;
-                    posSearchTable = posTable;
-                    posSearchTable[''] = '[전체]';
-                    deferred.resolve(posTable);
-                },
-                error: function(result) {
-                    deferred.reject(result);
-                }
-            });
-            return deferred.promise();
-        }
-
-
-        getPosTable().done(function() {
-            // Add Select Options
-            $.each(posTable, function (key, val) {
-                if (key === "") return;
-                $("#dictAddItemModalPosSelect").append($('<option>', {
-                    value: key,
-                    text : val + "(" + key +")"
-                }));
-            });
-
-            // Draw Dict Table
-            $("#dictTable").tabulator({
-                ajaxURL: "/dic/user/list",
-                ajaxSorting: true,
-                ajaxFiltering: true,
-
-                pagination: "remote",
-                paginationSize: 20,
-
-                selectable: false,
-                layout: "fitColumns",
-
-                initialSort:[
-                    {
-                        column: "token",
-                        dir: "asc"
-                    },
-                ],
-
-                columns:[
-                    {
-                        title: "ID",
-                        field: "id",
-                        visible: false
-                    },
-                    {
-                        title: "단어",
-                        field: "token",
-                        align: "center",
-                        sorter: "string",
-                        headerFilter: "input",
-                        headerFilterPlaceholder: "검색어를 입력해주세요."
-                    },
-                    {
-                        title: "품사",
-                        field: "pos",
-                        align: "center",
-                        formatter: "lookup",
-                        formatterParams: posTable,
-                        editor:"select",
-                        editorParams: posTable,
-                        sorter: "string",
-                        headerFilter: true,
-                        headerFilterParams: posSearchTable,
-                        cellEdited: function(item) {
-                            data = item.getData();
-                            $.ajax({
-                                method: "PUT",
-                                url: "/dic/user/"+ data.id +"/pos",
-                                data: { pos: data.pos },
-                                dataType: "json",
-                                success: function (result) {
-                                    if (result.error) {
-                                        alert(result.message + " (ERR_DICUSER_E_POS_0)");
-                                        item.restoreOldValue();
-                                    }
-                                },
-                                error: function(e) {
-                                    alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-                                }
-                            });
-                        }
-                    },
-                    {
-                        title: "삭제",
-                        formatter: delIcon,
-                        headerSort: false,
-                        width: 50,
-                        minWidth: 40,
-                        align: "center",
-                        cellClick: function(ev, item) {
-                            data = item.getData();
-                            $.ajax({
-                                method: "DELETE",
-                                url: "/dic/user/"+ data.id,
-                                success: function (result) {
-                                    if (result.error) {
-                                        alert(result.message + " (ERR_DICUSER_DEL_0)");
-                                    }
-                                    else {
-                                        item.getRow().delete();
-                                    }
-                                },
-                                error: function(e) {
-                                    alert("삭제 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-                                }
-                            });
-                        }
-                    }
-                ],
-            });
-        });
-    })
 </script>
 </body>
 </html>

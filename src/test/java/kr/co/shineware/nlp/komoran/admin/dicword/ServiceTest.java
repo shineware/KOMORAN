@@ -1,6 +1,7 @@
 package kr.co.shineware.nlp.komoran.admin.dicword;
 
 import kr.co.shineware.nlp.komoran.admin.KOMORANAdminApplication;
+import kr.co.shineware.nlp.komoran.admin.domain.DicUser;
 import kr.co.shineware.nlp.komoran.admin.domain.DicWord;
 import kr.co.shineware.nlp.komoran.admin.domain.PosType;
 import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
@@ -88,6 +89,37 @@ public class ServiceTest {
         dicWordService.purgeAllData();
 
         assertThat(dicWordRepository.count(), is(0L));
+    }
+
+
+    @Test
+    public void UpdateTokenById_Test() {
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 10);
+        int idToTest = result.getId();
+
+        result = dicWordService.updateTokenById(idToTest, "바뀐것");
+
+        assertThat(result.getId(), is(idToTest));
+        assertThat(result.getToken(), is("바뀐것"));
+        assertThat(result.getPos(), is(PosType.NNG));
+        assertThat(result.getTf(), is(10));
+
+        assertThat(dicWordRepository.findById(idToTest).getToken(), is("바뀐것"));
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdateTokenById_InvalidId_Test() {
+        DicWord result = dicWordService.updateTokenById(-1, "테스트");
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdateTokenById_InvalidToken_Test() {
+        DicWord result = dicWordService.addItem("테스트", PosType.NNG, 10);
+        int idToTest = result.getId();
+
+        result = dicWordService.updateTokenById(idToTest, null);
     }
 
 

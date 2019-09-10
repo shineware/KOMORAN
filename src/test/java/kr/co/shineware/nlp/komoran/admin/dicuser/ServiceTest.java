@@ -84,6 +84,36 @@ public class ServiceTest {
 
 
     @Test
+    public void UpdateTokenById_Test() {
+        DicUser result = dicUserService.addItem("테스트", PosType.NNG);
+        int idToTest = result.getId();
+
+        result = dicUserService.updateTokenById(idToTest, "바뀐것");
+
+        assertThat(result.getId(), is(idToTest));
+        assertThat(result.getToken(), is("바뀐것"));
+        assertThat(result.getPos(), is(PosType.NNG));
+
+        assertThat(dicUserRepository.findById(idToTest).getToken(), is("바뀐것"));
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdateTokenById_InvalidId_Test() {
+        DicUser result = dicUserService.updateTokenById(-1, "테스트");
+    }
+
+
+    @Test(expected = ParameterInvalidException.class)
+    public void UpdateTokenById_InvalidToken_Test() {
+        DicUser result = dicUserService.addItem("테스트", PosType.NNG);
+        int idToTest = result.getId();
+
+        result = dicUserService.updateTokenById(idToTest, null);
+    }
+
+
+    @Test
     public void UpdatePosById_Test() {
         DicUser result = dicUserService.addItem("테스트", PosType.NNG);
         int idToTest = result.getId();

@@ -58,6 +58,23 @@ public class DicUserController {
     }
 
 
+    @PutMapping(value = "/{id}/token")
+    public ResponseDetail updateTokenById(@PathVariable("id") int id,
+                                          @RequestParam("token") String tokenInRaw) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (tokenInRaw == null || "".equals(tokenInRaw)) {
+            throw new ParameterInvalidException("단어: " + tokenInRaw);
+        }
+
+        DicUser dicUserToUpdate = dicUserService.updateTokenById(id, tokenInRaw);
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(dicUserToUpdate);
+
+        return responseDetail;
+    }
+
+
     @PutMapping(value = "/{id}/pos")
     public ResponseDetail updatePosById(@PathVariable("id") int id,
                                         @RequestParam("pos") String posInRaw) {

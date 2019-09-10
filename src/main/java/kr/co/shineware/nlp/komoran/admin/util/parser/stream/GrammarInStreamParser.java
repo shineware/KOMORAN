@@ -43,7 +43,7 @@ public class GrammarInStreamParser implements StreamParser {
             int tf;
 
             try {
-                next = GrammarType.valueOf(tmpAttr[0]);
+                next = GrammarType.valueOf(tmpAttr[0].toUpperCase());
                 tf = Integer.valueOf(tmpAttr[1]);
 
                 if (tf < 0) {

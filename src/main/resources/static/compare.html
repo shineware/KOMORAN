@@ -68,14 +68,14 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">분석</li>
-          <li class="active"><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
+          <li><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
         <li class="header">보정</li>
           <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
           <li><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
           <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
           <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
-          <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
+          <li class="active"><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
         <li class="header">배포</li>
           <li><a href="./deploy.html"><i class="fa fa-code"></i> <span>모델 배포 안내</span></a></li>
         <li class="header">참조</li>
@@ -92,12 +92,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        기본 형태소 분석
-        <small>Morph Analyze</small>
+        형태소 분석 비교
+        <small>Compare Analyze Result</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="./"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">기본 형태소 분석</li>
+        <li class="active">형태소 분석 비교</li>
       </ol>
     </section>
 
@@ -106,26 +106,61 @@
       <div class="row">
         <div class="col-xs-12">
 
-
           <div class="box">
             <div class="box-body">
-              <p><strong>[사용법]</strong> 분석을 원하시는 문장을 입력하시면 KOMORAN의 형태소 분석 결과를 보실 수 있습니다.</p>
+              <p><strong>[사용법]</strong> 분석을 원하는 문장 입력 후, 모델을 선택하여 형태소 분석 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
 
               <div class="form-group">
                 <label for="strToAnalyze"><h4>입력 문장</h4></label>
                 <input type="text" class="form-control" id="strToAnalyze" name="strToAnalyze" placeholder="형태소 분석할 문장을 입력하세요.">
               </div>
-              <div class="pull-right">
-                <div class="btn-group">
-                  <button id="analyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 분석하기</button>
+              <div class="row btn-row">
+                <div class="pull-left">
+                  <div class="btn-group">
+                    <button id="modelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-book"></i> 모델 생성</button>
+                  </div>
+                </div>
+                <div class="pull-right">
+                  <div class="btn-group">
+                    <button id="analyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 형태소 분석</button>
+                  </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="analyzeResult"><h4>분석 결과</h4></label>
-                <textarea class="form-control" id="analyzeResult" name="analyzeResult" rows="18" placeholder="분석 결과가 여기에 나타납니다."></textarea>
+              <div class="row">
+                <div class="form-group col-xs-6">
+                  <div class="form-group">
+                    <label for="selectSrcModel"><h4>모델 선택</h4></label>
+                    <select id="selectSrcModel" name="selectSrcModel" class="form-control"></select>
+                  </div>
+                  <label for="analyzeSrcResult"><h4>분석 결과</h4></label>
+                  <div id="analyzeSrcResult"><i>분석 결과가 여기에 나타납니다.</i></div>
+                </div>
+                <div class="form-group col-xs-6">
+                  <div class="form-group">
+                    <label for="selectDestModel"><h4>모델 선택</h4></label>
+                    <select id="selectDestModel" name="selectDestModel" class="form-control"></select>
+                  </div>
+                  <label for="analyzeDestResult"><h4>분석 결과</h4></label>
+                  <div id="analyzeDestResult"><i>분석 결과가 여기에 나타납니다.</i></div>
+                </div>
               </div>
             </div>
             <!-- /.box-body -->
+            <div class="box-footer">
+              <div class="btn-row">
+                <div class="pull-left">
+                  <div class="btn-group">
+                    <button id="anotherModelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-book"></i> 모델 생성</button>
+                  </div>
+                </div>
+                <div class="pull-right">
+                  <div class="btn-group">
+                    <button id="anotherAnalyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 형태소 분석</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-footer -->
           </div>
           <!-- /.box -->
 
@@ -169,43 +204,99 @@
 <!-- page script -->
 <script>
   $(function () {
-    // Analyze
-    $("#analyzeBtn").on("click", function() {
-      var passStrToAnalyze = false;
-
-      if ($("#strToAnalyze").val() === "") {
-        $("#strToAnalyze").parent().addClass("has-error");
-        passStrToAnalyze = false;
-      }
-      else {
-        $("#strToAnalyze").parent().removeClass("has-error");
-        passStrToAnalyze = true;
-      }
-
-      if (passStrToAnalyze) {
-        $.ajax({
-          method: "POST",
-          url: "/analyze/default",
-          data: {
-            strToAnalyze: $("#strToAnalyze").val()
-           },
-          dataType: "json",
-          success: function (result) {
-            if (result.error) {
-              alert(result.message + " (ERR_MORPH_ANALYZE_0)");
-            }
-            else {
-              $("#analyzeResult").text(result.data);
-            }
-          },
-          error: function(e) {
-            alert("분석 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-          }
-        });
+    // Initialize Model List
+    $.ajax({
+      method: "GET",
+      url: "/model/list",
+      success: function (result) {
+        updateModelList(result.data);
+      },
+      error: function(e) {
+        alert("모델 목록을 가져오는 중 에러가 발생하였습니다. ("+ e.responseJSON.message +")");
       }
     });
 
-  })
+    // Generate New Model
+    $("#modelGenerateBtn").on("click", generateNewModel);
+    $("#anotherModelGenerateBtn").on("click", generateNewModel);
+
+    // Compare analyze results
+    $("#analyzeBtn").on("click", analyzeAndCompare);
+    $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
+  });
+
+  function generateNewModel() {
+    $.ajax({
+      method: "GET",
+      url: "/model/new",
+      success: function (result) {
+        updateModelList(result.data);
+        alert("모델을 생성하였습니다.\n비교할 모델들을 다시 선택해주세요.");
+      },
+      error: function(e) {
+        alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+      }
+    });
+  }
+
+  function analyzeAndCompare() {
+    var passStrToAnalyze = false;
+
+    if ($("#strToAnalyze").val() === "") {
+      $("#strToAnalyze").parent().addClass("has-error");
+      passStrToAnalyze = false;
+    }
+    else {
+      $("#strToAnalyze").parent().removeClass("has-error");
+      passStrToAnalyze = true;
+    }
+
+    if (passStrToAnalyze) {
+      $.ajax({
+        method: "POST",
+        url: "/analyze/compare",
+        data: {
+          strToAnalyze: $("#strToAnalyze").val(),
+          modelNameSrc: $("#selectSrcModel").val(),
+          modelNameDest: $("#selectDestModel").val()
+          },
+        dataType: "json",
+        success: function (result) {
+          if (result.error) {
+            alert(result.message + " (ERR_MORPH_COMPARE_0)");
+          }
+          else {
+            $("#analyzeSrcResult").html(result.data.srcHtml);
+            $("#analyzeDestResult").html(result.data.destHtml);
+          }
+        },
+        error: function(e) {
+          alert("분석 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+        }
+      });
+    }
+  }
+
+  function updateModelList(modelList) {
+    $("#selectSrcModel").empty();
+    $("#selectDestModel").empty();
+
+    modelList.forEach(function(model) {
+      if (model == "DEFAULT") {
+        modelName = "KOMORAN 기본 모델";
+      }
+      else {
+        modelName = parseModelName(model);
+      }
+
+      $("#selectSrcModel").append(new Option(modelName, model));
+      $("#selectDestModel").append(new Option(modelName, model));
+    })
+  }
+
+  function parseModelName(modelName) {
+    return modelName.substring(0, 4) +"/"+ modelName.substring(4, 6) +"/"+ modelName.substring(6, 8)
+          +" "+ modelName.substring(8, 10) +":"+ modelName.substring(10, 12) +":"+ modelName.substring(12, 14)
+          +"."+ modelName.substring(14, 17) +" 생성 모델";
+  }
 </script>
-</body>
-</html>

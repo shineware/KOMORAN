@@ -50,7 +50,7 @@ public class DicWordService {
     @Transactional
     public DicWord checkGivenTokenAndPosTypeExist(String token, PosType pos) {
         if (token == null || token.equals("")) {
-            throw new ParameterInvalidException("token: " + token);
+            throw new ParameterInvalidException("단어: " + token);
         } else if (pos == null || pos.getPosName().equals("")) {
             throw new ParameterInvalidException("품사: []");
         }
@@ -62,6 +62,29 @@ public class DicWordService {
         }
 
         return dicWordToFind;
+    }
+
+
+    @Transactional
+    public DicWord updateTokenById(int id, String token) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (token == null || "".equals(token)) {
+            throw new ParameterInvalidException("단어: []");
+        }
+
+        DicWord dicWordToUpdate = getDicWordItem(id);
+
+        DicWord duplicateItem = dicWordRepository.findByTokenAndPos(token, dicWordToUpdate.getPos());
+
+        if (duplicateItem != null) {
+            throw new ResourceDuplicatedException(duplicateItem.getToken() + "/" + duplicateItem.getPos());
+        }
+
+        dicWordToUpdate.setToken(token);
+        dicWordRepository.save(dicWordToUpdate);
+
+        return dicWordToUpdate;
     }
 
 
@@ -122,7 +145,7 @@ public class DicWordService {
     @Transactional
     public DicWord addItem(String token, PosType pos, int tf) {
         if (token == null || token.equals("")) {
-            throw new ParameterInvalidException("token: " + token);
+            throw new ParameterInvalidException("단어: " + token);
         } else if (pos == null || pos.getPosName().equals("")) {
             throw new ParameterInvalidException("품사: []");
         } else if (tf < 0) {

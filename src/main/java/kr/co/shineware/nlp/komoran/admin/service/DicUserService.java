@@ -66,6 +66,29 @@ public class DicUserService {
 
 
     @Transactional
+    public DicUser updateTokenById(int id, String token) {
+        if (id <= 0) {
+            throw new ParameterInvalidException("ID: " + id);
+        } else if (token == null || "".equals(token)) {
+            throw new ParameterInvalidException("단어: []");
+        }
+
+        DicUser dicUserToUpdate = getDicUserItem(id);
+
+        DicUser duplicateItem = dicUserRepository.findByTokenAndPos(token, dicUserToUpdate.getPos());
+
+        if (duplicateItem != null && duplicateItem.getId() != id) {
+            throw new ResourceDuplicatedException(duplicateItem.getToken() + "/" + duplicateItem.getPos());
+        }
+
+        dicUserToUpdate.setToken(token);
+        dicUserRepository.save(dicUserToUpdate);
+
+        return dicUserToUpdate;
+    }
+
+
+    @Transactional
     public DicUser updatePosById(int id, PosType pos) {
         if (id <= 0) {
             throw new ParameterInvalidException("ID: " + id);
