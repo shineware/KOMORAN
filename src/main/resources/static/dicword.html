@@ -242,7 +242,14 @@
     return "<i class='fa fa-trash'></i>"
   };
 
+  function redrawTabulator() {
+    setTimeout(function(){ $("#dictTable").tabulator("redraw"); }, 300);
+  }
+
   $(function () {
+    $(document).on("expanded.pushMenu", redrawTabulator);
+    $(document).on("collapsed.pushMenu", redrawTabulator);
+
     // Dict File Upload
     $("#dictUploadModal").on("hidden.bs.modal", function() {
       $("#dictUploadBtnInModal").prop("disabled", true);
