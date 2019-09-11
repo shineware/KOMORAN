@@ -207,67 +207,6 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- Modal - Upload Dict File -->
-<div id="dictUploadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dictUploadModalTitle">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="dictUploadModalTitle">사전 파일 올리기</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-            <p>아래 버튼을 눌러 사전 파일을 올려주세요.</p>
-            <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두 삭제</b>됩니다. 기존 사전을 반드시 <a href="/dic/user/download"><i class="fa fa-download"></i> 내려받기</a> 해주세요.</p>
-            <input id="dictUploadFile" type="file" name="file" title="사전 파일을 선택해주세요.">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
-        <button id="dictUploadBtnInModal" type="button" class="btn btn-primary btn-flat" disabled>올리기</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- /Modal - Upload Dict File -->
-
-<!-- Modal - Add Item -->
-<div id="dictAddItemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dictAddItemModalTitle">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="dictAddItemModalTitle">새로운 단어 등록하기</h4>
-      </div>
-      <form role="form">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <label>단어</label>
-                <input type="text" id="dictAddItemModalWordInput" name="token" class="form-control " style="width: 100%;" />
-              </div>
-              <div class="form-group">
-                <label>품사</label>
-                <select id="dictAddItemModalPosSelect" name="pos" class="form-control " style="width: 100%;">
-                  <option value="">--- 품사를 선택해주세요 ---</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
-          <button id="dictAddItemBtnInModal" type="button" class="btn btn-primary btn-flat">등록하기</button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- /Modal - Add Item -->
-
 <!-- jQuery 3 -->
 <script src="/libs/jquery/jquery.min.js"></script>
 <!-- jQuery UI 1.12.1 -->
