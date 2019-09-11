@@ -1,5 +1,9 @@
 .btn-row {
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0 10px 0;
+}
+
+.btn-row button {
+    margin: 0 10px 0 10px
 }
 
 div#analyzeDestResult {
@@ -19,4 +23,8 @@ span.editOldInline {
 span.editNewInline {
     color: red;
     font-weight: bold;
+}
+
+span.FilenameGuide {
+    color: red;
 }

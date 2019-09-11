@@ -75,9 +75,9 @@
           <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
           <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
-          <li class="active"><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
+          <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
         <li class="header">배포</li>
-          <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
+          <li class="active"><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
           <li><a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i class="fa fa-external-link"></i></span></a></li>
           <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i class="fa fa-external-link"></i></span></a></li>
@@ -92,12 +92,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        형태소 분석 비교
-        <small>Compare Analyze Results</small>
+        모델 관리 및 배포
+        <small>Manage User Models</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="./"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">형태소 분석 비교</li>
+        <li class="active">모델 관리 및 배포</li>
       </ol>
     </section>
 
@@ -108,59 +108,98 @@
 
           <div class="box">
             <div class="box-body">
-              <p><strong>[사용법]</strong> 분석을 원하는 문장 입력 후, 모델을 선택하여 형태소 분석 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
-
               <div class="form-group">
-                <label for="strToAnalyze"><h4>입력 문장</h4></label>
-                <input type="text" class="form-control" id="strToAnalyze" name="strToAnalyze" placeholder="형태소 분석할 문장을 입력하세요.">
+                <label for="modelGenerateBtn"><h4>모델 생성</h4></label>
+                <p><strong>[사용법]</strong> 현재 사전 내용을 바탕으로 모델을 생성할 수 있습니다.</p>
               </div>
               <div class="row btn-row">
                 <div class="pull-left">
                   <div class="btn-group">
-                    <button id="modelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-book"></i> 모델 생성</button>
+                    <button id="modelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-plus-square"></i> 모델 생성</button>
                   </div>
-                </div>
-                <div class="pull-right">
-                  <div class="btn-group">
-                    <button id="analyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 형태소 분석</button>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-xs-6">
-                  <div class="form-group">
-                    <label for="selectSrcModel"><h4>모델 선택</h4></label>
-                    <select id="selectSrcModel" name="selectSrcModel" class="form-control"></select>
-                  </div>
-                  <label for="analyzeSrcResult"><h4>분석 결과</h4></label>
-                  <div id="analyzeSrcResult"><i>분석 결과가 여기에 나타납니다.</i></div>
-                </div>
-                <div class="form-group col-xs-6">
-                  <div class="form-group">
-                    <label for="selectDestModel"><h4>모델 선택</h4></label>
-                    <select id="selectDestModel" name="selectDestModel" class="form-control"></select>
-                  </div>
-                  <label for="analyzeDestResult"><h4>분석 결과</h4></label>
-                  <div id="analyzeDestResult"><i>분석 결과가 여기에 나타납니다.</i></div>
                 </div>
               </div>
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-              <div class="btn-row">
+          </div>
+          <!-- /.box -->
+
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div class="box">
+            <div class="box-body">
+              <div class="form-group">
+                <label for="modelDeleteBtn"><h4>모델 관리</h4></label>
+                <p><strong>[사용법]</strong> 생성한 모델을 선택하여 삭제하거나 배포 방법을 안내받을 수 있습니다.</p>
+              </div>
+              <div class="form-group">
+                <!-- <label for="selectMgmtModel"><h4>모델 선택</h4></label> -->
+                <select id="selectMgmtModel" name="selectMgmtModel" class="form-control"></select>
+              </div>
+              <div class="row btn-row">
                 <div class="pull-left">
-                  <div class="btn-group">
-                    <button id="anotherModelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-book"></i> 모델 생성</button>
-                  </div>
-                </div>
-                <div class="pull-right">
-                  <div class="btn-group">
-                    <button id="anotherAnalyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 형태소 분석</button>
+                  <div class="btn-group btn-row">
+                    <button id="modelDeleteBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i> 모델 삭제</button>
+                    <button id="modelDeployBtn" type="button" class="btn btn-success btn-flat"><i class="fa fa-truck"></i> 모델 배포</button>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row" id="deployGuide" style="display: none;">
+        <div class="col-xs-12">
+
+          <div class="box">
+            <div class="box-body">
+              <div class="form-group">
+                <label for="modelDeleteBtn"><h4>모델 배포 안내</h4></label>
+                <p><strong>[사용법]</strong> 아래 내용을 따라 다운로드 받은 모델을 배포하실 수 있습니다.</p>
+              </div>
+              <div class="form-group">
+                <ol>
+                  <li>모델 디렉토리를 생성하고, 다운로드 받은 파일(<span id="modelFileNameInGuide" class="FilenameGuide"></span>)의 압축을 해당 디렉토리에 해제합니다.</li>
+                  <li>압축을 해제한 위치가 <span id="modelDirNameInGuide" class="FilenameGuide"></span> 라고 가정하면, 해당 디렉토리 내부는 아래와 같아야 합니다.</li>
+                  <pre>
+.
+├── corpus_build
+│   ├── dic.irregular
+│   ├── dic.word
+│   └── grammar.in
+├── dic.user
+├── fwd.user
+└── model
+    ├── irregular.model
+    ├── observation.model
+    ├── pos.table
+    └── transition.model</pre>
+                  <li>KOMORAN을 불러온 후 다음과 같이 사용자 모델을 지정합니다.</li>
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #000080; font-weight: bold">import</span> kr.co.shineware.nlp.komoran.core.Komoran;
+<span style="color: #000080; font-weight: bold">import</span> java.io.File;
+
+String modelBaseDir = <span style="color: #0000FF">&quot;<span id="modelDirNameInGuideCode"></span>&quot;</span>;
+Komoran komoran = <span style="color: #000080; font-weight: bold">new</span> Komoran(String.<span style="color: #FF0000">join</span>(File.<span style="color: #FF0000">separator</span>, modelBaseDir, <span style="color: #0000FF">&quot;/model&quot;</span>));
+
+komoran.<span style="color: #FF0000">setUserDic</span>(String.<span style="color: #FF0000">join</span>(File.<span style="color: #FF0000">separator</span>, modelBaseDir, <span style="color: #0000FF">&quot;/dic.user&quot;</span>));
+komoran.<span style="color: #FF0000">setFWDic</span>(String.<span style="color: #FF0000">join</span>(File.<span style="color: #FF0000">separator</span>, modelBaseDir, <span style="color: #0000FF">&quot;/fwd.user&quot;</span>));
+</pre></div><!-- //HTML generated using hilite.me -->
+
+                  <li>더 자세한 내용은 <a href="https://github.com/shin285/KOMORAN" target="_blank">KOMORAN 저장소</a> 또는 <a href="http://docs.komoran.kr/" target="_blank">KOMORAN 문서</a>를 참고해주세요.</li>
+                </ol>
+              </div>
+            </div>
           </div>
           <!-- /.box -->
 
@@ -218,11 +257,15 @@
 
     // Generate New Model
     $("#modelGenerateBtn").on("click", generateNewModel);
-    $("#anotherModelGenerateBtn").on("click", generateNewModel);
 
-    // Compare analyze results
-    $("#analyzeBtn").on("click", analyzeAndCompare);
-    $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
+    // Delete User Model
+    $("#modelDeleteBtn").on("click", deleteUserModel);
+
+    // Deploy User Model
+    $("#modelDeployBtn").on("click", deployUserModel);
+
+    // Change selected Model
+    $("#selectMgmtModel").on("change", hideDeployGuide);
   });
 
   function generateNewModel() {
@@ -239,59 +282,103 @@
     });
   }
 
-  function analyzeAndCompare() {
-    var passStrToAnalyze = false;
+  function deleteUserModel() {
+    var passModelSelect = false;
 
-    if ($("#strToAnalyze").val() === "") {
-      $("#strToAnalyze").parent().addClass("has-error");
-      passStrToAnalyze = false;
+    if ($("#selectMgmtModel").val() === "") {
+      $("#selectMgmtModel").parent().addClass("has-error");
+      passModelSelect = false;
     }
     else {
-      $("#strToAnalyze").parent().removeClass("has-error");
-      passStrToAnalyze = true;
+      $("#selectMgmtModel").parent().removeClass("has-error");
+      passModelSelect = true;
     }
 
-    if (passStrToAnalyze) {
+    if (passModelSelect) {
       $.ajax({
         method: "POST",
-        url: "/analyze/compare",
+        url: "/model/delete",
         data: {
-          strToAnalyze: $("#strToAnalyze").val(),
-          modelNameSrc: $("#selectSrcModel").val(),
-          modelNameDest: $("#selectDestModel").val()
-          },
+          modelName: $("#selectMgmtModel").val()
+        },
         dataType: "json",
         success: function (result) {
-          if (result.error) {
-            alert(result.message + " (ERR_MORPH_COMPARE_0)");
-          }
-          else {
-            $("#analyzeSrcResult").html(result.data.srcHtml);
-            $("#analyzeDestResult").html(result.data.destHtml);
-          }
+          updateModelList(result.data);
+          alert("모델을 삭제하였습니다.");
         },
         error: function(e) {
-          alert("분석 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+          alert("삭제 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
         }
       });
     }
   }
 
+  function deployUserModel() {
+    var passModelSelect = false;
+
+    if ($("#selectMgmtModel").val() === "") {
+      $("#selectMgmtModel").parent().addClass("has-error");
+      passModelSelect = false;
+    }
+    else {
+      $("#selectMgmtModel").parent().removeClass("has-error");
+      passModelSelect = true;
+    }
+
+    if (passModelSelect) {
+      window.location.href = "/model/download/"+ $("#selectMgmtModel").val();
+      showDeployGuide();
+    }
+  }
+
+  function isWindows() {
+    var platform = window.navigator.platform,
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+
+    if (windowsPlatforms.indexOf(platform) !== -1) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  function hideDeployGuide() {
+    $("#deployGuide").hide();
+  }
+
+  function showDeployGuide() {
+    var zipFilename = "UserModel"+ $("#selectMgmtModel").val() +".zip";
+    var modelDirname = "model_"+ $("#selectMgmtModel").val();
+    var sampleBaseDirInWindows = "C:\\Some\\Path\\To\\Komoran\\";
+    var sampleBaseDirInMacUNIX = "/Some/Path/To/Komoran/";
+    var sampleModelDirname;
+
+    if (isWindows()) {
+      sampleModelDirname = sampleBaseDirInWindows + modelDirname;
+    }
+    else {
+      sampleModelDirname = sampleBaseDirInMacUNIX + modelDirname;
+    }
+
+    $("#modelFileNameInGuide").html(zipFilename);
+    $("#modelDirNameInGuide").html(sampleModelDirname);
+    $("#modelDirNameInGuideCode").html(sampleModelDirname);
+
+    $("#deployGuide").show();
+  }
+
   function updateModelList(modelList) {
-    $("#selectSrcModel").empty();
-    $("#selectDestModel").empty();
+    $("#selectMgmtModel").empty();
 
     modelList.forEach(function(model) {
-      if (model == "DEFAULT") {
-        modelName = "KOMORAN 기본 모델";
+      if (model === "DEFAULT") {
+        $("#selectMgmtModel").append(new Option('', ''));
       }
       else {
         modelName = parseModelName(model);
+        $("#selectMgmtModel").append(new Option(modelName, model));
       }
-
-      $("#selectSrcModel").append(new Option(modelName, model));
-      $("#selectDestModel").append(new Option(modelName, model));
-    })
+    });
   }
 
   function parseModelName(modelName) {
