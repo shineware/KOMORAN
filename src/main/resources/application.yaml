@@ -1,6 +1,7 @@
 server:
   port: 8888
 
+
 spring:
   servlet:
     multipart:
@@ -15,6 +16,7 @@ spring:
     username: sa
     password:
   jpa:
+    open-in-view: false
     database-platform: kr.co.shineware.nlp.komoran.admin.config.CustomH2Dialect
     hibernate:
       ddl-auto: update

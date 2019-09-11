@@ -162,7 +162,7 @@ public class GrammarInController {
             Path savedFilePath = fileUploadService.saveGrammarIn(fileToUpload);
 
             if (savedFilePath == null) {
-                throw new ServerErrorException("업로드 파일을 찾지 못함");
+                throw new ServerErrorException("업로드 파일을 찾지 못했습니다.");
             }
 
             grammarInService.importFromFile(savedFilePath);

@@ -21,7 +21,7 @@ public class PosTypeController {
         Map<PosType, String> allTypes = new LinkedHashMap<>();
 
         for (PosType p : PosType.values()) {
-            allTypes.put(p, p.name() +"("+ p.getPosName() +")");
+            allTypes.put(p, p.name() + "(" + p.getPosName() + ")");
         }
 
         return allTypes;

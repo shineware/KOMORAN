@@ -15,6 +15,7 @@ public interface FwdUserRepository extends JpaRepository<FwdUser, Long> {
     FwdUser findById(int id);
 
     FwdUser findByFull(String full);
+
     FwdUser findByFullAndAnalyzed(String full, String analyzed);
 
     // find without param
@@ -22,6 +23,7 @@ public interface FwdUserRepository extends JpaRepository<FwdUser, Long> {
 
     // find with one param
     Page<FwdUser> findByFullContaining(String full, Pageable pageable);
+
     Page<FwdUser> findByAnalyzedContaining(String analyzed, Pageable pageable);
 
     // find with two param

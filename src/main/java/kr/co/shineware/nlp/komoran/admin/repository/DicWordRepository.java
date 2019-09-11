@@ -22,12 +22,16 @@ public interface DicWordRepository extends JpaRepository<DicWord, Long> {
 
     // find with one param
     Page<DicWord> findByTokenContaining(String token, Pageable pageable);
+
     Page<DicWord> findByPos(PosType pos, Pageable pageable);
+
     Page<DicWord> findByTfGreaterThanEqual(int tf, Pageable pageable);
 
     // find with two param
     Page<DicWord> findByTokenContainingAndPos(String token, PosType pos, Pageable pageable);
+
     Page<DicWord> findByTokenContainingAndTfGreaterThanEqual(String token, int tf, Pageable pageable);
+
     Page<DicWord> findByPosAndTfGreaterThanEqual(PosType pos, int tf, Pageable pageable);
 
     // find with three param

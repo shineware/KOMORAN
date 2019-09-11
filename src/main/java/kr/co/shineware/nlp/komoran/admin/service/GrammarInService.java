@@ -1,13 +1,10 @@
 package kr.co.shineware.nlp.komoran.admin.service;
 
 import kr.co.shineware.nlp.komoran.admin.domain.GrammarIn;
-import kr.co.shineware.nlp.komoran.admin.domain.GrammarIn;
 import kr.co.shineware.nlp.komoran.admin.domain.GrammarType;
-import kr.co.shineware.nlp.komoran.admin.domain.PosType;
 import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.exception.ResourceDuplicatedException;
 import kr.co.shineware.nlp.komoran.admin.exception.ResourceNotFoundException;
-import kr.co.shineware.nlp.komoran.admin.repository.GrammarInRepository;
 import kr.co.shineware.nlp.komoran.admin.repository.GrammarInRepository;
 import kr.co.shineware.nlp.komoran.admin.util.parser.query.FilterQueryParser;
 import kr.co.shineware.nlp.komoran.admin.util.parser.query.SorterQueryParser;

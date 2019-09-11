@@ -8,6 +8,7 @@ public class ServerErrorException extends GlobalBaseException {
     public ServerErrorException(String message) {
         this(message, null);
     }
+
     public ServerErrorException(Throwable cause) {
         this(null, cause);
     }
