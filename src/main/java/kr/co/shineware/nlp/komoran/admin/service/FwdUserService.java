@@ -70,9 +70,8 @@ public class FwdUserService {
             if (tmpAnalyzedResults.length > 2) {
                 int delimiterIdx = anAnalyzedResult.lastIndexOf("/");
                 tmpAnalyzedTerm = anAnalyzedResult.substring(0, delimiterIdx);
-                tmpAnalyzedPosInRaw = anAnalyzedResult.substring(delimiterIdx+1);
-            }
-            else {
+                tmpAnalyzedPosInRaw = anAnalyzedResult.substring(delimiterIdx + 1);
+            } else {
                 tmpAnalyzedTerm = tmpAnalyzedResults[0];
                 tmpAnalyzedPosInRaw = tmpAnalyzedResults[1];
             }
@@ -97,9 +96,9 @@ public class FwdUserService {
     @Transactional
     public FwdUser checkGivenFullAndAnalyzedExist(String full, String analyzed) {
         if (full == null || "".equals(full)) {
-            throw new ParameterInvalidException("기분석 어절: "+ full);
+            throw new ParameterInvalidException("기분석 어절: " + full);
         } else if (!isValidFwdAnalyzedResult(analyzed)) {
-            throw new ParameterInvalidException("기분석 결과: "+ analyzed);
+            throw new ParameterInvalidException("기분석 결과: " + analyzed);
         }
 
         FwdUser fwdUserToFind = fwdUserRepository.findByFullAndAnalyzed(full, analyzed);
@@ -117,7 +116,7 @@ public class FwdUserService {
         if (id <= 0) {
             throw new ParameterInvalidException("ID: " + id);
         } else if (full == null || "".equals(full)) {
-            throw new ParameterInvalidException("기분석 어절: "+ full);
+            throw new ParameterInvalidException("기분석 어절: " + full);
         }
 
         FwdUser fwdUserToUpdate = getFwdUserItem(id);
@@ -134,7 +133,7 @@ public class FwdUserService {
         if (id <= 0) {
             throw new ParameterInvalidException("ID: " + id);
         } else if (!isValidFwdAnalyzedResult(analyzed)) {
-            throw new ParameterInvalidException("기분석 결과: "+ analyzed);
+            throw new ParameterInvalidException("기분석 결과: " + analyzed);
         }
 
         FwdUser fwdUserToUpdate = getFwdUserItem(id);
@@ -163,9 +162,9 @@ public class FwdUserService {
     @Transactional
     public FwdUser addItem(String full, String analyzed) {
         if (full == null || "".equals(full)) {
-            throw new ParameterInvalidException("기분석 어절: "+ full);
+            throw new ParameterInvalidException("기분석 어절: " + full);
         } else if (!isValidFwdAnalyzedResult(analyzed)) {
-            throw new ParameterInvalidException("기분석 결과: "+ analyzed);
+            throw new ParameterInvalidException("기분석 결과: " + analyzed);
         }
 
         FwdUser duplicateItem = fwdUserRepository.findByFull(full);

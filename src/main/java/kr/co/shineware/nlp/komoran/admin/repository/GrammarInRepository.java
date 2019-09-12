@@ -22,12 +22,16 @@ public interface GrammarInRepository extends JpaRepository<GrammarIn, Long> {
 
     // find with one param
     Page<GrammarIn> findByStart(GrammarType start, Pageable pageable);
+
     Page<GrammarIn> findByNext(GrammarType next, Pageable pageable);
+
     Page<GrammarIn> findByTfGreaterThanEqual(int tf, Pageable pageable);
 
     // find with two param
     Page<GrammarIn> findByStartAndNext(GrammarType start, GrammarType next, Pageable pageable);
+
     Page<GrammarIn> findByStartAndTfGreaterThanEqual(GrammarType start, int tf, Pageable pageable);
+
     Page<GrammarIn> findByNextAndTfGreaterThanEqual(GrammarType next, int tf, Pageable pageable);
 
     // find with three param

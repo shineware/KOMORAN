@@ -45,9 +45,8 @@ public class FwdUserStreamParser {
             if (tmpAnalyzedResults.length > 2) {
                 int delimiterIdx = anAnalyzedResult.lastIndexOf("/");
                 tmpAnalyzedTerm = anAnalyzedResult.substring(0, delimiterIdx);
-                tmpAnalyzedPosInRaw = anAnalyzedResult.substring(delimiterIdx+1);
-            }
-            else {
+                tmpAnalyzedPosInRaw = anAnalyzedResult.substring(delimiterIdx + 1);
+            } else {
                 tmpAnalyzedTerm = tmpAnalyzedResults[0];
                 tmpAnalyzedPosInRaw = tmpAnalyzedResults[1];
             }

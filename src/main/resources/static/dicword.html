@@ -77,7 +77,7 @@
         <li class="header">비교</li>
           <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
         <li class="header">배포</li>
-          <li><a href="./deploy.html"><i class="fa fa-code"></i> <span>모델 배포 안내</span></a></li>
+          <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
           <li><a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i class="fa fa-external-link"></i></span></a></li>
           <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i class="fa fa-external-link"></i></span></a></li>
@@ -96,7 +96,7 @@
         <small>Word Frequency</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="./"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="./"><i class="fa fa-dashboard"></i> 홈</a></li>
         <li class="active">단어 빈도 관리</li>
       </ol>
     </section>
@@ -242,7 +242,14 @@
     return "<i class='fa fa-trash'></i>"
   };
 
+  function redrawTabulator() {
+    setTimeout(function(){ $("#dictTable").tabulator("redraw"); }, 300);
+  }
+
   $(function () {
+    $(document).on("expanded.pushMenu", redrawTabulator);
+    $(document).on("collapsed.pushMenu", redrawTabulator);
+
     // Dict File Upload
     $("#dictUploadModal").on("hidden.bs.modal", function() {
       $("#dictUploadBtnInModal").prop("disabled", true);

@@ -25,8 +25,7 @@ public class GrammarInStreamParser implements StreamParser {
 
         try {
             start = GrammarType.valueOf(startInRaw);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new ResourceMalformedException("잘못된 시작 품사, " + input);
         }
 

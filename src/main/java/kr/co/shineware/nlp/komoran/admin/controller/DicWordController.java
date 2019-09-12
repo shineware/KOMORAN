@@ -194,9 +194,9 @@ public class DicWordController {
                                      @RequestParam(value = "size", required = false, defaultValue = "20") int size,
                                      @RequestParam Map<String, String> allParameters) {
         if (page < 1) {
-            throw new ParameterInvalidException("page: "+ page);
+            throw new ParameterInvalidException("page: " + page);
         } else if (size < 1) {
-            throw new ParameterInvalidException("size: "+ size);
+            throw new ParameterInvalidException("size: " + size);
         }
 
         return dicWordService.getDicWordList(page, size, allParameters);

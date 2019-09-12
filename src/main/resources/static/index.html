@@ -77,7 +77,7 @@
         <li class="header">비교</li>
           <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
         <li class="header">배포</li>
-          <li><a href="./deploy.html"><i class="fa fa-code"></i> <span>모델 배포 안내</span></a></li>
+          <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
           <li><a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i class="fa fa-external-link"></i></span></a></li>
           <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i class="fa fa-external-link"></i></span></a></li>
@@ -96,7 +96,7 @@
         <small>Home</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="./"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="./"><i class="fa fa-dashboard"></i> 홈</a></li>
       </ol>
     </section>
 
@@ -135,10 +135,10 @@
               <p>단어 빈도 관리, 품사 빈도 관리 및 사용자 사전과 기분석 사전 관리 메뉴에서 사용자 모델 생성을 위한 기초 데이터를 생성합니다.</p>
 
               <h4>비교</h4>
-              <p>위 보정 메뉴에서 생성한 기초 데이터로 사용자 모델을 생성하고, 이 모델을 이용하여 입력된 문장(들)에 대해서 형태소 분석을 진행합니다. 이 때, KOMORAN에서 기본으로 제공하는 모델을 사용한 형태소 분석 결과와 사용자 모델의 형태소 분석 결과를 일목요연하게 비교하여 볼 수 있도록 합니다.</p>
+              <p>사용자 모델을 생성하고, KOMORAN 기본 모델과 사용자 모델들 중 2가지를 선택하여 형태소 분석 결과를 비교할 수 있습니다.</p>
 
               <h4>배포</h4>
-              <p>이상의 '분석 - 조정 - 비교' 기능들을 여러 번 사용하여 원하는 분석 결과를 갖는 모델을 배포하는 과정을 가이드합니다. 배포 메뉴는 조정 메뉴에서 최적화한 각각의 사전들을 다운로드받은 후 기존의 소프트웨어에 적용하는 방법이 기재되어 있습니다.</p>
+              <p>이상의 '분석 - 조정 - 비교' 메뉴를 통해 원하는 분석 결과를 갖는 사용자 모델을 생성하거나 삭제할 수 있습니다.<br/>또한, 보정 메뉴에서 최적화한 각각의 사전들로 생성한 사용자 모델을 적용하는 방법을 안내합니다.</p>
             </div>
             <!-- /.box-body -->
           </div>
@@ -206,67 +206,6 @@
   </footer>
 </div>
 <!-- ./wrapper -->
-
-<!-- Modal - Upload Dict File -->
-<div id="dictUploadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dictUploadModalTitle">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="dictUploadModalTitle">사전 파일 올리기</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-            <p>아래 버튼을 눌러 사전 파일을 올려주세요.</p>
-            <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두 삭제</b>됩니다. 기존 사전을 반드시 <a href="/dic/user/download"><i class="fa fa-download"></i> 내려받기</a> 해주세요.</p>
-            <input id="dictUploadFile" type="file" name="file" title="사전 파일을 선택해주세요.">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
-        <button id="dictUploadBtnInModal" type="button" class="btn btn-primary btn-flat" disabled>올리기</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- /Modal - Upload Dict File -->
-
-<!-- Modal - Add Item -->
-<div id="dictAddItemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dictAddItemModalTitle">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="dictAddItemModalTitle">새로운 단어 등록하기</h4>
-      </div>
-      <form role="form">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <label>단어</label>
-                <input type="text" id="dictAddItemModalWordInput" name="token" class="form-control " style="width: 100%;" />
-              </div>
-              <div class="form-group">
-                <label>품사</label>
-                <select id="dictAddItemModalPosSelect" name="pos" class="form-control " style="width: 100%;">
-                  <option value="">--- 품사를 선택해주세요 ---</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
-          <button id="dictAddItemBtnInModal" type="button" class="btn btn-primary btn-flat">등록하기</button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- /Modal - Add Item -->
 
 <!-- jQuery 3 -->
 <script src="/libs/jquery/jquery.min.js"></script>

@@ -60,7 +60,7 @@ public class MorphAnalyzeService {
         File modelPath = new File(modelBasePathName);
 
         if (!modelPath.exists()) {
-            throw new ResourceNotFoundException("존재하지 않는 모델명 ["+ modelPathName +"]");
+            throw new ResourceNotFoundException("존재하지 않는 모델명 [" + modelPathName + "]");
         }
 
         this.userKomoran = new Komoran(String.join(File.separator, modelBasePathName, MODELS_MODELDIR));
@@ -74,7 +74,7 @@ public class MorphAnalyzeService {
 
     private String analyzeWithUserModel(String modelPathName, String strToAnalyze) {
         if ("".equals(modelPathName)) {
-            throw new ResourceNotFoundException("잘못된 모델명 ["+ modelPathName +"]");
+            throw new ResourceNotFoundException("잘못된 모델명 [" + modelPathName + "]");
         }
 
         String result;
@@ -82,8 +82,7 @@ public class MorphAnalyzeService {
         try {
             this.loadUserModel(modelPathName);
             result = this.userKomoran.analyze(strToAnalyze).getPlainText();
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\\n사전 문제일 수 있습니다.");
         }
 
@@ -102,15 +101,13 @@ public class MorphAnalyzeService {
 
         if ("DEFAULT".equals(modelNameSrc)) {
             resultSrc = this.analyze(strToAnalyze);
-        }
-        else {
+        } else {
             resultSrc = this.analyzeWithUserModel(modelNameSrc, strToAnalyze);
         }
 
         if ("DEFAULT".equals(modelNameDest)) {
             resultDest = this.analyze(strToAnalyze);
-        }
-        else {
+        } else {
             resultDest = this.analyzeWithUserModel(modelNameDest, strToAnalyze);
         }
 
@@ -124,12 +121,12 @@ public class MorphAnalyzeService {
                 .build();
         try {
             List<DiffRow> rows = generator.generateDiffRows(Arrays.asList(resultSrc.split(" ")), Arrays.asList(resultDest.split(" ")));
+
             for (DiffRow row : rows) {
                 if (!isFirst) {
                     resultSrcHtml.append(" ");
                     resultDestHtml.append(" ");
-                }
-                else {
+                } else {
                     isFirst = false;
                 }
 
@@ -137,13 +134,10 @@ public class MorphAnalyzeService {
                 resultDestHtml.append(row.getNewLine());
             }
 
-        }
-        catch (DiffException e) {
+        } catch (DiffException e) {
             throw new ServerErrorException("분석 결과 비교 중 문제가 발생하였습니다.");
         }
 
-//        result.put("src", resultSrc);
-//        result.put("dest", resultDest);
         result.put("srcHtml", resultSrcHtml.toString());
         result.put("destHtml", resultDestHtml.toString());
 

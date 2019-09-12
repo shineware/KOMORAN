@@ -1,7 +1,11 @@
 package kr.co.shineware.nlp.komoran.admin.service;
 
+import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.exception.ServerErrorException;
 import kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +13,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -63,9 +69,18 @@ public class UserModelService {
     private GrammarInService grammarInService;
 
 
+    private String modelDirFormat;
+    private SimpleDateFormat dirNameFormat;
+
+
+    UserModelService() {
+        modelDirFormat = "yyyyMMddHHmmssSSS";
+        dirNameFormat = new SimpleDateFormat(modelDirFormat);
+    }
+
+
     private String getModelBasePath() {
-        SimpleDateFormat dirNameFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String modelPath = MODELS_BASEDIR + dirNameFormat.format(System.currentTimeMillis());
+        String modelPath = String.join(File.separator, MODELS_BASEDIR, this.dirNameFormat.format(System.currentTimeMillis()));
 
         return modelPath;
     }
@@ -86,24 +101,14 @@ public class UserModelService {
             modelPathToSave = new File(modelPathname);
         }
 
-        // Create model directory to save user model
-        modelPathToSave.mkdirs();
 
-        // Copy corpus dir to user model dir
+        // Copy corpus dir to user model dir recursively
         String corpusDefaultPathname = String.join(File.separator, DEFAULT_BASEDIR, MODELS_CORPUSDIR);
         String corpusCopyToDestPathname = String.join(File.separator, modelPathname, MODELS_CORPUSDIR);
         File corpusDefaultScrPath = (new ClassPathResource(corpusDefaultPathname)).getFile();
         File corpusCopyToDestPath = new File(corpusCopyToDestPathname);
 
-        // Create corpus dir
-        corpusCopyToDestPath.mkdir();
-
-        // Copy included files
-        File defaultFiles[] = corpusDefaultScrPath.listFiles();
-        for (File aDefaultFile : defaultFiles) {
-            File tmpFileForCopy = new File(String.join(File.separator, corpusCopyToDestPathname, aDefaultFile.getName()));
-            Files.copy(aDefaultFile.toPath(), tmpFileForCopy.toPath());
-        }
+        FileSystemUtils.copyRecursively(corpusDefaultScrPath, corpusCopyToDestPath);
 
         // return model directory
         return modelPathname;
@@ -190,6 +195,53 @@ public class UserModelService {
         String modelDirs[] = modelBasePath.list();
         modelList.addAll(Arrays.asList(modelDirs));
 
+        Collections.sort(modelList, Collections.reverseOrder());
+
         return modelList;
+    }
+
+
+    private void validateUserModelDir(String modelDir) {
+        if ("".equals(modelDir) || modelDir == null) {
+            throw new ParameterInvalidException("잘못된 모델명 [" + modelDir + "]");
+        } else {
+            try {
+                this.dirNameFormat.parse(modelDir);
+            } catch (ParseException e) {
+                throw new ServerErrorException("사용자 모델 삭제에 실패했습니다. 모델명을 확인해주세요.");
+            }
+        }
+    }
+
+
+    public boolean deleteUserModel(String modelDir) {
+        validateUserModelDir(modelDir);
+
+        String dirNameToDelete = String.join(File.separator, MODELS_BASEDIR, modelDir);
+
+        return FileSystemUtils.deleteRecursively(new File(dirNameToDelete));
+    }
+
+
+    public File deployUserModel(String modelDir) {
+        validateUserModelDir(modelDir);
+
+        String dirNameToArchive = String.join(File.separator, MODELS_BASEDIR, modelDir);
+        String zipNameToArchive = "UserModel" + modelDir + ".zip";
+
+        ZipFile zipFileToDeploy = new ZipFile(zipNameToArchive);
+        ZipParameters zipFileParams = new ZipParameters();
+
+        zipFileParams.setReadHiddenFiles(false);
+        zipFileParams.setReadHiddenFolders(false);
+        zipFileParams.setIncludeRootFolder(false);
+
+        try {
+            zipFileToDeploy.addFolder(new File(dirNameToArchive), zipFileParams);
+        } catch (ZipException e) {
+            throw new ServerErrorException("모델 배포를 위한 압축 파일 생성에 실패했습니다.");
+        }
+
+        return zipFileToDeploy.getFile();
     }
 }

@@ -65,7 +65,7 @@ public class QueryParser {
         // Sort by '_order' key
         Collections.sort(this.parsedResults, new OrderKeyComparator());
 
-        logger.debug("Parsed Result: "+ this.parsedResults.toString());
+        logger.debug("Parsed Result: " + this.parsedResults.toString());
 
         return this.parsedResults;
     }
