@@ -13,6 +13,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -49,7 +50,7 @@ public class SetupDefaultData implements ApplicationRunner {
     private GrammarInService grammarInService;
 
 
-    private Path getDefaultFilePath(String type) {
+    public Path getDefaultFilePath(String type) {
         String filePathStr;
         Path pathForDefaultFile = null;
 
@@ -72,7 +73,7 @@ public class SetupDefaultData implements ApplicationRunner {
 
         try {
             pathForDefaultFile = Paths.get((new ClassPathResource(filePathStr)).getURI());
-        } catch (Exception e) {
+        } catch (IOException e) {
             // DO NOTHING, JUST FAIL TO LOAD DEFAULT
         }
 
@@ -81,7 +82,7 @@ public class SetupDefaultData implements ApplicationRunner {
 
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) throws IOException {
         logger.debug("DicWord : " + dicWordRepository.count());
         logger.debug("GrammarIn : " + grammarInRepository.count());
 
