@@ -29,12 +29,14 @@ public interface FwdUserRepository extends JpaRepository<FwdUser, Long> {
     // find with two param
     Page<FwdUser> findByFullContainingAndAnalyzedContaining(String full, String analyzed, Pageable pageable);
 
+
     // export all data with specified form
     @Query(value = "SELECT CONCAT(fullwords, '\t', analyzed) " +
             "FROM FWDIC " +
             "ORDER BY fullwords",
             nativeQuery = true)
     Stream<String> getAllItemsWithExportForm();
+
 
     @Transactional
     @Modifying

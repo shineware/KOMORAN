@@ -37,6 +37,7 @@ public interface DicWordRepository extends JpaRepository<DicWord, Long> {
     // find with three param
     Page<DicWord> findByTokenContainingAndPosAndTfGreaterThanEqual(String token, PosType pos, int tf, Pageable pageable);
 
+
     // export all data with specified form
     @Query(value = "SELECT CONCAT(token, '\t', GROUP_CONCAT(pos || ':' || tf SEPARATOR '\t')) " +
             "FROM DICWORD " +

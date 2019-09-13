@@ -21,7 +21,6 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -193,7 +192,7 @@ public class UserModelService {
             return modelList;
         }
 
-        String modelDirs[] = modelBasePath.list();
+        String[] modelDirs = modelBasePath.list();
 
         if (modelDirs == null) {
             return modelList;
@@ -263,4 +262,5 @@ public class UserModelService {
 
         return zipFileToDeploy.getFile();
     }
+
 }

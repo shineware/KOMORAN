@@ -88,13 +88,13 @@ public class SetupDefaultData implements ApplicationRunner {
 
         // Initialize DicWord
         if (dicWordRepository.count() <= 0 && getDefaultFilePath("dicword") != null) {
-            logger.debug("Importing DicWord from file named " + filenameDicWord);
+            logger.info("Importing DicWord from file named " + filenameDicWord);
             dicWordService.importFromFile(getDefaultFilePath("dicword"));
         }
 
         // Initialize GrammarIn
         if (grammarInRepository.count() <= 0 && getDefaultFilePath("grammarin") != null) {
-            logger.debug("Importing GrammarIn from file named " + filenameGrammarIn);
+            logger.info("Importing GrammarIn from file named " + filenameGrammarIn);
             grammarInService.importFromFile(getDefaultFilePath("grammarin"));
         }
     }

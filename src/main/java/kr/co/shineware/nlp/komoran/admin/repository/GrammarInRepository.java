@@ -37,6 +37,7 @@ public interface GrammarInRepository extends JpaRepository<GrammarIn, Long> {
     // find with three param
     Page<GrammarIn> findByStartAndNextAndTfGreaterThanEqual(GrammarType start, GrammarType next, int tf, Pageable pageable);
 
+
     // export all data with specified form
     @Query(value = "SELECT CONCAT(start, '\t', GROUP_CONCAT(next || ':' || tf SEPARATOR ',')) " +
             "FROM GRAMMARIN " +

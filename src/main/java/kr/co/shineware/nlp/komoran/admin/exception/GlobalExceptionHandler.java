@@ -39,7 +39,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseDetail, responseDetail.getStatus());
     }
 
-
     @ExceptionHandler(value = ParameterInvalidException.class)
     public ResponseEntity<?> handleParameterInvalidException(ParameterInvalidException e) {
         return handleGlobalBaseException(e);
