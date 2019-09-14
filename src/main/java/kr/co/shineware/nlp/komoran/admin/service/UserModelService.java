@@ -21,7 +21,6 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -70,6 +69,7 @@ public class UserModelService {
 
 
     private String modelDirFormat;
+
     private SimpleDateFormat dirNameFormat;
 
 
@@ -192,8 +192,26 @@ public class UserModelService {
             return modelList;
         }
 
-        String modelDirs[] = modelBasePath.list();
-        modelList.addAll(Arrays.asList(modelDirs));
+        String[] modelDirs = modelBasePath.list();
+
+        if (modelDirs == null) {
+            return modelList;
+        }
+
+        // add only valid modelDir
+        for (String modelDir : modelDirs) {
+            try {
+                this.dirNameFormat.parse(modelDir);
+
+                File tmpModelDir = new File(String.join(File.separator, MODELS_BASEDIR, modelDir));
+
+                if (tmpModelDir.exists() && tmpModelDir.list() != null) {
+                    modelList.add(modelDir);
+                }
+            } catch (ParseException e) {
+                continue;
+            }
+        }
 
         Collections.sort(modelList, Collections.reverseOrder());
 
@@ -201,7 +219,7 @@ public class UserModelService {
     }
 
 
-    private void validateUserModelDir(String modelDir) {
+    private void validateUserModelDirName(String modelDir) {
         if ("".equals(modelDir) || modelDir == null) {
             throw new ParameterInvalidException("잘못된 모델명 [" + modelDir + "]");
         } else {
@@ -215,7 +233,7 @@ public class UserModelService {
 
 
     public boolean deleteUserModel(String modelDir) {
-        validateUserModelDir(modelDir);
+        validateUserModelDirName(modelDir);
 
         String dirNameToDelete = String.join(File.separator, MODELS_BASEDIR, modelDir);
 
@@ -224,7 +242,7 @@ public class UserModelService {
 
 
     public File deployUserModel(String modelDir) {
-        validateUserModelDir(modelDir);
+        validateUserModelDirName(modelDir);
 
         String dirNameToArchive = String.join(File.separator, MODELS_BASEDIR, modelDir);
         String zipNameToArchive = "UserModel" + modelDir + ".zip";
@@ -244,4 +262,5 @@ public class UserModelService {
 
         return zipFileToDeploy.getFile();
     }
+
 }

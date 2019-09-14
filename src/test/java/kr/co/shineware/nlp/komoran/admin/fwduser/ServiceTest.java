@@ -2,15 +2,10 @@ package kr.co.shineware.nlp.komoran.admin.fwduser;
 
 import kr.co.shineware.nlp.komoran.admin.KOMORANAdminApplication;
 import kr.co.shineware.nlp.komoran.admin.domain.FwdUser;
-import kr.co.shineware.nlp.komoran.admin.domain.GrammarIn;
-import kr.co.shineware.nlp.komoran.admin.domain.GrammarType;
-import kr.co.shineware.nlp.komoran.admin.domain.PosType;
 import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.exception.ResourceDuplicatedException;
 import kr.co.shineware.nlp.komoran.admin.repository.FwdUserRepository;
-import kr.co.shineware.nlp.komoran.admin.repository.GrammarInRepository;
 import kr.co.shineware.nlp.komoran.admin.service.FwdUserService;
-import kr.co.shineware.nlp.komoran.admin.service.GrammarInService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -144,6 +139,7 @@ public class ServiceTest {
 
         fwdUserService.updateAnalyzedById(idToTest, "");
     }
+
 
     @Test
     public void DeleteItemById_Test() {

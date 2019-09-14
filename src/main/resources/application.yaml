@@ -35,6 +35,7 @@ spring:
         trace: false
         web-allow-others: false
 
+
 files:
   default:
     basedir: defaults/    # should exist under src/main/resources
@@ -58,3 +59,5 @@ models:
 logging:
   level:
     kr.co.shineware.nlp.komoran.admin: TRACE
+    org.springframework: DEBUG
+    org.hibernate: ERROR

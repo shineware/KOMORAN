@@ -31,7 +31,7 @@ public class QueryParser {
 
     public ArrayList<HashMap<String, String>> parse(Map<String, String> inputParam) {
         if (inputParam.isEmpty()) {
-            throw new ParameterInvalidException("파라매터 미존재");
+            throw new ParameterInvalidException("Tabulator Parameter 미존재");
         }
 
         this.parsedResults = new ArrayList<>();
@@ -65,7 +65,7 @@ public class QueryParser {
         // Sort by '_order' key
         Collections.sort(this.parsedResults, new OrderKeyComparator());
 
-        logger.debug("Parsed Result: " + this.parsedResults.toString());
+        logger.info("Parsed Result: " + this.parsedResults.toString());
 
         return this.parsedResults;
     }

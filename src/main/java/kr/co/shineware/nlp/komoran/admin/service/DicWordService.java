@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ public class DicWordService {
 
     //    @Async("threadPoolTaskExecutor")
     @Transactional
-    public void importFromFile(Path savedFilePath) throws Exception {
+    public void importFromFile(Path savedFilePath) throws IOException {
         Stream<String> lines = Files.lines(savedFilePath);
 
         // @formatter:off
