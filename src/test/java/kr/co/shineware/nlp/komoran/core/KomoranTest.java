@@ -50,7 +50,7 @@ public class KomoranTest {
 
     @Test
     public void speedTest() throws Exception {
-        Komoran komoran = new Komoran("models_light");
+        Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
 //		komoran.setFWDic("komoran_benchmarker/fwd2.user");
         int count = 100;
         int avgElapsedTime = 0;

@@ -37,12 +37,8 @@ jar {
 
 dependencies {
     compile 'com.github.shineware:commons:1.0.1'
-    compile 'com.github.shineware:aho-corasick:1.1.0'
+    compile 'com.github.shineware:aho-corasick:1.0.9'
     testCompile 'junit:junit:4.12'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.2'
 }
 
 compileJava.options.encoding = "UTF-8"
