@@ -10,9 +10,7 @@ import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +46,41 @@ public class KomoranTest {
         KoreanUnitParser koreanUnitParser = new KoreanUnitParser();
         System.out.println(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ"));
         System.out.println(koreanUnitParser.combineWithType(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ")));
+    }
+
+    @Test
+    public void speedTest() throws Exception {
+        Komoran komoran = new Komoran("models_light");
+//		komoran.setFWDic("komoran_benchmarker/fwd2.user");
+        int count = 100;
+        int avgElapsedTime = 0;
+        while(true){
+            BufferedReader br = new BufferedReader(new FileReader("stress.test"));
+            String line = null;
+            long begin,end;
+            long elapsedTime=0l;
+            while((line = br.readLine()) != null){
+//				String[] tmp = line.split(" ");
+//				for (String t : tmp) {
+//					begin = System.currentTimeMillis();
+//					komoran.analyze(t);
+//					end = System.currentTimeMillis();
+//					elapsedTime += (end-begin);
+//				}
+//				tmp = null;
+                begin = System.currentTimeMillis();
+                komoran.analyze(line);
+                end = System.currentTimeMillis();
+                elapsedTime += (end-begin);
+
+            }
+            br.close();
+            System.out.println(elapsedTime);
+            avgElapsedTime += elapsedTime;
+//			TimeChecker.printElapsedTimeRatio(acc);
+            if(count-- == 0)break;
+        }
+        System.out.println("Avg. ElapsedTime : "+avgElapsedTime/100);
     }
 
     @Test

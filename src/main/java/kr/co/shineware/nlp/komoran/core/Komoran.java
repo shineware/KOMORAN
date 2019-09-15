@@ -225,7 +225,6 @@ public class Komoran implements Cloneable {
                 whitespaceIndex = curJasoIndex + 1;
             }
 
-            ElapsedTimeChecker.checkBeginTime("CORE");
             //이 부분도 조금 더 깔끔한 방법으로 처리 할 수 없을지 고민해보자
             this.continuousSymbolParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex, continuousSymbolBuffer); //숫자, 영어, 외래어 파싱
 
@@ -237,7 +236,6 @@ public class Komoran implements Cloneable {
             this.regularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //일반규칙 파싱
             this.irregularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 파싱
             this.irregularExtends(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 확장
-            ElapsedTimeChecker.checkEndTime("CORE");
         }
 
 
