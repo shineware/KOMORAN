@@ -67,7 +67,7 @@ KOMORAN 관리도구는 크게 4가지 기능을 제공하는 메뉴들로 구�
   gradlew.bat bootRun
 ```
 
-* Chrome 브라우저를 열고 [http://localhost:8888/](http://localhost:8888/) 에 접속합니다.
+* Chrome 브라우저를 열고 [http://localhost:3579/](http://localhost:3579/) 에 접속합니다.
 
 ## 자주 묻는 질문과 답변
 
@@ -82,7 +82,7 @@ KOMORAN 관리도구는 크게 4가지 기능을 제공하는 메뉴들로 구�
 ### KOMORAN 관리도구 사용법
 
 * **Q**: 사전 데이터는 어디에 저장되나요?
-  * **A**: 사전 데이터는 H2 Database에 저장되며, AdminDB.mv.db라는 파일로 존재합니다. SQL을 사용할 줄 아신다면 [H2 콘솔](http://localhost:8888/console)에서도 살펴보실 수 있습니다.
+  * **A**: 사전 데이터는 H2 Database에 저장되며, AdminDB.mv.db라는 파일로 존재합니다. SQL을 사용할 줄 아신다면 [H2 콘솔](http://localhost:3579/console)에서도 살펴보실 수 있습니다.
 
 * **Q**: 사전 데이터를 파일로 받고 싶어요.
   * **A**: 개별 사전을 파일 형태로 다운로드 받으시려면 각 사전 보정 메뉴 상단의 '내려받기'를 이용해주세요.
