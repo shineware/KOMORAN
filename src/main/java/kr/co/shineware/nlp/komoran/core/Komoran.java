@@ -33,6 +33,7 @@ import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -191,7 +192,7 @@ public class Komoran implements Cloneable {
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
 
-        sentence = sentence.replaceAll("[ ]+", " ").trim();
+//        sentence = sentence.replaceAll("[ ]+", " ").trim();
 
         Lattice lattice = new Lattice(this.resources, this.userDic, nbest);
 
@@ -224,6 +225,7 @@ public class Komoran implements Cloneable {
                 whitespaceIndex = curJasoIndex + 1;
             }
 
+            ElapsedTimeChecker.checkBeginTime("CORE");
             //이 부분도 조금 더 깔끔한 방법으로 처리 할 수 없을지 고민해보자
             this.continuousSymbolParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex, continuousSymbolBuffer); //숫자, 영어, 외래어 파싱
 
@@ -235,7 +237,9 @@ public class Komoran implements Cloneable {
             this.regularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //일반규칙 파싱
             this.irregularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 파싱
             this.irregularExtends(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 확장
+            ElapsedTimeChecker.checkEndTime("CORE");
         }
+
 
         this.consumeContiniousSymbolParserBuffer(lattice, jasoUnits, continuousSymbolBuffer);
         lattice.setLastIdx(jasoUnits.length());
@@ -366,14 +370,14 @@ public class Komoran implements Cloneable {
                                      List<Pair<String, String>> fwdResultList, String targetWord) {
 
         //기분석 사전과 targetWord의 문자열이 일치하는 경우
-        if (hasRegularFWDValues(fwdResultList, targetWord)) {
-            for (Pair<String, String> morphPosPair : fwdResultList) {
-                lattice.put(beginIdx, beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length(), morphPosPair.getFirst(), morphPosPair.getSecond(), this.resources.getTable().getId(morphPosPair.getSecond()), 0.0);
-                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
-            }
-        } else {
+//        if (hasRegularFWDValues(fwdResultList, targetWord)) {
+//            for (Pair<String, String> morphPosPair : fwdResultList) {
+//                lattice.put(beginIdx, beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length(), morphPosPair.getFirst(), morphPosPair.getSecond(), this.resources.getTable().getId(morphPosPair.getSecond()), 0.0);
+//                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
+//            }
+//        } else {
             lattice.put(beginIdx, endIdx, fwdResultList);
-        }
+//        }
     }
 
     private boolean hasRegularFWDValues(List<Pair<String, String>> fwdResultList, String targetWord) {
@@ -544,7 +548,7 @@ public class Komoran implements Cloneable {
 
             List<IrregularNode> irrNodes = morphIrrNodesMap.get(morph);
             for (IrregularNode irregularNode : irrNodes) {
-                lattice.put(beginIdx, endIdx, irregularNode);
+//                lattice.put(beginIdx, endIdx, irregularNode);
                 this.insertLattice(lattice, beginIdx, endIdx, irregularNode);
             }
         }

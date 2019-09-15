@@ -87,6 +87,7 @@ public class KomoranTest {
         bw.close();
 
         System.out.println("Elapsed time : " + (end - begin));
+        ElapsedTimeChecker.printTimes();
     }
 
     @Test

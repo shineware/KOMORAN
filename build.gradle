@@ -37,7 +37,7 @@ jar {
 
 dependencies {
     compile 'com.github.shineware:commons:1.0.1'
-    compile 'com.github.shineware:aho-corasick:1.0.9'
+    compile 'com.github.shineware:aho-corasick:1.1.0'
     testCompile 'junit:junit:4.12'
 }
 
