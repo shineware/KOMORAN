@@ -223,15 +223,24 @@ public class Lattice {
         List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
 
         if (prevLatticeNodes != null) {
+            if(nbest != 1){
+                List<LatticeNode> nbestLatticeNodeList = this.getNbestMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score, this.nbest);
 
-            List<LatticeNode> nbestLatticeNodeList = this.getNbestMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score, this.nbest);
-
-            if (nbestLatticeNodeList != null) {
-                for (LatticeNode latticeNode : nbestLatticeNodeList) {
-                    this.appendNode(latticeNode);
+                if (nbestLatticeNodeList != null) {
+                    for (LatticeNode latticeNode : nbestLatticeNodeList) {
+                        this.appendNode(latticeNode);
+                    }
+                    return true;
                 }
-                return true;
             }
+            else{
+                LatticeNode maxLatticeNode = this.getMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score);
+                if(maxLatticeNode != null){
+                    this.appendNode(maxLatticeNode);
+                    return true;
+                }
+            }
+
         }
         return false;
     }
