@@ -66,6 +66,8 @@ KOMORAN 관리도구는 크게 4가지 기능을 제공하는 메뉴들로 구�
   ./gradlew bootRun
   # Windows 사용 시 아래와 같이 실행합니다.
   gradlew.bat bootRun
+  # 실행이 완료되면 아래와 같은 메시지가 출력됩니다.
+  # ##### KOMORAN Admin has just started. #####
   ```
 
 * Chrome 브라우저를 열고 [http://localhost:3579/](http://localhost:3579/) 에 접속합니다.
