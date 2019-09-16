@@ -211,4 +211,28 @@ public class KomoranTest {
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑").getTokenList());
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?").getTokenList());
     }
+
+    @Test
+    public void bulkAnalyzeSpeedTest2() {
+        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+        System.out.println("Load done");
+        System.out.println(lines.size());
+        long avgElapsedTime = 0;
+
+        for (int i = 0; i < 12; i++) {
+            long begin = System.currentTimeMillis();
+            for (String line : lines) {
+                KomoranResult komoranResultList = this.komoran.analyze(line);
+            }
+            long end = System.currentTimeMillis();
+            if(i>=2) {
+                avgElapsedTime += (end - begin);
+            }
+            System.out.println("Elapsed time : " + (end - begin));
+        }
+
+        System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
+
+        ElapsedTimeChecker.printTimes();
+    }
 }
