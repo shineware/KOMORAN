@@ -18,6 +18,9 @@ group = 'kr.co.shineware.nlp.komoran'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
