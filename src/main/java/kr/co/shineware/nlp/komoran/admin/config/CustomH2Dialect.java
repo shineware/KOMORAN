@@ -13,6 +13,6 @@ public class CustomH2Dialect extends H2Dialect {
         super();
         this.registerFunction("GROUP_CONCAT", new StandardSQLFunction("group_concat", StringType.INSTANCE));
         this.registerFunction("CONCAT", new StandardSQLFunction("concat", StringType.INSTANCE));
-        logger.info("CustomFunctions have been registered");
+        logger.debug("CustomFunctions have been registered");
     }
 }

@@ -59,6 +59,7 @@ models:
 
 logging:
   level:
-    kr.co.shineware.nlp.komoran.admin: DEBUG
+    kr.co.shineware.nlp.komoran.admin.*: INFO
     org.springframework: ERROR
     org.hibernate: ERROR
+    com.zaxxer.hikari.*: ERROR
