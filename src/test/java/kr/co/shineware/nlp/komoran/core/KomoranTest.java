@@ -51,6 +51,26 @@ public class KomoranTest {
     }
 
     @Test
+    public void multiThreadSpeedTest() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
+
+        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+
+        long begin = System.currentTimeMillis();
+        List<KomoranResult> komoranList = this.komoran.analyze(lines, 6);
+        for (KomoranResult komoranResult : komoranList) {
+            bw.write(komoranResult.getPlainText());
+            bw.newLine();
+        }
+
+        long end = System.currentTimeMillis();
+
+        bw.close();
+
+        System.out.println("Elapsed time : " + (end - begin));
+    }
+
+    @Test
     public void singleThreadSpeedTest() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
 
