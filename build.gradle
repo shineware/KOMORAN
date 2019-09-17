@@ -26,13 +26,13 @@ jar {
         configurations.runtime.collect {
             it.isDirectory() ? it : zipTree(it)
         }
-        
+
     }
 
     manifest {
         attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.KomoranConsoleRunner'
     }
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
 dependencies {
@@ -43,6 +43,20 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.2'
+}
+
+apply plugin: 'maven'
+
+task createPom {
+    pom {
+        project {
+            groupId "com.github.shin285"
+            artifactId "KOMORAN"
+            version "3.3.4"
+
+            inceptionYear '2019'
+        }
+    }.writeTo("pom.xml")
 }
 
 compileJava.options.encoding = "UTF-8"
