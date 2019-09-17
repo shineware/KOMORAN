@@ -366,14 +366,14 @@ public class Komoran implements Cloneable {
                                      List<Pair<String, String>> fwdResultList, String targetWord) {
 
         //기분석 사전과 targetWord의 문자열이 일치하는 경우
-        if (hasRegularFWDValues(fwdResultList, targetWord)) {
-            for (Pair<String, String> morphPosPair : fwdResultList) {
-                lattice.put(beginIdx, beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length(), morphPosPair.getFirst(), morphPosPair.getSecond(), this.resources.getTable().getId(morphPosPair.getSecond()), 0.0);
-                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
-            }
-        } else {
+//        if (hasRegularFWDValues(fwdResultList, targetWord)) {
+//            for (Pair<String, String> morphPosPair : fwdResultList) {
+//                lattice.put(beginIdx, beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length(), morphPosPair.getFirst(), morphPosPair.getSecond(), this.resources.getTable().getId(morphPosPair.getSecond()), 0.0);
+//                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
+//            }
+//        } else {
             lattice.put(beginIdx, endIdx, fwdResultList);
-        }
+//        }
     }
 
     private boolean hasRegularFWDValues(List<Pair<String, String>> fwdResultList, String targetWord) {
