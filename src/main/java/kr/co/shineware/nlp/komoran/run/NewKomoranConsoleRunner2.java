@@ -75,29 +75,13 @@ public class NewKomoranConsoleRunner2 {
         }
 
         komoran.analyzeTextFile(argMap.get("-in"), argMap.get("-out"), Integer.parseInt(argMap.get("-thread")));
-
-        BufferedReader br = new BufferedReader(new FileReader(argMap.get("-in")));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(argMap.get("-out")));
-
-        String line = null;
-
-        while ((line = br.readLine()) != null) {
-            line = line.trim();
-            if (line.length() == 0) {
-                continue;
-            }
-            bw.write(komoran.analyze(line).getPlainText());
-            bw.newLine();
-        }
-
-        bw.close();
-        br.close();
     }
 
     private static void printAnalyzeInfo(Map<String, String> argMap) {
         System.out.println("input file : " + argMap.get("-in"));
         System.out.println("output file : " + argMap.get("-out"));
         System.out.println("model path : " + argMap.get("-model"));
+        System.out.println("thread : " + argMap.get("-thread"));
         if (argMap.containsKey("-userDic")) {
             System.out.println("user dic : " + argMap.get("-userDic"));
         }
