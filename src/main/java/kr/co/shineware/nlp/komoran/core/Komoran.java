@@ -33,6 +33,7 @@ import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -191,7 +192,7 @@ public class Komoran implements Cloneable {
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
 
-        sentence = sentence.replaceAll("[ ]+", " ").trim();
+//        sentence = sentence.replaceAll("[ ]+", " ").trim();
 
         Lattice lattice = new Lattice(this.resources, this.userDic, nbest);
 
@@ -236,6 +237,7 @@ public class Komoran implements Cloneable {
             this.irregularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 파싱
             this.irregularExtends(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 확장
         }
+
 
         this.consumeContiniousSymbolParserBuffer(lattice, jasoUnits, continuousSymbolBuffer);
         lattice.setLastIdx(jasoUnits.length());
@@ -544,7 +546,7 @@ public class Komoran implements Cloneable {
 
             List<IrregularNode> irrNodes = morphIrrNodesMap.get(morph);
             for (IrregularNode irregularNode : irrNodes) {
-                lattice.put(beginIdx, endIdx, irregularNode);
+//                lattice.put(beginIdx, endIdx, irregularNode);
                 this.insertLattice(lattice, beginIdx, endIdx, irregularNode);
             }
         }

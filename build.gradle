@@ -30,33 +30,15 @@ jar {
     }
 
     manifest {
-        attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.KomoranConsoleRunner'
+        attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.NewKomoranConsoleRunner2'
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
 dependencies {
     compile 'com.github.shineware:commons:1.0.1'
-    compile 'com.github.shineware:aho-corasick:1.0.9'
+    compile 'com.github.shineware:aho-corasick:1.1.0'
     testCompile 'junit:junit:4.12'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.2'
-}
-
-apply plugin: 'maven'
-
-task createPom {
-    pom {
-        project {
-            groupId "com.github.shin285"
-            artifactId "KOMORAN"
-            version "3.3.4"
-
-            inceptionYear '2019'
-        }
-    }.writeTo("pom.xml")
 }
 
 compileJava.options.encoding = "UTF-8"

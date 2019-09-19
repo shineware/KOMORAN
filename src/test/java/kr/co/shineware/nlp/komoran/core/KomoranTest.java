@@ -8,14 +8,14 @@ import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Ignore
 public class KomoranTest {
 
     private Komoran komoran;
@@ -51,23 +51,38 @@ public class KomoranTest {
     }
 
     @Test
-    public void multiThreadSpeedTest() throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter("analyze_result.txt"));
+    public void speedTest() throws Exception {
+        Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+//		komoran.setFWDic("komoran_benchmarker/fwd2.user");
+        int count = 100;
+        int avgElapsedTime = 0;
+        while(true){
+            BufferedReader br = new BufferedReader(new FileReader("stress.test"));
+            String line = null;
+            long begin,end;
+            long elapsedTime=0l;
+            while((line = br.readLine()) != null){
+//				String[] tmp = line.split(" ");
+//				for (String t : tmp) {
+//					begin = System.currentTimeMillis();
+//					komoran.analyze(t);
+//					end = System.currentTimeMillis();
+//					elapsedTime += (end-begin);
+//				}
+//				tmp = null;
+                begin = System.currentTimeMillis();
+                komoran.analyze(line);
+                end = System.currentTimeMillis();
+                elapsedTime += (end-begin);
 
-        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
-
-        long begin = System.currentTimeMillis();
-        List<KomoranResult> komoranList = this.komoran.analyze(lines, 6);
-        for (KomoranResult komoranResult : komoranList) {
-            bw.write(komoranResult.getPlainText());
-            bw.newLine();
+            }
+            br.close();
+            System.out.println(elapsedTime);
+            avgElapsedTime += elapsedTime;
+//			TimeChecker.printElapsedTimeRatio(acc);
+            if(count-- == 0)break;
         }
-
-        long end = System.currentTimeMillis();
-
-        bw.close();
-
-        System.out.println("Elapsed time : " + (end - begin));
+        System.out.println("Avg. ElapsedTime : "+avgElapsedTime/100);
     }
 
     @Test
@@ -196,5 +211,29 @@ public class KomoranTest {
         System.out.println(this.komoran.analyze("난").getTokenList());
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑").getTokenList());
         System.out.println(this.komoran.analyze("밀리언 달러 베이비랑 바람과 함께 사라지다랑 뭐가 더 재밌었어?").getTokenList());
+    }
+
+    @Test
+    public void bulkAnalyzeSpeedTest2() {
+        List<String> lines = FileUtil.load2List("user_data/wiki.titles");
+        System.out.println("Load done");
+        System.out.println(lines.size());
+        long avgElapsedTime = 0;
+
+        for (int i = 0; i < 12; i++) {
+            long begin = System.currentTimeMillis();
+            for (String line : lines) {
+                KomoranResult komoranResultList = this.komoran.analyze(line);
+            }
+            long end = System.currentTimeMillis();
+            if(i>=2) {
+                avgElapsedTime += (end - begin);
+            }
+            System.out.println("Elapsed time : " + (end - begin));
+        }
+
+        System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
+
+        ElapsedTimeChecker.printTimes();
     }
 }
