@@ -26,8 +26,9 @@ public class NewKomoranConsoleRunner2 {
             printUsage();
             return;
         }
-
-        argMap.put("-thread", "4");
+        if(!argMap.containsKey("-thread")) {
+            argMap.put("-thread", "4");
+        }
 
         if (argMap.containsKey("-train") && argMap.containsKey("-model")) {
             long begin = System.currentTimeMillis();
