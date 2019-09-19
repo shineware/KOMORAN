@@ -30,7 +30,7 @@ jar {
     }
 
     manifest {
-        attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.NewKomoranConsoleRunner'
+        attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.NewKomoranConsoleRunner2'
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
