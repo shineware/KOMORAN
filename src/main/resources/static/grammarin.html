@@ -248,127 +248,127 @@
     setTimeout(function(){ $("#dictTable").tabulator("redraw"); }, 300);
   }
 
-  $(function () {
-    $(document).on("expanded.pushMenu", redrawTabulator);
-    $(document).on("collapsed.pushMenu", redrawTabulator);
+  // Resizing Table
+  $(document).on("expanded.pushMenu", redrawTabulator);
+  $(document).on("collapsed.pushMenu", redrawTabulator);
 
-    // Dict File Upload
-    $("#dictUploadModal").on("hidden.bs.modal", function() {
-      $("#dictUploadBtnInModal").prop("disabled", true);
+  // Dict File Upload
+  $("#dictUploadModal").on("hidden.bs.modal", function() {
+    $("#dictUploadBtnInModal").prop("disabled", true);
+    $("#dictUploadMesgInModal").text("");
+    $("#dictUploadFile").val("");
+  });
+
+  $("#dictUploadBtn").on("click", function() {
+    $("#dictUploadModal").modal("show");
+  });
+
+  $("#dictUploadFile").fileupload({
+    dataType: "json",
+    autoUpload: false,
+    replaceFileInput:false,
+    url: "/grammar/in/upload",
+    add: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
+                                .click(function () {
+                                  $("#dictUploadBtnInModal").prop("disabled", true).text("올리는 중...")
+                                  data.submit();
+                                });
+    },
+    error: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
       $("#dictUploadMesgInModal").text("");
       $("#dictUploadFile").val("");
-    });
+      alert(e.responseJSON.message);
+    },
+    done: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
+      location.reload();
+    }
+  });
 
-    $("#dictUploadBtn").on("click", function() {
-      $("#dictUploadModal").modal("show");
-    });
 
-    $("#dictUploadFile").fileupload({
-      dataType: "json",
-      autoUpload: false,
-      replaceFileInput:false,
-      url: "/grammar/in/upload",
-      add: function (e, data) {
-        $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
-                                  .click(function () {
-                                    $("#dictUploadBtnInModal").prop("disabled", true).text("올리는 중...")
-                                    data.submit();
-                                  });
-      },
-      error: function (e, data) {
-        $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
-        $("#dictUploadMesgInModal").text("");
-        $("#dictUploadFile").val("");
-        alert(e.responseJSON.message);
-      },
-      done: function (e, data) {
-        $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
-        location.reload();
+  // Add Dict Item
+  $("#dictAddItemModal").on("hidden.bs.modal", function() {
+    $("#dictAddItemModalStartSelect").val("");
+    $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
+    $("#dictAddItemModalTfInput").val(0);
+  });
+
+  $("#dictAddItemBtn").on("click", function() {
+    $("#dictAddItemModal").modal("show");
+  });
+
+  $("#dictAddItemModalTfInput").on("keypress keyup blur",function (event) {
+      $(this).val($(this).val().replace(/[^\d].+/, ""));
+      if ((event.which < 48 || event.which > 57)) {
+          event.preventDefault();
       }
-    });
+  });
 
+  $("#dictAddItemBtnInModal").on("click", function() {
+    var passStart = false;
+    var passNext = false;
+    var passTf = false;
 
-    // Add Dict Item
-    $("#dictAddItemModal").on("hidden.bs.modal", function() {
-      $("#dictAddItemModalStartSelect").val("");
-      $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
-      $("#dictAddItemModalTfInput").val(0);
-    });
+    if ($("#dictAddItemModalStartSelect").val() === "" || !($("#dictAddItemModalStartSelect").val() in grammarTable)) {
+      $("#dictAddItemModalStartSelect").parent().addClass("has-error");
+      passStart = false;
+    }
+    else {
+      $("#dictAddItemModalStartSelect").parent().removeClass("has-error");
+      passStart = true;
+    }
 
-    $("#dictAddItemBtn").on("click", function() {
-      $("#dictAddItemModal").modal("show");
-    });
+    if ($("#dictAddItemModalNextSelect").val() === "" || !($("#dictAddItemModalNextSelect").val() in grammarTable)) {
+      $("#dictAddItemModalNextSelect").parent().addClass("has-error");
+      passNext = false;
+    }
+    else {
+      $("#dictAddItemModalNextSelect").parent().removeClass("has-error");
+      passNext = true;
+    }
 
-    $("#dictAddItemModalTfInput").on("keypress keyup blur",function (event) {
-        $(this).val($(this).val().replace(/[^\d].+/, ""));
-        if ((event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
-    });
+    if ($("#dictAddItemModalTfInput").val() === "" || $("#dictAddItemModalTfInput").val() == 0
+        || !$.isNumeric($("#dictAddItemModalTfInput").val()) || $("#dictAddItemModalTfInput").val() < 0) {
+      $("#dictAddItemModalTfInput").parent().addClass("has-error");
+      passTf = false;
+    }
+    else {
+      $("#dictAddItemModalTfInput").parent().removeClass("has-error");
+      passTf = true;
+    }
 
-    $("#dictAddItemBtnInModal").on("click", function() {
-      var passStart = false;
-      var passNext = false;
-      var passTf = false;
-
-      if ($("#dictAddItemModalStartSelect").val() === "" || !($("#dictAddItemModalStartSelect").val() in grammarTable)) {
-        $("#dictAddItemModalStartSelect").parent().addClass("has-error");
-        passStart = false;
-      }
-      else {
-        $("#dictAddItemModalStartSelect").parent().removeClass("has-error");
-        passStart = true;
-      }
-
-      if ($("#dictAddItemModalNextSelect").val() === "" || !($("#dictAddItemModalNextSelect").val() in grammarTable)) {
-        $("#dictAddItemModalNextSelect").parent().addClass("has-error");
-        passNext = false;
-      }
-      else {
-        $("#dictAddItemModalNextSelect").parent().removeClass("has-error");
-        passNext = true;
-      }
-
-      if ($("#dictAddItemModalTfInput").val() === "" || $("#dictAddItemModalTfInput").val() == 0
-          || !$.isNumeric($("#dictAddItemModalTfInput").val()) || $("#dictAddItemModalTfInput").val() < 0) {
-        $("#dictAddItemModalTfInput").parent().addClass("has-error");
-        passTf = false;
-      }
-      else {
-        $("#dictAddItemModalTfInput").parent().removeClass("has-error");
-        passTf = true;
-      }
-
-      if (passStart && passNext && passTf) {
-        $.ajax({
-          method: "POST",
-          url: "/grammar/in/item",
-          data: {
-            start: $("#dictAddItemModalStartSelect").val(),
-            next: $("#dictAddItemModalNextSelect").val(),
-            tf: $("#dictAddItemModalTfInput").val()
-           },
-          dataType: "json",
-          success: function (result) {
-            if (result.error) {
-              alert(result.message + " (ERR_GRAMMARIN_E_ADD_0)");
-            }
-            else {
-              $("#dictTable").tabulator("addData", [result.data]);
-              alert("등록되었습니다.");
-              $("#dictAddItemModalStartSelect").prop("selectedIndex", 0);
-              $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
-              $("#dictAddItemModalTfInput").val(0);
-            }
+    if (passStart && passNext && passTf) {
+      $.ajax({
+        method: "POST",
+        url: "/grammar/in/item",
+        data: {
+          start: $("#dictAddItemModalStartSelect").val(),
+          next: $("#dictAddItemModalNextSelect").val(),
+          tf: $("#dictAddItemModalTfInput").val()
           },
-          error: function(e) {
-            alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+        dataType: "json",
+        success: function (result) {
+          if (result.error) {
+            alert(result.message + " (ERR_GRAMMARIN_E_ADD_0)");
           }
-        });
-      }
-    });
+          else {
+            $("#dictTable").tabulator("addData", [result.data]);
+            alert("등록되었습니다.");
+            $("#dictAddItemModalStartSelect").prop("selectedIndex", 0);
+            $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
+            $("#dictAddItemModalTfInput").val(0);
+          }
+        },
+        error: function(e) {
+          alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+        }
+      });
+    }
+  });
 
-
+  $(function () {
     // Grammar Table
     var getGrammarTable = function() {
       var deferred = $.Deferred();

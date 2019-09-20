@@ -15,8 +15,11 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'kr.co.shineware.nlp.komoran'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -25,16 +28,11 @@ configurations.all {
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
-    flatDir {
-        dirs 'libs'
-    }
 }
 
 dependencies {
-    // use local version instead of mvn
-    // related issue shineware/KOMORANAdmin#14 & shin285/KOMORAN#56
-//    compile 'com.github.shin285:KOMORAN:master-SNAPSHOT'
-    compile name: 'KOMORAN-6c5ba25'
+    // use latest KOMORAN
+    compile 'com.github.shin285:KOMORAN:master-SNAPSHOT'
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -51,3 +49,4 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
+

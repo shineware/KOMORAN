@@ -238,107 +238,106 @@
     setTimeout(function(){ $("#dictTable").tabulator("redraw"); }, 300);
   }
 
-  $(function () {
-    $(document).on("expanded.pushMenu", redrawTabulator);
-    $(document).on("collapsed.pushMenu", redrawTabulator);
+  // Resizing Table
+  $(document).on("expanded.pushMenu", redrawTabulator);
+  $(document).on("collapsed.pushMenu", redrawTabulator);
 
-    // Dict File Upload
-    $("#dictUploadModal").on("hidden.bs.modal", function() {
-      $("#dictUploadBtnInModal").prop("disabled", true);
+  // Dict File Upload
+  $("#dictUploadModal").on("hidden.bs.modal", function() {
+    $("#dictUploadBtnInModal").prop("disabled", true);
+    $("#dictUploadMesgInModal").text("");
+    $("#dictUploadFile").val("");
+  });
+
+  $("#dictUploadBtn").on("click", function() {
+    $("#dictUploadModal").modal("show");
+  });
+
+  $("#dictUploadFile").fileupload({
+    dataType: "json",
+    autoUpload: false,
+    replaceFileInput:false,
+    url: "/fwd/user/upload",
+    add: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
+                                .click(function () {
+                                  $("#dictUploadBtnInModal").prop("disabled", true).text("올리는 중...")
+                                  data.submit();
+                                });
+    },
+    error: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
       $("#dictUploadMesgInModal").text("");
       $("#dictUploadFile").val("");
-    });
+      alert(e.responseJSON.message);
+    },
+    done: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
+      location.reload();
+    }
+  });
 
-    $("#dictUploadBtn").on("click", function() {
-      $("#dictUploadModal").modal("show");
-    });
+  // Add Dict Item
+  $("#dictAddItemModal").on("hidden.bs.modal", function() {
+    $("#dictAddItemModalFullInput").val("");
+    $("#dictAddItemModalAnalyzedInput").val("");
+  });
 
-    $("#dictUploadFile").fileupload({
-      dataType: "json",
-      autoUpload: false,
-      replaceFileInput:false,
-      url: "/fwd/user/upload",
-      add: function (e, data) {
-        $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
-                                  .click(function () {
-                                    $("#dictUploadBtnInModal").prop("disabled", true).text("올리는 중...")
-                                    data.submit();
-                                  });
-      },
-      error: function (e, data) {
-        $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
-        $("#dictUploadMesgInModal").text("");
-        $("#dictUploadFile").val("");
-        alert(e.responseJSON.message);
-      },
-      done: function (e, data) {
-        $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
-        location.reload();
-      }
-    });
+  $("#dictAddItemBtn").on("click", function() {
+    $("#dictAddItemModal").modal("show");
+  });
 
+  $("#dictAddItemBtnInModal").on("click", function() {
+    var passFull= false;
+    var passAnalyzed = false;
 
-    // Add Dict Item
-    $("#dictAddItemModal").on("hidden.bs.modal", function() {
-      $("#dictAddItemModalFullInput").val("");
-      $("#dictAddItemModalAnalyzedInput").val("");
-    });
+    if ($("#dictAddItemModalFullInput").val() === "") {
+      $("#dictAddItemModalFullInput").parent().addClass("has-error");
+      passFull = false;
+    }
+    else {
+      $("#dictAddItemModalFullInput").parent().removeClass("has-error");
+      passFull = true;
+    }
 
-    $("#dictAddItemBtn").on("click", function() {
-      $("#dictAddItemModal").modal("show");
-    });
+    if ($("#dictAddItemModalAnalyzedInput").val() === "") {
+      $("#dictAddItemModalAnalyzedInput").parent().addClass("has-error");
+      passAnalyzed = false;
+    }
+    else {
+      $("#dictAddItemModalAnalyzedInput").parent().removeClass("has-error");
+      passAnalyzed = true;
+    }
 
-    $("#dictAddItemBtnInModal").on("click", function() {
-      var passFull= false;
-      var passAnalyzed = false;
-
-      if ($("#dictAddItemModalFullInput").val() === "") {
-        $("#dictAddItemModalFullInput").parent().addClass("has-error");
-        passFull = false;
-      }
-      else {
-        $("#dictAddItemModalFullInput").parent().removeClass("has-error");
-        passFull = true;
-      }
-
-      if ($("#dictAddItemModalAnalyzedInput").val() === "") {
-        $("#dictAddItemModalAnalyzedInput").parent().addClass("has-error");
-        passAnalyzed = false;
-      }
-      else {
-        $("#dictAddItemModalAnalyzedInput").parent().removeClass("has-error");
-        passAnalyzed = true;
-      }
-
-      if (passFull && passAnalyzed) {
-        $.ajax({
-          method: "POST",
-          url: "/fwd/user/item",
-          data: {
-            full: $("#dictAddItemModalFullInput").val(),
-            analyzed: $("#dictAddItemModalAnalyzedInput").val(),
-           },
-          dataType: "json",
-          success: function (result) {
-            console.log(result);
-            if (result.error) {
-              alert(result.message + " (ERR_FWDUSER_E_ADD_0)");
-            }
-            else {
-              $("#dictTable").tabulator("addData", [result.data]);
-              alert("등록되었습니다.");
-              $("#dictAddItemModalFullInput").val("");
-              $("#dictAddItemModalAnalyzedInput").val("");
-            }
+    if (passFull && passAnalyzed) {
+      $.ajax({
+        method: "POST",
+        url: "/fwd/user/item",
+        data: {
+          full: $("#dictAddItemModalFullInput").val(),
+          analyzed: $("#dictAddItemModalAnalyzedInput").val(),
           },
-          error: function(e) {
-            alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+        dataType: "json",
+        success: function (result) {
+          console.log(result);
+          if (result.error) {
+            alert(result.message + " (ERR_FWDUSER_E_ADD_0)");
           }
-        });
-      }
-    });
+          else {
+            $("#dictTable").tabulator("addData", [result.data]);
+            alert("등록되었습니다.");
+            $("#dictAddItemModalFullInput").val("");
+            $("#dictAddItemModalAnalyzedInput").val("");
+          }
+        },
+        error: function(e) {
+          alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+        }
+      });
+    }
+  });
 
-
+  $(function () {
     // Draw Dict Table
     $("#dictTable").tabulator({
       ajaxURL: "/fwd/user/list",

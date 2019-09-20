@@ -17,6 +17,7 @@ public class KOMORANAdminApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(KOMORANAdminApplication.class, args);
+		logger.info("##### KOMORAN Admin has just started! #####");
 	}
 
 	@Bean("threadPoolTaskExecutor")

@@ -65,7 +65,7 @@ public class QueryParser {
         // Sort by '_order' key
         Collections.sort(this.parsedResults, new OrderKeyComparator());
 
-        logger.info("Parsed Result: " + this.parsedResults.toString());
+        logger.debug("Parsed Result: " + this.parsedResults.toString());
 
         return this.parsedResults;
     }
@@ -73,7 +73,7 @@ public class QueryParser {
     class OrderKeyComparator implements Comparator<HashMap<String, String>> {
         @Override
         public int compare(HashMap<String, String> objOne, HashMap<String, String> objAnother) {
-            return (new Integer(objOne.get("_order"))).compareTo(new Integer(objAnother.get("_order")));
+            return (Integer.valueOf(objOne.get("_order"))).compareTo(Integer.valueOf(objAnother.get("_order")));
         }
     }
 }

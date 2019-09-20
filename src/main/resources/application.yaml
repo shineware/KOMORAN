@@ -1,5 +1,6 @@
 server:
-  port: 8888
+  address: 127.0.0.1
+  port: 3579
 
 
 spring:
@@ -58,6 +59,7 @@ models:
 
 logging:
   level:
-    kr.co.shineware.nlp.komoran.admin: TRACE
-    org.springframework: DEBUG
+    kr.co.shineware.nlp.komoran.admin.*: INFO
+    org.springframework: ERROR
     org.hibernate: ERROR
+    com.zaxxer.hikari.*: ERROR
