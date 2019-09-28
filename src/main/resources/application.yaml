@@ -48,7 +48,6 @@ files:
     dicuser: dic.user
     fwduser: fwd.user
 
-
 models:
   default:
     basedir: models/

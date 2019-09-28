@@ -1,8 +1,8 @@
 package kr.co.shineware.nlp.komoran.admin.controller;
 
-import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.exception.ServerErrorException;
 import kr.co.shineware.nlp.komoran.admin.service.UserModelService;
+import kr.co.shineware.nlp.komoran.admin.util.ModelValidator;
 import kr.co.shineware.nlp.komoran.admin.util.ResponseDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +48,7 @@ public class UserModelController {
 
     @PostMapping(value = "/delete")
     public ResponseDetail deleteUserModel(@RequestParam("modelName") String modelNameInRaw) {
-        if (modelNameInRaw == null || "".equals(modelNameInRaw)) {
-            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameInRaw + "]");
-        }
+        ModelValidator.CheckValidModelName(modelNameInRaw);
 
         ResponseDetail responseDetail = new ResponseDetail();
 
@@ -69,9 +67,7 @@ public class UserModelController {
 
     @GetMapping(value = "/download/{modelName}")
     public ResponseEntity<?> downloadFile(@PathVariable("modelName") String modelNameInRaw) {
-        if (modelNameInRaw == null || "".equals(modelNameInRaw)) {
-            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameInRaw + "]");
-        }
+        ModelValidator.CheckValidModelName(modelNameInRaw);
 
         File zipFileToDeploy = userModelService.deployUserModel(modelNameInRaw);
         long zipFileSize = zipFileToDeploy.length();

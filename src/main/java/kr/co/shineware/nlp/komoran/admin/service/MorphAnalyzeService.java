@@ -3,9 +3,9 @@ package kr.co.shineware.nlp.komoran.admin.service;
 import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
-import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.exception.ResourceNotFoundException;
 import kr.co.shineware.nlp.komoran.admin.exception.ServerErrorException;
+import kr.co.shineware.nlp.komoran.admin.util.ModelValidator;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import org.slf4j.Logger;
@@ -56,6 +56,8 @@ public class MorphAnalyzeService {
 
 
     private boolean loadUserModel(String modelPathName) {
+        ModelValidator.CheckValidUserModel(modelPathName);
+
         String modelBasePathName = String.join(File.separator, MODELS_BASEDIR, modelPathName);
         File modelPath = new File(modelBasePathName);
 
@@ -72,20 +74,18 @@ public class MorphAnalyzeService {
     }
 
 
-    public String analyzeWithUserModel(String strToAnalyze, String modelPathName) {
-        if (modelPathName == null || "".equals(modelPathName)) {
-            throw new ResourceNotFoundException("잘못된 모델명 [" + modelPathName + "]");
-        }
+    public String analyzeWithUserModel(String strToAnalyze, String userModelName) {
+        ModelValidator.CheckValidModelName(userModelName);
 
         String result;
 
-        if ("DEFAULT".equals(modelPathName)) {
+        if ("DEFAULT".equals(userModelName)) {
             result = this.analyzeWithLightModel(strToAnalyze);
             return result;
         }
 
         try {
-            this.loadUserModel(modelPathName);
+            this.loadUserModel(userModelName);
             result = this.userKomoran.analyze(strToAnalyze).getPlainText();
         } catch (NullPointerException e) {
             throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\\n사전 문제일 수 있습니다.");
@@ -96,9 +96,8 @@ public class MorphAnalyzeService {
 
 
     public Map<String, String> getDiffsFromAnalyzedResults(String strToAnalyze, String modelNameSrc, String modelNameDest) {
-        if (modelNameSrc == null || "".equals(modelNameSrc) || modelNameDest == null || "".equals(modelNameDest)) {
-            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameSrc + ", " + modelNameDest + "]");
-        }
+        ModelValidator.CheckValidModelName(modelNameSrc);
+        ModelValidator.CheckValidModelName(modelNameDest);
 
         String resultSrc;
         String resultDest;

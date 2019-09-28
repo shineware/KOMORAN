@@ -2,6 +2,7 @@ package kr.co.shineware.nlp.komoran.admin.controller;
 
 import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.service.MorphAnalyzeService;
+import kr.co.shineware.nlp.komoran.admin.util.ModelValidator;
 import kr.co.shineware.nlp.komoran.admin.util.ResponseDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,7 @@ public class MorphAnalyzeController {
     @PostMapping(value = "/default")
     public ResponseDetail analyzeStr(@RequestParam("strToAnalyze") String strToAnalyze,
                                      @RequestParam("modelName") String modelNameToUse) {
-        if (modelNameToUse == null || "".equals(modelNameToUse)) {
-            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameToUse + "]");
-        }
+        ModelValidator.CheckValidModelName(modelNameToUse);
 
         ResponseDetail responseDetail = new ResponseDetail();
 
@@ -45,9 +44,8 @@ public class MorphAnalyzeController {
     public ResponseDetail analyzeStrWithNewModel(@RequestParam("strToAnalyze") String strToAnalyze,
                                                  @RequestParam("modelNameSrc") String modelNameSrc,
                                                  @RequestParam("modelNameDest") String modelNameDest) {
-        if ("".equals(modelNameSrc) || "".equals(modelNameDest)) {
-            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameSrc + ", " + modelNameDest + "]");
-        }
+        ModelValidator.CheckValidModelName(modelNameSrc);
+        ModelValidator.CheckValidModelName(modelNameDest);
 
         ResponseDetail responseDetail = new ResponseDetail();
 
