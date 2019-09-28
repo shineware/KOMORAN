@@ -25,10 +25,15 @@ public class MorphAnalyzeController {
 
 
     @PostMapping(value = "/default")
-    public ResponseDetail analyzeStr(@RequestParam("strToAnalyze") String strToAnalyze) {
+    public ResponseDetail analyzeStr(@RequestParam("strToAnalyze") String strToAnalyze,
+                                     @RequestParam("modelName") String modelNameToUse) {
+        if (modelNameToUse == null || "".equals(modelNameToUse)) {
+            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameToUse + "]");
+        }
+
         ResponseDetail responseDetail = new ResponseDetail();
 
-        String analyzedResult = morphAnalyzeService.analyze(strToAnalyze);
+        String analyzedResult = morphAnalyzeService.analyzeWithUserModel(strToAnalyze, modelNameToUse);
 
         responseDetail.setData(analyzedResult);
 
@@ -41,7 +46,7 @@ public class MorphAnalyzeController {
                                                  @RequestParam("modelNameSrc") String modelNameSrc,
                                                  @RequestParam("modelNameDest") String modelNameDest) {
         if ("".equals(modelNameSrc) || "".equals(modelNameDest)) {
-            throw new ParameterInvalidException("잘못된 사전명 [" + modelNameSrc + ", " + modelNameDest + "]");
+            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameSrc + ", " + modelNameDest + "]");
         }
 
         ResponseDetail responseDetail = new ResponseDetail();

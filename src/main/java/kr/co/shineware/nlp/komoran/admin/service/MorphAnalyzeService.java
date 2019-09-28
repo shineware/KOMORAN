@@ -45,13 +45,13 @@ public class MorphAnalyzeService {
 
     MorphAnalyzeService() {
         logger.debug("Init Komoran Model...");
-        this.komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+        komoran = new Komoran(DEFAULT_MODEL.LIGHT);
         logger.debug("Init Komoran Model... DONE");
     }
 
 
-    public String analyze(String strToAnalyze) {
-        return this.komoran.analyze(strToAnalyze).getPlainText();
+    private String analyzeWithLightModel(String strToAnalyze) {
+        return komoran.analyze(strToAnalyze).getPlainText();
     }
 
 
@@ -72,12 +72,17 @@ public class MorphAnalyzeService {
     }
 
 
-    private String analyzeWithUserModel(String modelPathName, String strToAnalyze) {
-        if ("".equals(modelPathName)) {
+    public String analyzeWithUserModel(String strToAnalyze, String modelPathName) {
+        if (modelPathName == null || "".equals(modelPathName)) {
             throw new ResourceNotFoundException("잘못된 모델명 [" + modelPathName + "]");
         }
 
         String result;
+
+        if ("DEFAULT".equals(modelPathName)) {
+            result = this.analyzeWithLightModel(strToAnalyze);
+            return result;
+        }
 
         try {
             this.loadUserModel(modelPathName);
@@ -91,8 +96,8 @@ public class MorphAnalyzeService {
 
 
     public Map<String, String> getDiffsFromAnalyzedResults(String strToAnalyze, String modelNameSrc, String modelNameDest) {
-        if ("".equals(modelNameSrc) || "".equals(modelNameDest)) {
-            throw new ParameterInvalidException("잘못된 사전명");
+        if (modelNameSrc == null || "".equals(modelNameSrc) || modelNameDest == null || "".equals(modelNameDest)) {
+            throw new ParameterInvalidException("잘못된 모델명 [" + modelNameSrc + ", " + modelNameDest + "]");
         }
 
         String resultSrc;
@@ -100,15 +105,15 @@ public class MorphAnalyzeService {
         Map<String, String> result = new HashMap<>();
 
         if ("DEFAULT".equals(modelNameSrc)) {
-            resultSrc = this.analyze(strToAnalyze);
+            resultSrc = this.analyzeWithLightModel(strToAnalyze);
         } else {
-            resultSrc = this.analyzeWithUserModel(modelNameSrc, strToAnalyze);
+            resultSrc = this.analyzeWithUserModel(strToAnalyze, modelNameSrc);
         }
 
         if ("DEFAULT".equals(modelNameDest)) {
-            resultDest = this.analyze(strToAnalyze);
+            resultDest = this.analyzeWithLightModel(strToAnalyze);
         } else {
-            resultDest = this.analyzeWithUserModel(modelNameDest, strToAnalyze);
+            resultDest = this.analyzeWithUserModel(strToAnalyze, modelNameDest);
         }
 
         StringBuffer resultSrcHtml = new StringBuffer();
