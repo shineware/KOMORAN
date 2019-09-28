@@ -62,7 +62,7 @@ public class ModelValidator {
         }
 
         if ("DEFAULT".equals(modelName)) {
-            return false;
+            return true;
         }
 
         try {

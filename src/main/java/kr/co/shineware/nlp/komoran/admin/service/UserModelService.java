@@ -70,7 +70,7 @@ public class UserModelService {
 
 
     private String prepareModelBasePath() throws IOException {
-        String modelPathname = ModelValidator.GenerateNewModelName();
+        String modelPathname = String.join(File.separator, MODELS_BASEDIR, ModelValidator.GenerateNewModelName());
         File modelPathToSave = new File(modelPathname);
 
         while (modelPathToSave.exists()) {
