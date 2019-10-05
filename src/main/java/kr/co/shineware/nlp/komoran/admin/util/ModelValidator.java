@@ -24,26 +24,56 @@ public class ModelValidator {
         MODELS_BASEDIR = modelsDefaultBaseDir;
     }
 
+
     private static String MODELS_MODELDIR;
 
     @Value("${models.model.dir}")
-    private void setModelsModeldir(String modelsModelDir) {
+    private void setModelsModelDir(String modelsModelDir) {
         MODELS_MODELDIR = modelsModelDir;
+    }
+
+    private static String MODELS_CORPUSDIR;
+
+    @Value("${models.default.corpusdir}")
+    private void setModelsCorpusDir(String modelsCorpusDir) {
+        MODELS_CORPUSDIR = modelsCorpusDir;
     }
 
     private static String filenameDicUser;
 
     @Value("${files.name.dicuser}")
-    private void setFilenameDicUser(String filesNameDicUser) {
-        filenameDicUser = filesNameDicUser;
+    private void setFilenameDicUser(String defaultFilenameDicUser) {
+        filenameDicUser = defaultFilenameDicUser;
     }
 
     private static String filenameFwdUser;
 
     @Value("${files.name.fwduser}")
-    private void setFilenameFwdUser(String filesNameFwdUser) {
-        filenameFwdUser = filesNameFwdUser;
+    private void setFilenameFwdUser(String defaultFilenameFwdUser) {
+        filenameFwdUser = defaultFilenameFwdUser;
     }
+
+    private static String filenameDicWord;
+
+    @Value("${files.name.dicword}")
+    private void setFilenameDicWord(String defaultFilenameDicWord) {
+        filenameDicWord = defaultFilenameDicWord;
+    }
+
+    private static String filenameGrammarIn;
+
+    @Value("${files.name.grammarin}")
+    private void setFilenameGrammarIn(String defaultFilenameGrammarIn) {
+        filenameGrammarIn = defaultFilenameGrammarIn;
+    }
+
+    private static String filenameIrregular;
+
+    @Value("${files.name.irregular}")
+    private void setFilenameIrregular(String defaultFilenameIrregular) {
+        filenameIrregular = defaultFilenameIrregular;
+    }
+
 
 
     private static List<String> validFilenamesInMocel = Arrays.asList("irregular.model", "observation.model", "pos.table", "transition.model");
@@ -94,7 +124,6 @@ public class ModelValidator {
             return false;
         }
 
-
         // #2. Check Model Path contains MODELDIR (eg. models/20190912215734342/model
         String savedModelPath = String.join(File.separator, modelBasePath, MODELS_MODELDIR);
 
@@ -120,7 +149,40 @@ public class ModelValidator {
         // #5. Check Model has valid User FWD files (eg. fwd.user)
         String userFWDPath = String.join(File.separator, modelBasePath, filenameFwdUser);
 
-        return (new File(userFWDPath)).exists();
+        if (!(new File(userFWDPath)).exists()) {
+            return false;
+        }
+
+        // #6. Check Model Path contains MODELS_CORPUSDIR (eg. models/20190912215734342/corpus_dir
+        // This is not a mandatory procedure but for preparing further model changes. (Refer: #44)
+        String corpusDirPath = String.join(File.separator, modelBasePath, MODELS_CORPUSDIR);
+
+        if (!(new File(corpusDirPath)).exists()) {
+            return false;
+        }
+
+        // #7. Check MODELS_CORPUSDIR has valid DicWord file (eg. dic.word)
+        String dicWordPath = String.join(File.separator, corpusDirPath, filenameDicWord);
+
+        if (!(new File(dicWordPath)).exists()) {
+            return false;
+        }
+
+        // #7. Check MODELS_CORPUSDIR has valid DicWord file (eg. dic.word)
+        String grammarInPath = String.join(File.separator, corpusDirPath, filenameGrammarIn);
+
+        if (!(new File(grammarInPath)).exists()) {
+            return false;
+        }
+
+        // #8. Check MODELS_CORPUSDIR has valid Irregular file (eg. dic.irregular)
+        String irregularPath = String.join(File.separator, corpusDirPath, filenameIrregular);
+
+        if (!(new File(irregularPath)).exists()) {
+            return false;
+        }
+
+        return true;
     }
 
 
