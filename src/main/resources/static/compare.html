@@ -203,13 +203,19 @@
 <!--<script src="/js/demo.js"></script>-->
 <!-- page script -->
 <script>
-    // Generate New Model
-    $("#modelGenerateBtn").on("click", generateNewModel);
-    $("#anotherModelGenerateBtn").on("click", generateNewModel);
+  // Generate New Model
+  $("#modelGenerateBtn").on("click", generateNewModel);
+  $("#anotherModelGenerateBtn").on("click", generateNewModel);
 
-    // Compare analyze results
-    $("#analyzeBtn").on("click", analyzeAndCompare);
-    $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
+  // Compare analyze results
+  $("#analyzeBtn").on("click", analyzeAndCompare);
+  $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
+
+  $("#strToAnalyze").on("keypress", function(e) {
+    if(e.which == 13) {
+      analyzeAndCompare();
+    }
+  });
 
   $(function () {
     // Initialize Model List

@@ -175,41 +175,49 @@
 <!-- page script -->
 <script>
     // Analyze
-    $("#analyzeBtn").on("click", function () {
-        var passStrToAnalyze = false;
+    $("#analyzeBtn").on("click", analyzeForm);
 
-        if ($("#strToAnalyze").val() === "") {
-            $("#strToAnalyze").parent().addClass("has-error");
-            passStrToAnalyze = false;
-        }
-        else {
-            $("#strToAnalyze").parent().removeClass("has-error");
-            passStrToAnalyze = true;
-        }
-
-        if (passStrToAnalyze) {
-            $.ajax({
-                method: "POST",
-                url: "/analyze/default",
-                data: {
-                    strToAnalyze: $("#strToAnalyze").val(),
-                    modelName: $("#selectModel").val()
-                },
-                dataType: "json",
-                success: function (result) {
-                    if (result.error) {
-                        alert(result.message + " (ERR_MORPH_ANALYZE_0)");
-                    }
-                    else {
-                        $("#analyzeResult").text(result.data);
-                    }
-                },
-                error: function (e) {
-                    alert("분석 중 에러가 발생했습니다. (" + e.responseJSON.message + ")");
-                }
-            });
-        }
+    $("#strToAnalyze").on("keypress", function(e) {
+      if(e.which == 13) {
+        analyzeForm();
+      }
     });
+
+    function analyzeForm() {
+      var passStrToAnalyze = false;
+
+      if ($("#strToAnalyze").val() === "") {
+          $("#strToAnalyze").parent().addClass("has-error");
+          passStrToAnalyze = false;
+      }
+      else {
+          $("#strToAnalyze").parent().removeClass("has-error");
+          passStrToAnalyze = true;
+      }
+
+      if (passStrToAnalyze) {
+          $.ajax({
+              method: "POST",
+              url: "/analyze/default",
+              data: {
+                  strToAnalyze: $("#strToAnalyze").val(),
+                  modelName: $("#selectModel").val()
+              },
+              dataType: "json",
+              success: function (result) {
+                  if (result.error) {
+                      alert(result.message + " (ERR_MORPH_ANALYZE_0)");
+                  }
+                  else {
+                      $("#analyzeResult").text(result.data);
+                  }
+              },
+              error: function (e) {
+                  alert("분석 중 에러가 발생했습니다. (" + e.responseJSON.message + ")");
+              }
+          });
+      }
+    }
 
     $(function () {
         // Initialize Model List
