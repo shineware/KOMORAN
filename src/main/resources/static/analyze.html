@@ -174,85 +174,85 @@
 <!--<script src="/js/demo.js"></script>-->
 <!-- page script -->
 <script>
-    // Analyze
-    $("#analyzeBtn").on("click", analyzeForm);
+  // Analyze
+  $("#analyzeBtn").on("click", analyzeForm);
 
-    $("#strToAnalyze").on("keypress", function(e) {
-      if(e.which == 13) {
-        analyzeForm();
-      }
-    });
+  $("#strToAnalyze").on("keypress", function(e) {
+    if(e.which == 13) {
+      analyzeForm();
+    }
+  });
 
-    function analyzeForm() {
-      var passStrToAnalyze = false;
+  function analyzeForm() {
+    var passStrToAnalyze = false;
 
-      if ($("#strToAnalyze").val() === "") {
-          $("#strToAnalyze").parent().addClass("has-error");
-          passStrToAnalyze = false;
-      }
-      else {
-          $("#strToAnalyze").parent().removeClass("has-error");
-          passStrToAnalyze = true;
-      }
-
-      if (passStrToAnalyze) {
-          $.ajax({
-              method: "POST",
-              url: "/analyze/default",
-              data: {
-                  strToAnalyze: $("#strToAnalyze").val(),
-                  modelName: $("#selectModel").val()
-              },
-              dataType: "json",
-              success: function (result) {
-                  if (result.error) {
-                      alert(result.message + " (ERR_MORPH_ANALYZE_0)");
-                  }
-                  else {
-                      $("#analyzeResult").text(result.data);
-                  }
-              },
-              error: function (e) {
-                  alert("분석 중 에러가 발생했습니다. (" + e.responseJSON.message + ")");
-              }
-          });
-      }
+    if ($("#strToAnalyze").val() === "") {
+        $("#strToAnalyze").parent().addClass("has-error");
+        passStrToAnalyze = false;
+    }
+    else {
+        $("#strToAnalyze").parent().removeClass("has-error");
+        passStrToAnalyze = true;
     }
 
-    $(function () {
-        // Initialize Model List
+    if (passStrToAnalyze) {
         $.ajax({
-            method: "GET",
-            url: "/model/list",
+            method: "POST",
+            url: "/analyze/default",
+            data: {
+                strToAnalyze: $("#strToAnalyze").val(),
+                modelName: $("#selectModel").val()
+            },
+            dataType: "json",
             success: function (result) {
-                updateModelList(result.data);
+                if (result.error) {
+                    alert(result.message + " (ERR_MORPH_ANALYZE_0)");
+                }
+                else {
+                    $("#analyzeResult").text(result.data);
+                }
             },
             error: function (e) {
-                alert("모델 목록을 가져오는 중 에러가 발생하였습니다. (" + e.responseJSON.message + ")");
+                alert("분석 중 에러가 발생했습니다. (" + e.responseJSON.message + ")");
             }
         });
-    });
-
-    function updateModelList(modelList) {
-        $("#selectModel").empty();
-
-        modelList.forEach(function (model) {
-            if (model == "DEFAULT") {
-                modelName = "KOMORAN 기본 모델";
-            }
-            else {
-                modelName = parseModelName(model);
-            }
-
-            $("#selectModel").append(new Option(modelName, model));
-        })
     }
+  }
 
-    function parseModelName(modelName) {
-        return modelName.substring(0, 4) + "/" + modelName.substring(4, 6) + "/" + modelName.substring(6, 8)
-            + " " + modelName.substring(8, 10) + ":" + modelName.substring(10, 12) + ":" + modelName.substring(12, 14)
-            + "." + modelName.substring(14, 17) + " 생성 모델";
-    }
+  $(function () {
+      // Initialize Model List
+      $.ajax({
+          method: "GET",
+          url: "/model/list",
+          success: function (result) {
+              updateModelList(result.data);
+          },
+          error: function (e) {
+              alert("모델 목록을 가져오는 중 에러가 발생하였습니다. (" + e.responseJSON.message + ")");
+          }
+      });
+  });
+
+  function updateModelList(modelList) {
+      $("#selectModel").empty();
+
+      modelList.forEach(function (model) {
+          if (model == "DEFAULT") {
+              modelName = "KOMORAN 기본 모델";
+          }
+          else {
+              modelName = parseModelName(model);
+          }
+
+          $("#selectModel").append(new Option(modelName, model));
+      })
+  }
+
+  function parseModelName(modelName) {
+      return modelName.substring(0, 4) + "/" + modelName.substring(4, 6) + "/" + modelName.substring(6, 8)
+          + " " + modelName.substring(8, 10) + ":" + modelName.substring(10, 12) + ":" + modelName.substring(12, 14)
+          + "." + modelName.substring(14, 17) + " 생성 모델";
+  }
 
 </script>
 </body>

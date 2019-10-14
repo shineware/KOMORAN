@@ -70,7 +70,7 @@ public class SetupDefaultData implements ApplicationRunner {
             default:
                 return null;
         }
-
+    
         try {
             pathForDefaultFile = Paths.get((new ClassPathResource(filePathStr)).getURI());
         } catch (IOException e) {
