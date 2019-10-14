@@ -183,7 +183,6 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="dictAddItemModalTitle">새로운 단어 등록하기</h4>
       </div>
-      <form role="form">
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12">
@@ -208,7 +207,6 @@
         <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
         <button id="dictAddItemBtnInModal" type="button" class="btn btn-primary btn-flat">등록하기</button>
       </div>
-      </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -303,7 +301,19 @@
       }
   });
 
-  $("#dictAddItemBtnInModal").on("click", function() {
+  $("#dictAddItemBtnInModal").on("click", addNewItem);
+
+  $("#dictAddItemModalWordInput").on("keypress", submitOnEnter);
+  $("#dictAddItemModalPosSelect").on("keypress", submitOnEnter);
+  $("#dictAddItemModalTfInput").on("keypress", submitOnEnter);
+
+  function submitOnEnter(e) {
+    if(e.which == 13) {
+      addNewItem();
+    }
+  }
+
+  function addNewItem() {
     var passWord = false;
     var passPos = false;
     var passTf = false;
@@ -364,7 +374,7 @@
         }
       });
     }
-  });
+  }
 
   $(function () {
     // POS Table
@@ -535,7 +545,7 @@
         ],
       });
     });
-  })
+  });
 </script>
 </body>
 </html>
