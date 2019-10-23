@@ -203,6 +203,20 @@
 <!--<script src="/js/demo.js"></script>-->
 <!-- page script -->
 <script>
+  // Generate New Model
+  $("#modelGenerateBtn").on("click", generateNewModel);
+  $("#anotherModelGenerateBtn").on("click", generateNewModel);
+
+  // Compare analyze results
+  $("#analyzeBtn").on("click", analyzeAndCompare);
+  $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
+
+  $("#strToAnalyze").on("keypress", function(e) {
+    if(e.which == 13) {
+      analyzeAndCompare();
+    }
+  });
+
   $(function () {
     // Initialize Model List
     $.ajax({
@@ -215,14 +229,6 @@
         alert("모델 목록을 가져오는 중 에러가 발생하였습니다. ("+ e.responseJSON.message +")");
       }
     });
-
-    // Generate New Model
-    $("#modelGenerateBtn").on("click", generateNewModel);
-    $("#anotherModelGenerateBtn").on("click", generateNewModel);
-
-    // Compare analyze results
-    $("#analyzeBtn").on("click", analyzeAndCompare);
-    $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
   });
 
   function generateNewModel() {
@@ -295,8 +301,10 @@
   }
 
   function parseModelName(modelName) {
-    return modelName.substring(0, 4) +"/"+ modelName.substring(4, 6) +"/"+ modelName.substring(6, 8)
-          +" "+ modelName.substring(8, 10) +":"+ modelName.substring(10, 12) +":"+ modelName.substring(12, 14)
-          +"."+ modelName.substring(14, 17) +" 생성 모델";
+      return modelName.substring(0, 4) + "/" + modelName.substring(4, 6) + "/" + modelName.substring(6, 8)
+          + " " + modelName.substring(8, 10) + ":" + modelName.substring(10, 12) + ":" + modelName.substring(12, 14)
+          + "." + modelName.substring(14, 17) + " 생성 모델";
   }
 </script>
+</body>
+</html>

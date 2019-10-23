@@ -47,6 +47,7 @@ files:
     grammarin: grammar.in
     dicuser: dic.user
     fwduser: fwd.user
+    irregular: dic.irregular
 
 
 models:

@@ -2,6 +2,7 @@ package kr.co.shineware.nlp.komoran.admin.service;
 
 import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
 import kr.co.shineware.nlp.komoran.admin.exception.ServerErrorException;
+import kr.co.shineware.nlp.komoran.admin.util.ModelValidator;
 import kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -68,26 +69,8 @@ public class UserModelService {
     private GrammarInService grammarInService;
 
 
-    private String modelDirFormat;
-
-    private SimpleDateFormat dirNameFormat;
-
-
-    UserModelService() {
-        modelDirFormat = "yyyyMMddHHmmssSSS";
-        dirNameFormat = new SimpleDateFormat(modelDirFormat);
-    }
-
-
-    private String getModelBasePath() {
-        String modelPath = String.join(File.separator, MODELS_BASEDIR, this.dirNameFormat.format(System.currentTimeMillis()));
-
-        return modelPath;
-    }
-
-
     private String prepareModelBasePath() throws IOException {
-        String modelPathname = getModelBasePath();
+        String modelPathname = String.join(File.separator, MODELS_BASEDIR, ModelValidator.GenerateNewModelName());
         File modelPathToSave = new File(modelPathname);
 
         while (modelPathToSave.exists()) {
@@ -97,7 +80,7 @@ public class UserModelService {
 
             }
 
-            modelPathname = getModelBasePath();
+            modelPathname = ModelValidator.GenerateNewModelName();
             modelPathToSave = new File(modelPathname);
         }
 
@@ -200,17 +183,11 @@ public class UserModelService {
 
         // add only valid modelDir
         for (String modelDir : modelDirs) {
-            try {
-                this.dirNameFormat.parse(modelDir);
-
-                File tmpModelDir = new File(String.join(File.separator, MODELS_BASEDIR, modelDir));
-
-                if (tmpModelDir.exists() && tmpModelDir.list() != null) {
-                    modelList.add(modelDir);
-                }
-            } catch (ParseException e) {
+            if (!ModelValidator.IsValidUserModel(modelDir)) {
                 continue;
             }
+
+            modelList.add(modelDir);
         }
 
         Collections.sort(modelList, Collections.reverseOrder());
@@ -219,21 +196,8 @@ public class UserModelService {
     }
 
 
-    private void validateUserModelDirName(String modelDir) {
-        if ("".equals(modelDir) || modelDir == null) {
-            throw new ParameterInvalidException("잘못된 모델명 [" + modelDir + "]");
-        } else {
-            try {
-                this.dirNameFormat.parse(modelDir);
-            } catch (ParseException e) {
-                throw new ServerErrorException("사용자 모델 삭제에 실패했습니다. 모델명을 확인해주세요.");
-            }
-        }
-    }
-
-
     public boolean deleteUserModel(String modelDir) {
-        validateUserModelDirName(modelDir);
+        ModelValidator.CheckValidModelName(modelDir);
 
         String dirNameToDelete = String.join(File.separator, MODELS_BASEDIR, modelDir);
 
@@ -242,7 +206,7 @@ public class UserModelService {
 
 
     public File deployUserModel(String modelDir) {
-        validateUserModelDirName(modelDir);
+        ModelValidator.CheckValidModelName(modelDir);
 
         String dirNameToArchive = String.join(File.separator, MODELS_BASEDIR, modelDir);
         String zipNameToArchive = "UserModel" + modelDir + ".zip";
