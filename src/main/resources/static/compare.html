@@ -211,11 +211,15 @@
   $("#analyzeBtn").on("click", analyzeAndCompare);
   $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
 
-  $("#strToAnalyze").on("keypress", function(e) {
-    if(e.which == 13) {
+  $("#strToAnalyze").on("keypress", submitOnEnter);
+  $("#selectSrcModel").on("change", analyzeAndCompare);
+  $("#selectDestModel").on("change", analyzeAndCompare);
+
+  function submitOnEnter(e) {
+    if (e.which == 13) {
       analyzeAndCompare();
     }
-  });
+  }
 
   $(function () {
     // Initialize Model List

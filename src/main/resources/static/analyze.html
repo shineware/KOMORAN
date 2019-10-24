@@ -177,11 +177,14 @@
   // Analyze
   $("#analyzeBtn").on("click", analyzeForm);
 
-  $("#strToAnalyze").on("keypress", function(e) {
-    if(e.which == 13) {
+  $("#strToAnalyze").on("keypress", submitOnEnter);
+  $("#selectModel").on("change", analyzeForm);
+
+  function submitOnEnter(e) {
+    if (e.which == 13) {
       analyzeForm();
     }
-  });
+  }
 
   function analyzeForm() {
     var passStrToAnalyze = false;
