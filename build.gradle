@@ -3,7 +3,7 @@ plugins {
     id 'com.github.kt3k.coveralls' version '2.6.3'
 }
 
-
+apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -43,3 +43,7 @@ dependencies {
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.10'
+}
