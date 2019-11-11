@@ -7,11 +7,13 @@ import kr.co.shineware.nlp.komoran.admin.util.ResponseDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -40,6 +42,22 @@ public class MorphAnalyzeController {
     }
 
 
+    @PostMapping(value = "/multiple")
+    public ResponseDetail analyzeMultipleStrs(@RequestParam("strToAnalyze") String strToAnalyze,
+                                              @RequestParam("modelName") String modelNameToUse) {
+        ModelValidator.CheckValidModelName(modelNameToUse);
+
+        ResponseDetail responseDetail = new ResponseDetail();
+
+        ArrayList<String> analyzedResults = morphAnalyzeService.analyzeMultipleLinesWithUserModel(strToAnalyze, modelNameToUse);
+        String result = String.join("\n", analyzedResults);
+
+        responseDetail.setData(result);
+
+        return responseDetail;
+    }
+
+
     @PostMapping(value = "/compare")
     public ResponseDetail analyzeStrWithNewModel(@RequestParam("strToAnalyze") String strToAnalyze,
                                                  @RequestParam("modelNameSrc") String modelNameSrc,
@@ -55,4 +73,19 @@ public class MorphAnalyzeController {
         return responseDetail;
     }
 
+
+    @PostMapping(value = "/multicompare")
+    public ResponseDetail analyzeMultipleStrsWithNewModel(@RequestParam("strToAnalyze") String strToAnalyze,
+                                                          @RequestParam("modelNameSrc") String modelNameSrc,
+                                                          @RequestParam("modelNameDest") String modelNameDest) {
+        ModelValidator.CheckValidModelName(modelNameSrc);
+        ModelValidator.CheckValidModelName(modelNameDest);
+
+        ResponseDetail responseDetail = new ResponseDetail();
+
+        Map<String, String> result = morphAnalyzeService.getDiffsFromAnalyzedMultipleResults(strToAnalyze, modelNameSrc, modelNameDest);
+        responseDetail.setData(result);
+
+        return responseDetail;
+    }
 }

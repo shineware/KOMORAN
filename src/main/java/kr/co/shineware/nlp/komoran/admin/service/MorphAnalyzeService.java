@@ -8,6 +8,7 @@ import kr.co.shineware.nlp.komoran.admin.exception.ServerErrorException;
 import kr.co.shineware.nlp.komoran.admin.util.ModelValidator;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -37,6 +35,9 @@ public class MorphAnalyzeService {
     @Value("${files.name.fwduser}")
     private String filenameFwdUser;
 
+    @Value("${komoran.options.numThreads}")
+    private int numThreads;
+
 
     private static Komoran komoran;
 
@@ -52,6 +53,19 @@ public class MorphAnalyzeService {
 
     private String analyzeWithLightModel(String strToAnalyze) {
         return komoran.analyze(strToAnalyze).getPlainText();
+    }
+
+
+    private ArrayList<String> analyzeMultipleLinesWithLightModel(String strToAnalyzeWithNewLines) {
+        String[] splittedStrs = strToAnalyzeWithNewLines.split("\n");
+        List<KomoranResult> analyzedResults = komoran.analyze(Arrays.asList(splittedStrs), numThreads);
+        ArrayList<String> results = new ArrayList<String>();
+
+        for (KomoranResult analyzedResult : analyzedResults) {
+            results.add(analyzedResult.getPlainText());
+        }
+
+        return results;
     }
 
 
@@ -88,10 +102,37 @@ public class MorphAnalyzeService {
             this.loadUserModel(userModelName);
             result = this.userKomoran.analyze(strToAnalyze).getPlainText();
         } catch (NullPointerException e) {
-            throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\\n사전 문제일 수 있습니다.");
+            throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\n사전 문제일 수 있습니다.");
         }
 
         return result;
+    }
+
+
+    public ArrayList<String> analyzeMultipleLinesWithUserModel(String strToAnalyzeWithNewLines, String userModelName) {
+        ModelValidator.CheckValidModelName(userModelName);
+
+        ArrayList<String> results;
+
+        if ("DEFAULT".equals(userModelName)) {
+            results = this.analyzeMultipleLinesWithLightModel(strToAnalyzeWithNewLines);
+            return results;
+        }
+
+        try {
+            this.loadUserModel(userModelName);
+            String[] splittedStrs = strToAnalyzeWithNewLines.split("\n");
+            List<KomoranResult> analyzedResults = this.userKomoran.analyze(Arrays.asList(splittedStrs), numThreads);
+            results = new ArrayList<String>();
+
+            for (KomoranResult analyzedResult : analyzedResults) {
+                results.add(analyzedResult.getPlainText());
+            }
+        } catch (NullPointerException e) {
+            throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\n사전 문제일 수 있습니다.");
+        }
+
+        return results;
     }
 
 
@@ -137,7 +178,6 @@ public class MorphAnalyzeService {
                 resultSrcHtml.append(row.getOldLine());
                 resultDestHtml.append(row.getNewLine());
             }
-
         } catch (DiffException e) {
             throw new ServerErrorException("분석 결과 비교 중 문제가 발생하였습니다.");
         }
@@ -148,4 +188,64 @@ public class MorphAnalyzeService {
         return result;
     }
 
+
+    public Map<String, String> getDiffsFromAnalyzedMultipleResults(String strToAnalyzeWithNewLines, String modelNameSrc, String modelNameDest) {
+        ModelValidator.CheckValidModelName(modelNameSrc);
+        ModelValidator.CheckValidModelName(modelNameDest);
+
+        ArrayList<String> resultSrc;
+        ArrayList<String> resultDest;
+        Map<String, String> result = new HashMap<>();
+
+        if ("DEFAULT".equals(modelNameSrc)) {
+            resultSrc = this.analyzeMultipleLinesWithLightModel(strToAnalyzeWithNewLines);
+        } else {
+            resultSrc = this.analyzeMultipleLinesWithUserModel(strToAnalyzeWithNewLines, modelNameSrc);
+        }
+
+        if ("DEFAULT".equals(modelNameDest)) {
+            resultDest = this.analyzeMultipleLinesWithLightModel(strToAnalyzeWithNewLines);
+        } else {
+            resultDest = this.analyzeMultipleLinesWithUserModel(strToAnalyzeWithNewLines, modelNameDest);
+        }
+
+        if (resultSrc.size() != resultDest.size()) {
+            throw new ServerErrorException("KOMORAN 오류가 발생하였습니다.");
+        }
+
+        StringBuffer resultSrcHtml = new StringBuffer();
+        StringBuffer resultDestHtml = new StringBuffer();
+        boolean isFirst = true;
+
+        DiffRowGenerator generator = DiffRowGenerator.create()
+                .showInlineDiffs(true)
+                .inlineDiffByWord(true)
+                .build();
+        try {
+            for (int i = 0; i < resultSrc.size(); i++) {
+                List<DiffRow> rows = generator.generateDiffRows(Arrays.asList(resultSrc.get(i).split(" ")), Arrays.asList(resultDest.get(i).split(" ")));
+
+                for (DiffRow row : rows) {
+                    if (!isFirst) {
+                        resultSrcHtml.append(" ");
+                        resultDestHtml.append(" ");
+                    } else {
+                        isFirst = false;
+                    }
+
+                    resultSrcHtml.append(row.getOldLine());
+                    resultDestHtml.append(row.getNewLine());
+                }
+                resultSrcHtml.append("<br />");
+                resultDestHtml.append("<br />");
+            }
+        } catch (DiffException e) {
+            throw new ServerErrorException("분석 결과 비교 중 문제가 발생하였습니다.");
+        }
+
+        result.put("srcHtml", resultSrcHtml.toString());
+        result.put("destHtml", resultDestHtml.toString());
+
+        return result;
+    }
 }

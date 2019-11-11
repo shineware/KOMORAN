@@ -49,6 +49,9 @@ files:
     fwduser: fwd.user
     irregular: dic.irregular
 
+komoran:
+  options:
+    numThreads: 4
 
 models:
   default:
