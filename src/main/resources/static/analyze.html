@@ -75,7 +75,7 @@
           <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
           <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
-          <li><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
+          <li><a href="./compareStr.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
         <li class="header">배포</li>
           <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
@@ -113,7 +113,7 @@
 
               <div class="form-group">
                 <label for="strToAnalyze"><h4>입력 문장</h4></label>
-                <input type="text" class="form-control" id="strToAnalyze" name="strToAnalyze" placeholder="형태소 분석할 문장을 입력하세요.">
+                <textarea class="form-control" id="strToAnalyze" name="strToAnalyze" rows="5" placeholder="형태소 분석할 문장을 입력하세요."></textarea>
               </div>
 
                 <div class="form-group">
@@ -177,11 +177,14 @@
   // Analyze
   $("#analyzeBtn").on("click", analyzeForm);
 
-  $("#strToAnalyze").on("keypress", function(e) {
-    if(e.which == 13) {
+  $("#strToAnalyze").on("keypress", submitOnEnter);
+  $("#selectModel").on("change", analyzeForm);
+
+  function submitOnEnter(e) {
+    if (e.which == 13) {
       analyzeForm();
     }
-  });
+  }
 
   function analyzeForm() {
     var passStrToAnalyze = false;
@@ -198,7 +201,7 @@
     if (passStrToAnalyze) {
         $.ajax({
             method: "POST",
-            url: "/analyze/default",
+            url: "/analyze/multiple",
             data: {
                 strToAnalyze: $("#strToAnalyze").val(),
                 modelName: $("#selectModel").val()

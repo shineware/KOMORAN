@@ -75,7 +75,7 @@
           <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
           <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
-          <li class="active"><a href="./compare.html"><i class="fa fa-arrows-h"></i> <span>형태소 분석 비교</span></a></li>
+          <li class="active"><a href="./compareStr.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
         <li class="header">배포</li>
           <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
@@ -108,11 +108,11 @@
 
           <div class="box">
             <div class="box-body">
-              <p><strong>[사용법]</strong> 분석을 원하는 문장 입력 후, 모델을 선택하여 형태소 분석 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
+              <p><strong>[사용법]</strong> 분석을 원하는 문장 입력 후, 모델을 선택하여 형태소 분석의 전체 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
 
               <div class="form-group">
                 <label for="strToAnalyze"><h4>입력 문장</h4></label>
-                <input type="text" class="form-control" id="strToAnalyze" name="strToAnalyze" placeholder="형태소 분석할 문장을 입력하세요.">
+                <textarea class="form-control" id="strToAnalyze" name="strToAnalyze" rows="5" placeholder="형태소 분석할 문장을 입력하세요."></textarea>
               </div>
               <div class="row btn-row">
                 <div class="pull-left">
@@ -211,11 +211,15 @@
   $("#analyzeBtn").on("click", analyzeAndCompare);
   $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
 
-  $("#strToAnalyze").on("keypress", function(e) {
-    if(e.which == 13) {
+  $("#strToAnalyze").on("keypress", submitOnEnter);
+  $("#selectSrcModel").on("change", analyzeAndCompare);
+  $("#selectDestModel").on("change", analyzeAndCompare);
+
+  function submitOnEnter(e) {
+    if (e.which == 13) {
       analyzeAndCompare();
     }
-  });
+  }
 
   $(function () {
     // Initialize Model List
@@ -260,7 +264,7 @@
     if (passStrToAnalyze) {
       $.ajax({
         method: "POST",
-        url: "/analyze/compare",
+        url: "/analyze/multicompare",
         data: {
           strToAnalyze: $("#strToAnalyze").val(),
           modelNameSrc: $("#selectSrcModel").val(),
