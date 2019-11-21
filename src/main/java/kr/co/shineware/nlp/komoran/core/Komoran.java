@@ -40,6 +40,7 @@ import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -121,7 +122,9 @@ public class Komoran implements Cloneable {
         try {
             List<String> lines = FileUtil.load2List(inputFilename);
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilename));
+            BufferedWriter bw = new BufferedWriter(
+                    (new OutputStreamWriter(new FileOutputStream(outputFilename), StandardCharsets.UTF_8)));
+//            BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilename));
             List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
             ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
 
@@ -146,8 +149,9 @@ public class Komoran implements Cloneable {
 
     /**
      * 여러 문장을 입력 받아 형태소 분석을 진행합니다.
+     *
      * @param sentences 분석할 문장들이 담긴 List. 각 원소는 하나의 문장이라고 간주합니다.
-     * @param thread 분석 시 사용할 thread 수
+     * @param thread    분석 시 사용할 thread 수
      * @return 문장 별 형태소 분석 결과가 담긴 List
      */
     public List<KomoranResult> analyze(List<String> sentences, int thread) {
@@ -177,6 +181,7 @@ public class Komoran implements Cloneable {
 
     /**
      * 입력된 문장에 대해서 형태소 분석을 진행합니다.
+     *
      * @param sentence 분석 대상 문장
      * @return 형태소 분석 결과
      */
@@ -186,8 +191,9 @@ public class Komoran implements Cloneable {
 
     /**
      * 입력된 문장에 대해서 형태소 분석을 진행 후 n-best 결과를 반환합니다.
+     *
      * @param sentence 분석 대상 문장
-     * @param nbest 분석 결과 중 추출할 상위 n개의 수
+     * @param nbest    분석 결과 중 추출할 상위 n개의 수
      * @return 형태소 분석 결과 중 nbest 수 만큼의 결과
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
@@ -374,7 +380,7 @@ public class Komoran implements Cloneable {
 //                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
 //            }
 //        } else {
-            lattice.put(beginIdx, endIdx, fwdResultList);
+        lattice.put(beginIdx, endIdx, fwdResultList);
 //        }
     }
 
@@ -597,12 +603,15 @@ public class Komoran implements Cloneable {
      *     komoran.setFWDic("user_data/fwd.user");
      *     KomoranResult komoranResult = komoran.analyze("감기는 자주 걸리는 병이다");
      * </pre>
+     *
      * @param filename 기분석 사전 파일 경로
      */
     public void setFWDic(String filename) {
         try {
             CorpusParser corpusParser = new CorpusParser();
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+//            BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
             this.fwd = new HashMap<>();
             while ((line = br.readLine()) != null) {
@@ -636,6 +645,7 @@ public class Komoran implements Cloneable {
      *     komoran.setUserDic("user_date/dic.user");
      *     KomoranResult komoranResult = komoran.analyze("바람과 함께 사라지다를 봤어");
      * </pre>
+     *
      * @param userDic 사용자 사전 파일 경로
      */
     public void setUserDic(String userDic) {

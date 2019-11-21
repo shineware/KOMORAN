@@ -70,7 +70,9 @@ public class PosTable implements FileAccessible{
 	@Override
 	public void save(String filename) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+			BufferedWriter bw = new BufferedWriter(
+					(new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8)));
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
 			Set<Entry<String,Integer>> posIdEntrySet = posIdTable.entrySet();
 			for (Entry<String, Integer> entry : posIdEntrySet) {
 				bw.write(entry.getKey()+"\t"+entry.getValue());
@@ -88,7 +90,9 @@ public class PosTable implements FileAccessible{
 	public void load(String filename) {
 		try{
 			this.init();
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+//			BufferedReader br = new BufferedReader(new FileReader(filename));
 			String line = null;
 			while((line = br.readLine()) != null){
 				String[] tokens = line.split("\t");

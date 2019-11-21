@@ -17,10 +17,8 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.corpus.builder;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +52,9 @@ public class FWDBuilder {
 	}
 	public void build(String filename){
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+//			BufferedReader br = new BufferedReader(new FileReader(filename));
 			String line = null;
 
 			while ((line = br.readLine()) != null) {
@@ -107,7 +107,9 @@ public class FWDBuilder {
 	
 	private void save(String filename) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+			BufferedWriter bw = new BufferedWriter(
+					(new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8)));
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
 			Set<Entry<String,Map<String,Integer>>> fwdEntrySet = fwdMap.entrySet();
 			for (Entry<String, Map<String, Integer>> fwdEntry : fwdEntrySet) {
 				String problem = fwdEntry.getKey();

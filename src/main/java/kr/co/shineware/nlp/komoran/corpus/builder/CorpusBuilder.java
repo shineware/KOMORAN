@@ -31,10 +31,10 @@ import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import kr.co.shineware.util.common.string.StringUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.lang.Character.UnicodeBlock;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -122,12 +122,12 @@ public class CorpusBuilder {
      * 모든 서브 디렉토리에 있는 파일들도 빌드됩낟.
      *
      * @param corporaPath 빌드 대상 파일들이 포함된 최상위 디렉토리 경로
-     * @param suffix 빌드 대상 파일확장자
+     * @param suffix      빌드 대상 파일확장자
      */
     public void buildPath(String corporaPath, String suffix) {
         List<String> filenames = FileUtil.getFileNames(corporaPath);
         for (String filename : filenames) {
-            if (suffix != null && filename.endsWith("." + suffix)) {
+            if (suffix != null && filename.endsWith(suffix)) {
                 System.out.println(filename);
                 this.build(filename);
             }
@@ -145,18 +145,25 @@ public class CorpusBuilder {
      */
     public void build(String filename) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
             String line;
+            int lineCount = 0;
 
             while ((line = br.readLine()) != null) {
+                lineCount += 1;
                 line = this.refineFormat(line);
-                if (line.length() == 0)
+                if(lineCount < 10){
+                    System.out.println(line);
+                }
+                if (line.length() == 0) {
                     continue;
+                }
 
                 ProblemAnswerPair paPair = null;
                 try {
                     paPair = this.corpusParser.parse(line);
                 } catch (FileFormatException e) {
+                    System.err.println(lineCount + " : " + line);
                     e.printStackTrace();
                     System.exit(1);
                 }
@@ -326,7 +333,9 @@ public class CorpusBuilder {
     public void setExclusiveIrrRule(String filename) {
         try {
             this.irrExclusiveSet = new HashSet<>();
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+//            BufferedReader br = new BufferedReader(new FileReader(filename));
             String line = null;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
@@ -352,7 +361,9 @@ public class CorpusBuilder {
      */
     public void appendUserDic(String filename) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+//            BufferedReader br = new BufferedReader(new FileReader(filename));
             String line = null;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
@@ -371,7 +382,8 @@ public class CorpusBuilder {
     /**
      * path 밑에 있는 모든 파일 중 확장자가 suffix로 끝나는 파일들만 사용자 사전으로 추가합니다. </p>
      * 추가된 사용자 사전들은 코퍼스 빌드 시 함께 빌드됩니다.
-     * @param path 사용자 사전들이 포함된 최상위 디렉토리 경로
+     *
+     * @param path   사용자 사전들이 포함된 최상위 디렉토리 경로
      * @param suffix 사용자 사전의 파일확장자
      */
     public void appendUserDicPath(String path, String suffix) {

@@ -27,9 +27,8 @@ import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -305,7 +304,9 @@ public class ModelBuilder {
 	private void addExternalDic(String filename) {
 		try {
 			if(filename != null) {
-				BufferedReader br = new BufferedReader(new FileReader(filename));
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+//				BufferedReader br = new BufferedReader(new FileReader(filename));
 				String line = null;
 				while ((line = br.readLine()) != null) {
 					line = line.trim();
