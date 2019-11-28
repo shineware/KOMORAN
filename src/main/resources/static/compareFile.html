@@ -75,7 +75,8 @@
           <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
           <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
-          <li class="active"><a href="./compareStr.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
+          <li><a href="./compareSentence.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
+          <li class="active"><a href="./compareFile.html"><i class="fa fa-arrows-h"></i> <span>파일 단위 비교</span></a></li>
         <li class="header">배포</li>
           <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
@@ -108,11 +109,10 @@
 
           <div class="box">
             <div class="box-body">
-              <p><strong>[사용법]</strong> 분석을 원하는 문장 입력 후, 모델을 선택하여 형태소 분석의 전체 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
+              <p><strong>[사용법]</strong> 분석을 원하는 파일 업로드 후, 모델을 선택하여 형태소 분석의 전체 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
 
-              <div class="form-group">
-                <label for="strToAnalyze"><h4>입력 문장</h4></label>
-                <textarea class="form-control" id="strToAnalyze" name="strToAnalyze" rows="5" placeholder="형태소 분석할 문장을 입력하세요."></textarea>
+              <div>
+                <button id="fileUploadBtn" class="btn btn-primary btn-flat" data-target="#fileUploadModal"><i class="fa fa-upload"></i> 파일 분석</button>
               </div>
               <div class="row btn-row">
                 <div class="pull-left">
@@ -179,7 +179,30 @@
     <a href="http://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-footer">KOMORAN 형태소 분석기</a>를 위해 <a href="https://github.com/9bow">9bow</a>가 개발하였습니다.
   </footer>
 </div>
+
 <!-- ./wrapper -->
+<div id="fileUploadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="fileUploadModalTitle">사전 파일 올리기</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <p>아래 버튼을 분석 할 파일을 올려주세요.</p>
+            <input id="fileUploadFile" type="file" name="file" title="분석 할 파일을 선택해주세요.">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
+        <button id="fileUploadBtnInModal" type="button" class="btn btn-primary btn-flat" disabled>올리기</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- jQuery 3 -->
 <script src="/libs/jquery/jquery.min.js"></script>
@@ -212,8 +235,8 @@
   $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
 
   $("#strToAnalyze").on("keypress", submitOnEnter);
-  $("#selectSrcModel").on("change", analyzeAndCompare);
-  $("#selectDestModel").on("change", analyzeAndCompare);
+<!--  $("#selectSrcModel").on("change", analyzeAndCompare);-->
+<!--  $("#selectDestModel").on("change", analyzeAndCompare);-->
 
   function submitOnEnter(e) {
     if (e.which == 13) {
@@ -248,6 +271,52 @@
       }
     });
   }
+
+  // Dict File Upload
+  $("#fileUploadModal").on("hidden.bs.modal", function() {
+    $("#fileUploadBtnInModal").prop("disabled", true);
+    $("#fileUploadMesgInModal").text("");
+    $("#fileUploadFile").val("");
+  });
+
+  $("#fileUploadBtn").on("click", function() {
+    $("#fileUploadModal").modal("show");
+  });
+
+  $("#fileUploadFile").fileupload({
+    dataType: "json",
+    autoUpload: false,
+    replaceFileInput:false,
+    url: "/analyze/diff/file",
+    add: function (e, data) {
+      data.formData = {
+        modelNameSrc: $("#selectSrcModel").val(),
+        modelNameDest: $("#selectDestModel").val()
+      };
+      $("#fileUploadBtnInModal").prop("disabled", false).text("올리기")
+                                .click(function () {
+                                  $("#fileUploadBtnInModal").prop("disabled", true).text("올리는 중...")
+                                  data.submit();
+                                });
+    },
+    error: function (e, data) {
+      $("#fileUploadBtnInModal").prop("disabled", false).text("올리기");
+      $("#fileUploadMesgInModal").text("");
+      $("#fileUploadFile").val("");
+      alert(e.responseJSON.message);
+    },
+    success: function(result){
+      $("#analyzeSrcResult").html(result.data.srcHtml);
+      $("#analyzeDestResult").html(result.data.destHtml);
+      alert(result.data.result);
+    },
+    done: function (e, data) {
+      console.log(data);
+      $("#fileUploadBtnInModal").prop("disabled", true).text('올리기 완료');
+<!--      $("#analyzeSrcResult").html(data.result.data..srcHtml);-->
+<!--      $("#analyzeDestResult").html(data.result.data.destHtml);-->
+    }
+  });
 
   function analyzeAndCompare() {
     var passStrToAnalyze = false;

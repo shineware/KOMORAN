@@ -14,8 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 @Service
@@ -56,16 +57,19 @@ public class MorphAnalyzeService {
     }
 
 
-    private ArrayList<String> analyzeMultipleLinesWithLightModel(String strToAnalyzeWithNewLines) {
-        String[] splittedStrs = strToAnalyzeWithNewLines.split("\n");
-        List<KomoranResult> analyzedResults = komoran.analyze(Arrays.asList(splittedStrs), numThreads);
-        ArrayList<String> results = new ArrayList<String>();
+    private ArrayList<String> analyzeMultipleLinesWithLightModel(List<String> linesToAnalyze) {
+        List<KomoranResult> analyzedResults = komoran.analyze(linesToAnalyze, numThreads);
+        ArrayList<String> results = new ArrayList<>();
 
         for (KomoranResult analyzedResult : analyzedResults) {
             results.add(analyzedResult.getPlainText());
         }
 
         return results;
+    }
+
+    private ArrayList<String> analyzeMultipleLinesWithLightModel(String strToAnalyzeWithNewLines) {
+        return analyzeMultipleLinesWithLightModel(Arrays.asList(strToAnalyzeWithNewLines.split("\n")));
     }
 
 
@@ -85,6 +89,23 @@ public class MorphAnalyzeService {
         this.userKomoran.setFWDic(String.join(File.separator, modelBasePathName, filenameFwdUser));
 
         return true;
+    }
+
+    private Komoran getKomoranWithUserModel(String modelPathName) {
+        ModelValidator.CheckValidUserModel(modelPathName);
+
+        String modelBasePathName = String.join(File.separator, MODELS_BASEDIR, modelPathName);
+        File modelPath = new File(modelBasePathName);
+
+        if (!modelPath.exists()) {
+            throw new ResourceNotFoundException("존재하지 않는 모델명 [" + modelPathName + "]");
+        }
+
+        Komoran userKomoran = new Komoran(String.join(File.separator, modelBasePathName, MODELS_MODELDIR));
+
+        userKomoran.setUserDic(String.join(File.separator, modelBasePathName, filenameDicUser));
+        userKomoran.setFWDic(String.join(File.separator, modelBasePathName, filenameFwdUser));
+        return userKomoran;
     }
 
 
@@ -108,6 +129,30 @@ public class MorphAnalyzeService {
         return result;
     }
 
+    public ArrayList<String> analyzeMultipleLinesWithUserModel(List<String> linesToAnalyze, String userModelName) {
+        ModelValidator.CheckValidModelName(userModelName);
+
+        ArrayList<String> results;
+
+        if ("DEFAULT".equals(userModelName)) {
+            results = this.analyzeMultipleLinesWithLightModel(linesToAnalyze);
+            return results;
+        }
+        try {
+            this.loadUserModel(userModelName);
+            List<KomoranResult> analyzedResults = this.userKomoran.analyze(linesToAnalyze, numThreads);
+            results = new ArrayList<>();
+
+            for (KomoranResult analyzedResult : analyzedResults) {
+                results.add(analyzedResult.getPlainText());
+            }
+        } catch (NullPointerException e) {
+            throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\n사전 문제일 수 있습니다.");
+        }
+
+        return results;
+    }
+
 
     public ArrayList<String> analyzeMultipleLinesWithUserModel(String strToAnalyzeWithNewLines, String userModelName) {
         ModelValidator.CheckValidModelName(userModelName);
@@ -120,19 +165,10 @@ public class MorphAnalyzeService {
         }
 
         try {
-            this.loadUserModel(userModelName);
-            String[] splittedStrs = strToAnalyzeWithNewLines.split("\n");
-            List<KomoranResult> analyzedResults = this.userKomoran.analyze(Arrays.asList(splittedStrs), numThreads);
-            results = new ArrayList<String>();
-
-            for (KomoranResult analyzedResult : analyzedResults) {
-                results.add(analyzedResult.getPlainText());
-            }
+            return analyzeMultipleLinesWithUserModel(Arrays.asList(strToAnalyzeWithNewLines.split("\n")), userModelName);
         } catch (NullPointerException e) {
             throw new ServerErrorException("사용자 모델을 이용한 분석 중 에러가 발생하였습니다.\n사전 문제일 수 있습니다.");
         }
-
-        return results;
     }
 
 
@@ -189,13 +225,12 @@ public class MorphAnalyzeService {
     }
 
 
-    public Map<String, String> getDiffsFromAnalyzedMultipleResults(String strToAnalyzeWithNewLines, String modelNameSrc, String modelNameDest) {
+    public Map<String, String> getDiffsFromAnalyzedMultipleResultsForHtml(String strToAnalyzeWithNewLines, String modelNameSrc, String modelNameDest) {
         ModelValidator.CheckValidModelName(modelNameSrc);
         ModelValidator.CheckValidModelName(modelNameDest);
 
         ArrayList<String> resultSrc;
         ArrayList<String> resultDest;
-        Map<String, String> result = new HashMap<>();
 
         if ("DEFAULT".equals(modelNameSrc)) {
             resultSrc = this.analyzeMultipleLinesWithLightModel(strToAnalyzeWithNewLines);
@@ -212,6 +247,23 @@ public class MorphAnalyzeService {
         if (resultSrc.size() != resultDest.size()) {
             throw new ServerErrorException("KOMORAN 오류가 발생하였습니다.");
         }
+
+        return generateDiffRows(resultSrc, resultDest);
+    }
+
+    public Map<String, String> generateDiffRows(List<String> toShowDiffRows) {
+        List<String> srcList = new ArrayList<>();
+        List<String> destList = new ArrayList<>();
+        for (String toShowDiffRow : toShowDiffRows) {
+            srcList.add(toShowDiffRow.split("\t")[0]);
+            destList.add(toShowDiffRow.split("\t")[1]);
+        }
+        return this.generateDiffRows(srcList, destList);
+    }
+
+    public Map<String, String> generateDiffRows(List<String> resultSrc, List<String> resultDest) {
+
+        Map<String, String> result = new HashMap<>();
 
         StringBuffer resultSrcHtml = new StringBuffer();
         StringBuffer resultDestHtml = new StringBuffer();
@@ -245,7 +297,45 @@ public class MorphAnalyzeService {
 
         result.put("srcHtml", resultSrcHtml.toString());
         result.put("destHtml", resultDestHtml.toString());
-
         return result;
     }
+
+    public List<String> getDiffsFromFiles(MultipartFile fileToAnalyze, String modelNameSrc, String modelNameDest) {
+        try {
+            List<String> lines = multipartFileToStringList(fileToAnalyze);
+            List<String> srcAnalyzeResultList = analyzeMultipleLinesWithUserModel(lines, modelNameSrc);
+            List<String> destAnalyzeResultList = analyzeMultipleLinesWithUserModel(lines, modelNameDest);
+            if (srcAnalyzeResultList.size() != destAnalyzeResultList.size()) {
+                throw new ServerErrorException("KOMORAN 오류가 발생하였습니다.");
+            }
+
+            List<String> diffResultList = new ArrayList<>();
+
+            for (int i = 0; i < srcAnalyzeResultList.size(); i++) {
+                String srcResult = srcAnalyzeResultList.get(i);
+                String destResult = destAnalyzeResultList.get(i);
+                if(srcResult.equals(destResult)){
+                    continue;
+                }
+                diffResultList.add(srcResult+"\t"+destResult);
+            }
+            return diffResultList;
+
+        } catch (Exception e) {
+            throw new ServerErrorException("분석 결과 비교 중 문제가 발생하였습니다.");
+        }
+    }
+
+    private List<String> multipartFileToStringList(MultipartFile fileToAnalyze) throws IOException {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(fileToAnalyze.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line.trim().replaceAll("[ \t]+"," "));
+            }
+        }
+        return lines;
+    }
+
+
 }
