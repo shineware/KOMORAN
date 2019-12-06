@@ -68,21 +68,27 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">분석</li>
-          <li><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
+        <li><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
         <li class="header">보정</li>
-          <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
-          <li><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
-          <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
-          <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
+        <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
+        <li><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
+        <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
+        <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
         <li class="header">비교</li>
-          <li><a href="./compareSentence.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
-          <li class="active"><a href="./compareFile.html"><i class="fa fa-arrows-h"></i> <span>파일 단위 비교</span></a></li>
+        <li><a href="./compareSentence.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
+        <li class="active"><a href="./compareFile.html"><i class="fa fa-arrows-h"></i> <span>파일 단위 비교</span></a>
+        </li>
         <li class="header">배포</li>
-          <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
+        <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
         <li class="header">참조</li>
-          <li><a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i class="fa fa-external-link"></i></span></a></li>
-          <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i class="fa fa-external-link"></i></span></a></li>
-          <li><a href="https://github.com/9bow"><i class="fa fa-github text-aqua"></i> <span>GitHub/9bow <i class="fa fa-external-link"></i></span></a></li>
+        <li>
+          <a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i
+                  class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i
+                  class="fa fa-external-link"></i></span></a></li>
+        <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i
+                class="fa fa-external-link"></i></span></a></li>
+        <li><a href="https://github.com/9bow"><i class="fa fa-github text-aqua"></i> <span>GitHub/9bow <i
+                class="fa fa-external-link"></i></span></a></li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -108,60 +114,60 @@
         <div class="col-xs-12">
 
           <div class="box">
-            <div class="box-body">
-              <p><strong>[사용법]</strong> 분석을 원하는 파일 업로드 후, 모델을 선택하여 형태소 분석의 전체 결과를 비교할 수 있습니다. [모델 생성] 버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
-
-              <div>
-                <button id="fileUploadBtn" class="btn btn-primary btn-flat" data-target="#fileUploadModal"><i class="fa fa-upload"></i> 파일 분석</button>
+            <form role="form" id="fileUploadForm" method="POST">
+              <div class="box-body">
+                <p><strong>[사용법]</strong> 분석을 원하는 파일 업로드 후, 모델을 선택하여 형태소 분석의 전체 결과를 비교할 수 있습니다. [모델 생성]
+                  버튼을 눌러 현재 사전 내용으로 신규 모델을 생성할 수 있습니다.</p>
+                <div class="row">
+                  <div class="form-group col-xs-6">
+                    <h4>파일 업로드</h4>
+                    <button id="fileUploadBtn" type="button" class="btn btn-primary btn-flat">
+                      <i class="fa fa-upload"></i>
+                      파일 업로드
+                    </button>
+                    <label id="fileName">여기가 파일이름이 써질 곳이다</label>
+                    <input id="fileUploadInput" type="file" class="btn btn-primary" style="width: 600px; display:none;">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-xs-6">
+                    <div class="form-group">
+                      <label for="selectSrcModel"><h4>모델 선택</h4></label>
+                      <select id="selectSrcModel" name="selectSrcModel"
+                              class="form-control"></select>
+                    </div>
+                    <label for="analyzeSrcResult"><h4>분석 결과</h4></label>
+                    <div id="analyzeSrcResult"><i>분석 결과가 여기에 나타납니다.</i></div>
+                  </div>
+                  <div class="form-group col-xs-6">
+                    <div class="form-group">
+                      <label for="selectDestModel"><h4>모델 선택</h4></label>
+                      <select id="selectDestModel" name="selectDestModel"
+                              class="form-control"></select>
+                    </div>
+                    <label for="analyzeDestResult"><h4>분석 결과</h4></label>
+                    <div id="analyzeDestResult"><i>분석 결과가 여기에 나타납니다.</i></div>
+                  </div>
+                </div>
               </div>
-              <div class="row btn-row">
-                <div class="pull-left">
-                  <div class="btn-group">
-                    <button id="modelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-plus-square"></i> 모델 생성</button>
-                  </div>
-                </div>
-                <div class="pull-right">
-                  <div class="btn-group">
-                    <button id="analyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 형태소 분석</button>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-xs-6">
-                  <div class="form-group">
-                    <label for="selectSrcModel"><h4>모델 선택</h4></label>
-                    <select id="selectSrcModel" name="selectSrcModel" class="form-control"></select>
-                  </div>
-                  <label for="analyzeSrcResult"><h4>분석 결과</h4></label>
-                  <div id="analyzeSrcResult"><i>분석 결과가 여기에 나타납니다.</i></div>
-                </div>
-                <div class="form-group col-xs-6">
-                  <div class="form-group">
-                    <label for="selectDestModel"><h4>모델 선택</h4></label>
-                    <select id="selectDestModel" name="selectDestModel" class="form-control"></select>
-                  </div>
-                  <label for="analyzeDestResult"><h4>분석 결과</h4></label>
-                  <div id="analyzeDestResult"><i>분석 결과가 여기에 나타납니다.</i></div>
-                </div>
-              </div>
-            </div>
+            </form>
             <!-- /.box-body -->
             <div class="box-footer">
               <div class="btn-row">
-                <div class="pull-left">
-                  <div class="btn-group">
-                    <button id="anotherModelGenerateBtn" type="button" class="btn btn-primary btn-flat"><i class="fa fa-plus-square"></i> 모델 생성</button>
-                  </div>
-                </div>
                 <div class="pull-right">
                   <div class="btn-group">
-                    <button id="anotherAnalyzeBtn" type="button" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> 형태소 분석</button>
+                    <button id="analyzeBtn" type="button" class="btn btn-danger btn-flat">형태소 분석
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
             <!-- /.box-footer -->
+            <div class="overlay" id="spinner">
+              <i class="fa fa-refresh fa-spin"></i>
+            </div>
           </div>
+
           <!-- /.box -->
 
         </div>
@@ -176,33 +182,12 @@
     <div class="pull-right hidden-xs">
       Designed by <a href="https://adminlte.io">Almsaeed Studio</a>, <strong>AdminLTE</strong> 2.4.0
     </div>
-    <a href="http://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-footer">KOMORAN 형태소 분석기</a>를 위해 <a href="https://github.com/9bow">9bow</a>가 개발하였습니다.
+    <a href="http://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-footer">KOMORAN
+      형태소 분석기</a>를 위해 <a href="https://github.com/9bow">9bow</a>가 개발하였습니다.
   </footer>
 </div>
 
 <!-- ./wrapper -->
-<div id="fileUploadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalTitle">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="fileUploadModalTitle">사전 파일 올리기</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-            <p>아래 버튼을 분석 할 파일을 올려주세요.</p>
-            <input id="fileUploadFile" type="file" name="file" title="분석 할 파일을 선택해주세요.">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
-        <button id="fileUploadBtnInModal" type="button" class="btn btn-primary btn-flat" disabled>올리기</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <!-- jQuery 3 -->
 <script src="/libs/jquery/jquery.min.js"></script>
@@ -225,8 +210,10 @@
 <!-- AdminLTE for demo purposes -->
 <!--<script src="/js/demo.js"></script>-->
 <!-- page script -->
+
 <script>
   // Generate New Model
+  $("#spinner").hide();
   $("#modelGenerateBtn").on("click", generateNewModel);
   $("#anotherModelGenerateBtn").on("click", generateNewModel);
 
@@ -234,9 +221,7 @@
   $("#analyzeBtn").on("click", analyzeAndCompare);
   $("#anotherAnalyzeBtn").on("click", analyzeAndCompare);
 
-  $("#strToAnalyze").on("keypress", submitOnEnter);
-<!--  $("#selectSrcModel").on("change", analyzeAndCompare);-->
-<!--  $("#selectDestModel").on("change", analyzeAndCompare);-->
+  $("#strToAnalyze").on("keypress", analyzeAndCompare);
 
   function submitOnEnter(e) {
     if (e.which == 13) {
@@ -272,89 +257,14 @@
     });
   }
 
-  // Dict File Upload
-  $("#fileUploadModal").on("hidden.bs.modal", function() {
-    $("#fileUploadBtnInModal").prop("disabled", true);
-    $("#fileUploadMesgInModal").text("");
-    $("#fileUploadFile").val("");
-  });
-
   $("#fileUploadBtn").on("click", function() {
-    $("#fileUploadModal").modal("show");
+    $("#fileUploadInput").click();
   });
 
-  $("#fileUploadFile").fileupload({
-    dataType: "json",
-    autoUpload: false,
-    replaceFileInput:false,
-    url: "/analyze/diff/file",
-    add: function (e, data) {
-      data.formData = {
-        modelNameSrc: $("#selectSrcModel").val(),
-        modelNameDest: $("#selectDestModel").val()
-      };
-      $("#fileUploadBtnInModal").prop("disabled", false).text("올리기")
-                                .click(function () {
-                                  $("#fileUploadBtnInModal").prop("disabled", true).text("올리는 중...")
-                                  data.submit();
-                                });
-    },
-    error: function (e, data) {
-      $("#fileUploadBtnInModal").prop("disabled", false).text("올리기");
-      $("#fileUploadMesgInModal").text("");
-      $("#fileUploadFile").val("");
-      alert(e.responseJSON.message);
-    },
-    success: function(result){
-      $("#analyzeSrcResult").html(result.data.srcHtml);
-      $("#analyzeDestResult").html(result.data.destHtml);
-      alert(result.data.result);
-    },
-    done: function (e, data) {
-      console.log(data);
-      $("#fileUploadBtnInModal").prop("disabled", true).text('올리기 완료');
-<!--      $("#analyzeSrcResult").html(data.result.data..srcHtml);-->
-<!--      $("#analyzeDestResult").html(data.result.data.destHtml);-->
-    }
+  $("#fileUploadInput").on("change", function(){
+    console.log($("#fileUploadInput"));
+    $("#fileName").text($("#fileUploadInput")[0].files[0].name);
   });
-
-  function analyzeAndCompare() {
-    var passStrToAnalyze = false;
-
-    if ($("#strToAnalyze").val() === "") {
-      $("#strToAnalyze").parent().addClass("has-error");
-      passStrToAnalyze = false;
-    }
-    else {
-      $("#strToAnalyze").parent().removeClass("has-error");
-      passStrToAnalyze = true;
-    }
-
-    if (passStrToAnalyze) {
-      $.ajax({
-        method: "POST",
-        url: "/analyze/multicompare",
-        data: {
-          strToAnalyze: $("#strToAnalyze").val(),
-          modelNameSrc: $("#selectSrcModel").val(),
-          modelNameDest: $("#selectDestModel").val()
-          },
-        dataType: "json",
-        success: function (result) {
-          if (result.error) {
-            alert(result.message + " (ERR_MORPH_COMPARE_0)");
-          }
-          else {
-            $("#analyzeSrcResult").html(result.data.srcHtml);
-            $("#analyzeDestResult").html(result.data.destHtml);
-          }
-        },
-        error: function(e) {
-          alert("분석 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
-        }
-      });
-    }
-  }
 
   function updateModelList(modelList) {
     $("#selectSrcModel").empty();
@@ -373,11 +283,62 @@
     })
   }
 
+  function analyzeAndCompare() {
+    var passStrToAnalyze = false;
+
+    if ($("#fileUploadInput").val() === "") {
+      $("#fileUploadInput").parent().addClass("has-error");
+      passStrToAnalyze = false;
+    }
+    else {
+      $("#fileUploadInput").parent().removeClass("has-error");
+      passStrToAnalyze = true;
+    }
+    if (passStrToAnalyze) {
+      var formData = new FormData($("#fileUploadForm")[0]);
+      formData.append("modelNameSrc", $("#selectSrcModel").val());
+      formData.append("modelNameDest", $("#selectDestModel").val());
+      formData.append("file", $("#fileUploadInput")[0].files[0]);
+      $.ajax({
+        method: "POST",
+        url: "/analyze/diff/file",
+        data: formData,
+        enctype: "multipart/form-data",
+        processData: false,
+        contentType: false,
+        cache: false,
+        error: function (e, data) {
+          $("#fileUploadInput").val("");
+          alert(e.responseJSON.message);
+        },
+        beforeSend: function(){
+          $("#spinner").show();
+        },
+        success: function(result){
+          if(result.data.srcHtml.length === 0){
+            $("#analyzeSrcResult").html("결과가 같습니다");
+            $("#analyzeDestResult").html("결과가 같습니다");
+          } else{
+            $("#analyzeSrcResult").html(result.data.srcHtml);
+            $("#analyzeDestResult").html(result.data.destHtml);
+            var filename = result.data.filepath;
+            window.location = '/analyze/diff/file/download?filename='+filename;
+          }
+          console.log(result);
+        },
+        complete : function (e, data) {
+          $("#spinner").hide();
+        }
+    });
+  }
+  }
+
   function parseModelName(modelName) {
       return modelName.substring(0, 4) + "/" + modelName.substring(4, 6) + "/" + modelName.substring(6, 8)
           + " " + modelName.substring(8, 10) + ":" + modelName.substring(10, 12) + ":" + modelName.substring(12, 14)
           + "." + modelName.substring(14, 17) + " 생성 모델";
   }
+
 </script>
 </body>
 </html>
