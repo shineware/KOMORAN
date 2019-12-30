@@ -82,7 +82,7 @@ public class SejongToTrainingData {
             int lineCount = 0;
             for (String line : lines) {
                 lineCount += 1;
-                line = line.strip().replaceAll("[ ]+", "");
+                line = line.trim().replaceAll("[ ]+", "");
                 if (line.startsWith("<orth>")) {
                     problem = line.replaceAll("<.+?>", "");
                 }
@@ -102,7 +102,7 @@ public class SejongToTrainingData {
                         continue;
                     }
 
-                    bw.write(problem + "\t" + answer.strip());
+                    bw.write(problem + "\t" + answer.trim());
                     bw.newLine();
                     problem = "";
                     answer = "";
@@ -115,16 +115,16 @@ public class SejongToTrainingData {
 
     private boolean isValidFormat(String convertedPair) {
         try {
-            if (convertedPair.strip().length() == 0) {
+            if (convertedPair.trim().length() == 0) {
                 return false;
             }
-            if (convertedPair.strip().split("\t").length != 2) {
+            if (convertedPair.trim().split("\t").length != 2) {
                 System.out.println("To convert : " + convertedPair);
                 return false;
             }
             String problem = convertedPair.split("\t")[0];
             String answer = convertedPair.split("\t")[1];
-            if (problem.strip().length() == 0 || answer.strip().length() == 0) {
+            if (problem.trim().length() == 0 || answer.trim().length() == 0) {
                 return false;
             }
             String[] tokens = answer.split(" ");
@@ -142,13 +142,13 @@ public class SejongToTrainingData {
                     return false;
                 }
 
-                if (morphPosToken[0].strip().length() == 0) {
+                if (morphPosToken[0].trim().length() == 0) {
                     return false;
                 }
-                if (morphPosToken[1].strip().length() == 0) {
+                if (morphPosToken[1].trim().length() == 0) {
                     return false;
                 }
-                String pos = morphPosToken[1].strip();
+                String pos = morphPosToken[1].trim();
                 if (!sejongTagSet.contains(pos)) {
                     System.out.println("Wrong POS : (" + pos + ")" + convertedPair);
                     return false;
@@ -181,7 +181,7 @@ public class SejongToTrainingData {
             int lineCount = 0;
             for (String line : lines) {
                 lineCount += 1;
-                line = line.strip();
+                line = line.trim();
                 if (line.startsWith("<head")) {
                     isHeadArea = true;
                     continue;
