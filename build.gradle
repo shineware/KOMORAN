@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     // use latest KOMORAN
-    compile 'com.github.shin285:KOMORAN:3.3.5'
+    compile 'com.github.shin285:KOMORAN:3.3.8'
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'

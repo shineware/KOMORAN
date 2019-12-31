@@ -1,19 +1,21 @@
 package kr.co.shineware.nlp.komoran.admin.controller;
 
-import kr.co.shineware.nlp.komoran.admin.exception.ParameterInvalidException;
+import kr.co.shineware.nlp.komoran.admin.service.FileUploadService;
 import kr.co.shineware.nlp.komoran.admin.service.MorphAnalyzeService;
 import kr.co.shineware.nlp.komoran.admin.util.ModelValidator;
 import kr.co.shineware.nlp.komoran.admin.util.ResponseDetail;
+import kr.co.shineware.util.common.file.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -25,6 +27,9 @@ public class MorphAnalyzeController {
 
     @Autowired
     private MorphAnalyzeService morphAnalyzeService;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
 
     @PostMapping(value = "/default")
@@ -83,9 +88,50 @@ public class MorphAnalyzeController {
 
         ResponseDetail responseDetail = new ResponseDetail();
 
-        Map<String, String> result = morphAnalyzeService.getDiffsFromAnalyzedMultipleResults(strToAnalyze, modelNameSrc, modelNameDest);
+        Map<String, String> result = morphAnalyzeService.getDiffsFromAnalyzedMultipleResultsForHtml(strToAnalyze, modelNameSrc, modelNameDest);
         responseDetail.setData(result);
 
         return responseDetail;
+    }
+
+    @PostMapping(value = "/diff/file")
+    public ResponseDetail uploadFile(@RequestParam("modelNameSrc") String modelNameSrc,
+                                     @RequestParam("modelNameDest") String modelNameDest,
+                                     @RequestParam("file") MultipartFile fileToAnalyze) {
+
+        ModelValidator.CheckValidModelName(modelNameSrc);
+        ModelValidator.CheckValidModelName(modelNameDest);
+
+        List<String> diffResultList = morphAnalyzeService.getDiffsFromFiles(fileToAnalyze, modelNameSrc, modelNameDest);
+        List<String> toShowDiffRows = diffResultList.subList(0, Math.min(50, diffResultList.size()));
+        Map<String, String> result = morphAnalyzeService.generateDiffRows(toShowDiffRows);
+
+        if(diffResultList.size() != 0){
+            FileUtil.makePath("diff_logs");
+            String filename = System.currentTimeMillis()+".txt";
+            FileUtil.writeList(diffResultList,"diff_logs/"+filename);
+            result.put("filepath",filename);
+        }
+        ResponseDetail responseDetail = new ResponseDetail();
+        responseDetail.setData(result);
+
+        return responseDetail;
+    }
+
+    @GetMapping(value = "/diff/file/download")
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam(value = "filename") String filename) {
+
+        List<String> lines = FileUtil.load2List("diff_logs/"+filename);
+        logger.info("Loading "+filename);
+
+        ByteArrayResource resource = diffResultListToByteArrayResource(lines);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .header("Content-Disposition", "attachment; filename="+filename)
+                .body(resource);
+    }
+
+    private ByteArrayResource diffResultListToByteArrayResource(List<String> diffResultList) {
+        return new ByteArrayResource(String.join("\n", diffResultList).getBytes());
     }
 }
