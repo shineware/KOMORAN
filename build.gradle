@@ -44,6 +44,15 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+task uberJar(type: Jar) {
+    appendix = 'uber'
+
+    from sourceSets.main.output
+    from configurations.runtimeClasspath
+            .findAll { it.name.endsWith('jar') }
+            .collect { zipTree(it) }
+}
+
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
