@@ -7,11 +7,14 @@ import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
+import kr.co.shineware.util.common.string.StringUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +29,23 @@ public class KomoranTest {
     }
 
     @Test
+    public void getUnicode() throws UnsupportedEncodingException {
+        String korean = "되ᄅ";
+        korean = "난";
+        printcodePointAndUnicodeBlock(korean);
+    }
+
+    private void printcodePointAndUnicodeBlock(String korean) {
+        korean = StringUtil.korean2JasoString(korean);
+        for(int i=0;i<korean.length();i++){
+            char ch = korean.charAt(i);
+            System.out.println(ch + " : " +Character.UnicodeBlock.of(ch)+ "("+String.format("U+%04X",korean.codePointAt(i))+")");
+        }
+    }
+
+    @Test
     public void nBestAnalyzeResultTest() {
-        List<KomoranResult> nbestResult = this.komoran.analyze("가을", 2);
+        List<KomoranResult> nbestResult = this.komoran.analyze("치뜬", 1);
         for (KomoranResult result : nbestResult) {
             System.out.println(result.getPlainText());
         }

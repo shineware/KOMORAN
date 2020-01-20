@@ -1,6 +1,7 @@
 package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.nlp.komoran.constant.SEJONGTAGS;
+import kr.co.shineware.nlp.komoran.util.HangulJamoUtil;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.string.StringUtil;
 import org.junit.Before;
@@ -90,6 +91,10 @@ public class SejongToTrainingData {
                     answer += line.replaceAll("</mor><pos>", "/").replaceAll("<.+?>", "") + " ";
                 }
                 if (line.startsWith("</tok>")) {
+
+                    problem = convertUnicodeJamoToJamoCompatibility(problem);
+                    answer = convertUnicodeJamoToJamoCompatibility(answer);
+
                     if (!isValidFormat(problem + "\t" + answer)) {
                         problem = "";
                         answer = "";
@@ -150,7 +155,7 @@ public class SejongToTrainingData {
                 }
                 String pos = morphPosToken[1].trim();
                 if (!sejongTagSet.contains(pos)) {
-                    System.out.println("Wrong POS : (" + pos + ")" + convertedPair);
+//                    System.out.println("Wrong POS : (" + pos + ")" + convertedPair);
                     return false;
                 }
                 for (int i = 0; i < pos.length(); i++) {
@@ -201,6 +206,7 @@ public class SejongToTrainingData {
                 }
 
                 if (isHeadArea || isSentenceArea) {
+                    line = convertUnicodeJamoToJamoCompatibility(line);
                     String[] entity = line.split("\t");
                     if (entity.length != 2) {
                         continue;
@@ -213,7 +219,7 @@ public class SejongToTrainingData {
                     }
                     answer = answer.replaceAll("\\+", " ").replaceAll(" {2}", " +");
                     if (!isValidFormat(problem + "\t" + answer)) {
-                        System.out.println(filename + ":" + lineCount + ":" + line);
+//                        System.out.println(filename + ":" + lineCount + ":" + line);
                         continue;
                     }
                     bw.write(problem + "\t" + answer);
@@ -248,6 +254,7 @@ public class SejongToTrainingData {
                 }
 
                 if (isTextArea) {
+                    line = convertUnicodeJamoToJamoCompatibility(line);
                     String[] entity = line.split("\t");
                     if (entity.length != 3) {
                         continue;
@@ -266,7 +273,7 @@ public class SejongToTrainingData {
                         continue;
                     }
                     if (!isValidFormat(problem + "\t" + answer)) {
-                        System.out.println(filename + ":" + lineCount + ":" + line);
+//                        System.out.println(filename + ":" + lineCount + ":" + line);
                         continue;
                     }
                     bw.write(problem + "\t" + answer);
@@ -313,11 +320,12 @@ public class SejongToTrainingData {
 
                 if (isHeadArea || isPhraseArea) {
                     try {
+                        line = convertUnicodeJamoToJamoCompatibility(line);
                         String problem = line.split("\t")[1];
                         String answers = line.split("\t")[2];
                         answers = answers.replaceAll(" \\+ ", " ");
                         if (!isValidFormat(problem + "\t" + answers)) {
-                            System.out.println(filename + ":" + lineCount + ":" + line);
+//                            System.out.println(filename + ":" + lineCount + ":" + line);
                             continue;
                         }
                         bw.write(problem + "\t" + answers);
@@ -333,5 +341,9 @@ public class SejongToTrainingData {
             }
         }
         bw.close();
+    }
+
+    private String convertUnicodeJamoToJamoCompatibility(String line) {
+        return HangulJamoUtil.ToHangulCompatibilityJamo(line);
     }
 }
