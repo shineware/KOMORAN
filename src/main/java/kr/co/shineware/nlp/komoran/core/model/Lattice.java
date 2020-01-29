@@ -223,7 +223,7 @@ public class Lattice {
         List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
 
         if (prevLatticeNodes != null) {
-            if(nbest != 1){
+            if (nbest != 1) {
                 List<LatticeNode> nbestLatticeNodeList = this.getNbestMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score, this.nbest);
 
                 if (nbestLatticeNodeList != null) {
@@ -232,10 +232,9 @@ public class Lattice {
                     }
                     return true;
                 }
-            }
-            else{
+            } else {
                 LatticeNode maxLatticeNode = this.getMaxTransitionNodeFromPrevNodes(prevLatticeNodes, beginIdx, endIdx, morph, tag, tagId, score);
-                if(maxLatticeNode != null){
+                if (maxLatticeNode != null) {
                     this.appendNode(maxLatticeNode);
                     return true;
                 }
@@ -293,6 +292,10 @@ public class Lattice {
                     if (morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ') {
                         continue;
                     }
+                }
+            } else if (tagId == this.posTable.getId(SYMBOL.JKB)) {
+                if (this.hasJongsung(prevMorph)) {
+                    continue;
                 }
             }
 
@@ -378,6 +381,10 @@ public class Lattice {
                     if (morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ') {
                         continue;
                     }
+                }
+            } else if (tagId == this.posTable.getId(SYMBOL.JKB)) {
+                if (this.hasJongsung(prevMorph)) {
+                    continue;
                 }
             }
 
