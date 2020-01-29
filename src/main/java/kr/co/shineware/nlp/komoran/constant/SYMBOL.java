@@ -47,5 +47,6 @@ public class SYMBOL {
 	public static final String NNG = "NNG";
 	public static final String NNP = "NNP";
 	public static final String NNB = "NNB";
-	
+
+	public static final String JKB = "JKB";
 }
