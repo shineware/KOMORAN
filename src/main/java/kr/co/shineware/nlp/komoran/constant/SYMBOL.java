@@ -49,4 +49,9 @@ public class SYMBOL {
 	public static final String NNB = "NNB";
 
 	public static final String JKB = "JKB";
+	public static final String VV = "VV";
+	public static final String VA = "VA";
+	public static final String VX = "VX";
+	public static final String VCP = "VCP";
+	public static final String VCN = "VCN";
 }

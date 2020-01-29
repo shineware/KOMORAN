@@ -26,4 +26,11 @@ public class AnalyzeIssues {
         Assert.assertNotEquals(komoran.analyze("미남로", 2).get(0).getPlainText(),"미남/NNG 로/JKB");
         Assert.assertNotEquals(komoran.analyze("구남로", 2).get(0).getPlainText(),"구남/NNG 로/JKB");
     }
+
+    @Test
+    //https://github.com/shin285/KOMORAN/issues/75
+    public void issue75(){
+        Assert.assertNotEquals(komoran.analyze("가을").getPlainText(),"가/VV 을/ETM");
+        Assert.assertNotEquals(komoran.analyze("가을", 2).get(0).getPlainText(),"가/VV 을/ETM");
+    }
 }
