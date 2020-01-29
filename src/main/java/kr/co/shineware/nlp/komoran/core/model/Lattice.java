@@ -5,6 +5,7 @@ import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.*;
+import kr.co.shineware.util.common.collection.MapUtil;
 import kr.co.shineware.util.common.model.Pair;
 
 import java.util.ArrayList;
@@ -298,6 +299,13 @@ public class Lattice {
                     continue;
                 }
             }
+            else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
+                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)){
+                    if (morph.equals("ㅇㅡㄹ")) {
+                        continue;
+                    }
+                }
+            }
 
             double prevObservationScore = prevLatticeNode.getScore();
 
@@ -387,6 +395,13 @@ public class Lattice {
                     continue;
                 }
             }
+            else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
+                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)){
+                    if (morph.equals("ㅇㅡㄹ")) {
+                        continue;
+                    }
+                }
+            }
 
             double prevObservationScore = prevLatticeNode.getScore();
 
@@ -400,6 +415,14 @@ public class Lattice {
             return this.makeNode(beginIdx, endIdx, morph, tag, tagId, prevMaxScore + score, prevLatticeNodeIdx);
         }
         return null;
+    }
+
+    private boolean isPredicate(int prevTagId) {
+        return prevTagId == this.posTable.getId(SYMBOL.VV)
+                || prevTagId == this.posTable.getId(SYMBOL.VA)
+                || prevTagId == this.posTable.getId(SYMBOL.VX)
+                || prevTagId == this.posTable.getId(SYMBOL.VCP)
+                || prevTagId == this.posTable.getId(SYMBOL.VCN);
     }
 
     public LatticeNode makeNode(int beginIdx, int endIdx, String morph,
@@ -577,6 +600,7 @@ public class Lattice {
             List<LatticeNode> shortestPathList = new ArrayList<>();
             int prevLatticeEndIndex = endNode.getEndIdx();
             LatticeNode latticeNode = endNode;
+            shortestPathList.add(latticeNode);
             while (true) {
                 latticeNode = this.lattice.get(latticeNode.getBeginIdx()).get(latticeNode.getPrevNodeIdx());
                 //불규칙이거나 multi token 기분석 사전인 경우
@@ -594,6 +618,20 @@ public class Lattice {
 
         }
 
+        if(nBestShortestPathList.size() > 1){
+            nBestShortestPathList = sortNBestByScore(nBestShortestPathList);
+        }
+
         return nBestShortestPathList;
+    }
+
+    private List<List<LatticeNode>> sortNBestByScore(List<List<LatticeNode>> nBestShortestPathList) {
+        Map<List<LatticeNode>, Double> sortedLatticeNodeList = new HashMap<>();
+        for (List<LatticeNode> latticeNodes : nBestShortestPathList) {
+            double score = latticeNodes.get(latticeNodes.size()-1).getScore();
+            sortedLatticeNodeList.put(latticeNodes, score);
+        }
+
+        return new ArrayList<>(MapUtil.sortByValue(sortedLatticeNodeList, MapUtil.DESCENDING_ORDER).keySet());
     }
 }
