@@ -55,4 +55,5 @@ public class SYMBOL {
 	public static final String VCP = "VCP";
 	public static final String VCN = "VCN";
 	public static final String NP = "NP";
+	public static final String JC = "JC";
 }

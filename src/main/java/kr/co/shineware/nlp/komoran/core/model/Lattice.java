@@ -304,7 +304,14 @@ public class Lattice {
                         continue;
                     }
                 }
-            } else if (tagId == this.posTable.getId(SYMBOL.JX) && morph.charAt(0) == 'ㅇ') {
+                if (this.isNoun(prevTagId)) {
+                    continue;
+                }
+
+            } else if (
+                    (tagId == this.posTable.getId(SYMBOL.JX)
+                            || tagId == this.posTable.getId(SYMBOL.JC)
+                    ) && morph.charAt(0) == 'ㅇ') {
                 if (!this.hasJongsung(prevMorph) && this.isNoun(prevTagId)) {
                     continue;
                 }
@@ -409,7 +416,14 @@ public class Lattice {
                         continue;
                     }
                 }
-            } else if (tagId == this.posTable.getId(SYMBOL.JX) && morph.charAt(0) == 'ㅇ') {
+                if (this.isNoun(prevTagId)) {
+                    continue;
+                }
+
+            } else if (
+                    (tagId == this.posTable.getId(SYMBOL.JX)
+                            || tagId == this.posTable.getId(SYMBOL.JC)
+                    ) && morph.charAt(0) == 'ㅇ') {
                 if (!this.hasJongsung(prevMorph) && this.isNoun(prevTagId)) {
                     continue;
                 }
