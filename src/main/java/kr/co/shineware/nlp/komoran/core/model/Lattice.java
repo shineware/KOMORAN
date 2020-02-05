@@ -298,12 +298,22 @@ public class Lattice {
                 if (this.hasJongsung(prevMorph)) {
                     continue;
                 }
-            }
-            else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
-                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)){
+            } else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
+                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)) {
                     if (morph.equals("ㅇㅡㄹ")) {
                         continue;
                     }
+                }
+                if (this.isNoun(prevTagId)) {
+                    continue;
+                }
+
+            } else if (
+                    (tagId == this.posTable.getId(SYMBOL.JX)
+                            || tagId == this.posTable.getId(SYMBOL.JC)
+                    ) && morph.charAt(0) == 'ㅇ') {
+                if (!this.hasJongsung(prevMorph) && this.isNoun(prevTagId)) {
+                    continue;
                 }
             }
 
@@ -337,6 +347,12 @@ public class Lattice {
             return nbestPrevNodeList;
         }
         return null;
+    }
+
+    private boolean isNoun(int prevTagId) {
+        return prevTagId == this.posTable.getId(SYMBOL.NNG)
+                || prevTagId == this.posTable.getId(SYMBOL.NNP)
+                || prevTagId == this.posTable.getId(SYMBOL.NP);
     }
 
     private LatticeNode getMaxTransitionNodeFromPrevNodes(
@@ -394,12 +410,22 @@ public class Lattice {
                 if (this.hasJongsung(prevMorph)) {
                     continue;
                 }
-            }
-            else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
-                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)){
+            } else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
+                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)) {
                     if (morph.equals("ㅇㅡㄹ")) {
                         continue;
                     }
+                }
+                if (this.isNoun(prevTagId)) {
+                    continue;
+                }
+
+            } else if (
+                    (tagId == this.posTable.getId(SYMBOL.JX)
+                            || tagId == this.posTable.getId(SYMBOL.JC)
+                    ) && morph.charAt(0) == 'ㅇ') {
+                if (!this.hasJongsung(prevMorph) && this.isNoun(prevTagId)) {
+                    continue;
                 }
             }
 
@@ -618,7 +644,7 @@ public class Lattice {
 
         }
 
-        if(nBestShortestPathList.size() > 1){
+        if (nBestShortestPathList.size() > 1) {
             nBestShortestPathList = sortNBestByScore(nBestShortestPathList);
         }
 
@@ -628,7 +654,7 @@ public class Lattice {
     private List<List<LatticeNode>> sortNBestByScore(List<List<LatticeNode>> nBestShortestPathList) {
         Map<List<LatticeNode>, Double> sortedLatticeNodeList = new HashMap<>();
         for (List<LatticeNode> latticeNodes : nBestShortestPathList) {
-            double score = latticeNodes.get(latticeNodes.size()-1).getScore();
+            double score = latticeNodes.get(latticeNodes.size() - 1).getScore();
             sortedLatticeNodeList.put(latticeNodes, score);
         }
 
