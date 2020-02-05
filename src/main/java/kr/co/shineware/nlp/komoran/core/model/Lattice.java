@@ -654,7 +654,7 @@ public class Lattice {
     private List<List<LatticeNode>> sortNBestByScore(List<List<LatticeNode>> nBestShortestPathList) {
         Map<List<LatticeNode>, Double> sortedLatticeNodeList = new HashMap<>();
         for (List<LatticeNode> latticeNodes : nBestShortestPathList) {
-            double score = latticeNodes.get(latticeNodes.size() - 1).getScore();
+            double score = latticeNodes.get(0).getScore();
             sortedLatticeNodeList.put(latticeNodes, score);
         }
 

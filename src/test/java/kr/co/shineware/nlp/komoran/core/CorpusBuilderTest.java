@@ -1,9 +1,11 @@
 package kr.co.shineware.nlp.komoran.core;
 
 import kr.co.shineware.nlp.komoran.corpus.builder.CorpusBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CorpusBuilderTest {
+    @Ignore
     @Test
     public void buildCorpus() {
         CorpusBuilder corpusBuilder = new CorpusBuilder();
