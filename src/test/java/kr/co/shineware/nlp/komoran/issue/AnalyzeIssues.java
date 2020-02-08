@@ -55,6 +55,6 @@ public class AnalyzeIssues {
     @Test
     //https://github.com/shin285/KOMORAN/issues/88
     public void issue88(){
-        ;
+        //TODO : 테스트 케이스 작성
     }
 }
