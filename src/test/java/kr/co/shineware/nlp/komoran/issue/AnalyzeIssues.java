@@ -51,4 +51,10 @@ public class AnalyzeIssues {
         Assert.assertEquals("황토/NNG 은/NNG", analyzeResult);
         Assert.assertEquals("황토/NNG 은/NNG", nBestAnalyzeResult);
     }
+
+    @Test
+    //https://github.com/shin285/KOMORAN/issues/88
+    public void issue88(){
+        ;
+    }
 }

@@ -2,6 +2,10 @@ package kr.co.shineware.nlp.komoran.core.model;
 
 import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.CombinationRuleChecker;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.NounEomiCombinationRuleChecker;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.NounJosaCombinationRuleChecker;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.VerbEomiCombinationRuleChecker;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.*;
@@ -29,6 +33,8 @@ public class Lattice {
     private FindContext<List<IrregularNode>> irregularFindContext;
     private FindContext<List<ScoredTag>> userDicFindContext;
 
+    private List<CombinationRuleChecker> combinationRuleCheckerList;
+
     private double prevMaxScore;
     private LatticeNode prevMaxNode;
     private int prevMaxIdx;
@@ -47,6 +53,16 @@ public class Lattice {
         this.init();
         this.makeNewContexts();
         this.nbest = nbest;
+        this.registCombinationRuleChecker();
+    }
+
+    private void registCombinationRuleChecker() {
+        MorphUtil morphUtil = new MorphUtil();
+        TagUtil tagUtil = new TagUtil(this.getPosTable());
+        this.combinationRuleCheckerList = new ArrayList<>();
+        this.combinationRuleCheckerList.add(new NounJosaCombinationRuleChecker(morphUtil, tagUtil));
+        this.combinationRuleCheckerList.add(new VerbEomiCombinationRuleChecker(morphUtil, tagUtil));
+        this.combinationRuleCheckerList.add(new NounEomiCombinationRuleChecker(tagUtil));
     }
 
     private void setUserDicObservation(Observation userDic) {
@@ -272,50 +288,11 @@ public class Lattice {
                 continue;
             }
 
-            //자소 결합규칙 체크
-            if (tagId == this.posTable.getId(SYMBOL.JKO)) {
-                if (this.hasJongsung(prevMorph)) {
-                    if (morph.charAt(0) != 'ㅇ') {
-                        continue;
-                    }
-                } else {
-                    if (morph.charAt(0) == 'ㅇ') {
-                        continue;
-                    }
-                }
-            } else if (tagId == this.posTable.getId(SYMBOL.JKS)
-                    || tagId == this.posTable.getId(SYMBOL.JKC)) {
-                if (this.hasJongsung(prevMorph)) {
-                    if (morph.charAt(0) == 'ㄱ' && morph.charAt(1) == 'ㅏ') {
-                        continue;
-                    }
-                } else {
-                    if (morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ') {
-                        continue;
-                    }
-                }
-            } else if (tagId == this.posTable.getId(SYMBOL.JKB)) {
-                if (this.hasJongsung(prevMorph)) {
-                    continue;
-                }
-            } else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
-                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)) {
-                    if (morph.equals("ㅇㅡㄹ")) {
-                        continue;
-                    }
-                }
-                if (this.isNoun(prevTagId)) {
-                    continue;
-                }
-
-            } else if (
-                    (tagId == this.posTable.getId(SYMBOL.JX)
-                            || tagId == this.posTable.getId(SYMBOL.JC)
-                    ) && morph.charAt(0) == 'ㅇ') {
-                if (!this.hasJongsung(prevMorph) && this.isNoun(prevTagId)) {
-                    continue;
-                }
+            //결합규칙 체크
+            if (!isValidCombination(prevMorph, prevTagId, morph, tagId)) {
+                continue;
             }
+
 
             double prevObservationScore = prevLatticeNode.getScore();
 
@@ -347,6 +324,15 @@ public class Lattice {
             return nbestPrevNodeList;
         }
         return null;
+    }
+
+    private boolean isValidCombination(String prevMorph, int prevTagId, String morph, int tagId) {
+        for (CombinationRuleChecker combinationRuleChecker : this.combinationRuleCheckerList) {
+            if (!combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isNoun(int prevTagId) {
@@ -384,49 +370,9 @@ public class Lattice {
                 continue;
             }
 
-            //자소 결합규칙 체크
-            if (tagId == this.posTable.getId(SYMBOL.JKO)) {
-                if (this.hasJongsung(prevMorph)) {
-                    if (morph.charAt(0) != 'ㅇ') {
-                        continue;
-                    }
-                } else {
-                    if (morph.charAt(0) == 'ㅇ') {
-                        continue;
-                    }
-                }
-            } else if (tagId == this.posTable.getId(SYMBOL.JKS)
-                    || tagId == this.posTable.getId(SYMBOL.JKC)) {
-                if (this.hasJongsung(prevMorph)) {
-                    if (morph.charAt(0) == 'ㄱ' && morph.charAt(1) == 'ㅏ') {
-                        continue;
-                    }
-                } else {
-                    if (morph.charAt(0) == 'ㅇ' && morph.charAt(1) == 'ㅣ') {
-                        continue;
-                    }
-                }
-            } else if (tagId == this.posTable.getId(SYMBOL.JKB)) {
-                if (this.hasJongsung(prevMorph)) {
-                    continue;
-                }
-            } else if (tagId == this.posTable.getId(SYMBOL.ETM)) {
-                if (!this.hasJongsung(prevMorph) && this.isPredicate(prevTagId)) {
-                    if (morph.equals("ㅇㅡㄹ")) {
-                        continue;
-                    }
-                }
-                if (this.isNoun(prevTagId)) {
-                    continue;
-                }
-
-            } else if (
-                    (tagId == this.posTable.getId(SYMBOL.JX)
-                            || tagId == this.posTable.getId(SYMBOL.JC)
-                    ) && morph.charAt(0) == 'ㅇ') {
-                if (!this.hasJongsung(prevMorph) && this.isNoun(prevTagId)) {
-                    continue;
-                }
+            //결합규칙 체크
+            if (!isValidCombination(prevMorph, prevTagId, morph, tagId)) {
+                continue;
             }
 
             double prevObservationScore = prevLatticeNode.getScore();
