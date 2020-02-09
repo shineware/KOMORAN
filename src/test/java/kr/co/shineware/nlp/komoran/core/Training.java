@@ -13,7 +13,10 @@ public class Training {
     public void training() {
         CorpusBuilder corpusBuilder = new CorpusBuilder();
         corpusBuilder.setExclusiveIrrRule("resources/irrDic.remove.txt");
-        corpusBuilder.buildPath("D:\\data\\komoran_training_data","refine.txt");
+        //for windows
+//        corpusBuilder.buildPath("D:\\data\\komoran_training_data","refine.txt");
+        //for mac
+        corpusBuilder.buildPath("/Users/shinjunsoo/shineware/data/komoran_training_data", "refine.txt");
         corpusBuilder.save("corpus_build");
 
         ModelBuilder modelBuilder = new ModelBuilder();

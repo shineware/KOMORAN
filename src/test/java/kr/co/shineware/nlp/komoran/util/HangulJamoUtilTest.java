@@ -33,8 +33,4 @@ public class HangulJamoUtilTest {
         }
         return true;
     }
-
-    @Test
-    public void getHangulJamos() {
-    }
 }
