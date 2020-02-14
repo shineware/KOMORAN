@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-@Ignore
+//@Ignore
 public class Training {
     @Test
     public void training() {

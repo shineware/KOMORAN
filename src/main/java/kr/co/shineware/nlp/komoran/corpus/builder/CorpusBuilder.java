@@ -33,7 +33,6 @@ import kr.co.shineware.util.common.string.StringUtil;
 
 import java.io.*;
 import java.lang.Character.UnicodeBlock;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -275,12 +274,12 @@ public class CorpusBuilder {
      * @param answerList
      */
     private void appendGrammar(List<Pair<String, String>> answerList) {
-        String prevPos = SYMBOL.START;
+        String prevPos = SYMBOL.BOE;
         for (Pair<String, String> wordPosPair : answerList) {
             this.grammar.append(prevPos, wordPosPair.getSecond());
             prevPos = wordPosPair.getSecond();
         }
-        String endPos = SYMBOL.END;
+        String endPos = SYMBOL.EOE;
         this.grammar.append(prevPos, endPos);
     }
 

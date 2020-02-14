@@ -13,8 +13,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +35,9 @@ public class KomoranTest {
 
     private void printcodePointAndUnicodeBlock(String korean) {
         korean = StringUtil.korean2JasoString(korean);
-        for(int i=0;i<korean.length();i++){
+        for (int i = 0; i < korean.length(); i++) {
             char ch = korean.charAt(i);
-            System.out.println(ch + " : " +Character.UnicodeBlock.of(ch)+ "("+String.format("U+%04X",korean.codePointAt(i))+")");
+            System.out.println(ch + " : " + Character.UnicodeBlock.of(ch) + "(" + String.format("U+%04X", korean.codePointAt(i)) + ")");
         }
     }
 
@@ -71,36 +69,33 @@ public class KomoranTest {
     @Test
     public void speedTest() throws Exception {
         Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
-//		komoran.setFWDic("komoran_benchmarker/fwd2.user");
-        int count = 100;
-        int avgElapsedTime = 0;
-        while(true){
+        int totalTestCount = 10;
+        int totalElapsedTime = 0;
+        int step = 0;
+        while (true) {
             BufferedReader br = new BufferedReader(new FileReader("stress.test"));
-            String line = null;
-            long begin,end;
-            long elapsedTime=0l;
-            while((line = br.readLine()) != null){
-//				String[] tmp = line.split(" ");
-//				for (String t : tmp) {
-//					begin = System.currentTimeMillis();
-//					komoran.analyze(t);
-//					end = System.currentTimeMillis();
-//					elapsedTime += (end-begin);
-//				}
-//				tmp = null;
+            String line;
+            long begin, end;
+            long elapsedTime = 0L;
+            while ((line = br.readLine()) != null) {
                 begin = System.currentTimeMillis();
                 komoran.analyze(line);
                 end = System.currentTimeMillis();
-                elapsedTime += (end-begin);
+
+                elapsedTime += (end - begin);
 
             }
             br.close();
-            System.out.println(elapsedTime);
-            avgElapsedTime += elapsedTime;
-//			TimeChecker.printElapsedTimeRatio(acc);
-            if(count-- == 0)break;
+            System.out.println("Step " + step + " : " + elapsedTime);
+            //skip first step
+            if (step == 0) {
+                elapsedTime = 0;
+            }
+            totalElapsedTime += elapsedTime;
+            step++;
+            if (step == totalTestCount + 1) break;
         }
-        System.out.println("Avg. ElapsedTime : "+avgElapsedTime/100);
+        System.out.println("Avg. ElapsedTime : " + totalElapsedTime / totalTestCount);
     }
 
     @Test
@@ -244,7 +239,7 @@ public class KomoranTest {
                 KomoranResult komoranResultList = this.komoran.analyze(line);
             }
             long end = System.currentTimeMillis();
-            if(i>=2) {
+            if (i >= 2) {
                 avgElapsedTime += (end - begin);
             }
             System.out.println("Elapsed time : " + (end - begin));

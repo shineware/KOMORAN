@@ -193,7 +193,8 @@ public class ModelBuilder {
 		for (String pos : posSet) {
 			this.table.put(pos);
 		}
-		this.table.put(SYMBOL.END);
+		this.table.put(SYMBOL.BOE);
+		this.table.put(SYMBOL.EOE);
 		this.table.put(SYMBOL.NA);
 	}
 

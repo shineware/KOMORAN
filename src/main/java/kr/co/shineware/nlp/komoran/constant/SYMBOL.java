@@ -17,6 +17,10 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.constant;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * komoran에서 사용되는 SYMBOL에 대한 정의<br>
  *
@@ -26,11 +30,12 @@ package kr.co.shineware.nlp.komoran.constant;
  */
 public class SYMBOL {
 
-
     private static final String EP = "EP";
 
-    public static final String START = "BOE";
-    public static final String END = "EOE";
+    //Begin Of Eojeol
+    public static final String BOE = "BOE";
+    //End Of Eojeol
+    public static final String EOE = "EOE";
     public static final String SPACE = "<sp>";
     public static final String NA = "NA";
 
@@ -64,9 +69,8 @@ public class SYMBOL {
     public static final String NR = "NR";
     public static final String ETN = "ETN";
 
-
-    public static final String[] NOUN = new String[]{SYMBOL.NNG, SYMBOL.NNP, SYMBOL.NNB, SYMBOL.NP, SYMBOL.NR};
-    public static final String[] EOMI = new String[]{SYMBOL.EP, SYMBOL.EC, SYMBOL.EF, SYMBOL.ETN, SYMBOL.ETM};
-    public static final String[] JOSA = new String[]{SYMBOL.JC, SYMBOL.JKB, SYMBOL.JKC, SYMBOL.JKG, SYMBOL.JKO, SYMBOL.JKS, SYMBOL.JKV, SYMBOL.JX};
+    public static final Set<String> NOUN_SET = new HashSet<>(Arrays.asList(SYMBOL.NNG, SYMBOL.NNP, SYMBOL.NNB, SYMBOL.NP, SYMBOL.NR));
+    public static final Set<String> EOMI_SET = new HashSet<>(Arrays.asList(SYMBOL.EP, SYMBOL.EC, SYMBOL.EF, SYMBOL.ETN, SYMBOL.ETM));
+    public static final Set<String> JOSA_SET = new HashSet<>(Arrays.asList(SYMBOL.JC, SYMBOL.JKB, SYMBOL.JKC, SYMBOL.JKG, SYMBOL.JKO, SYMBOL.JKS, SYMBOL.JKV, SYMBOL.JX));
 
 }

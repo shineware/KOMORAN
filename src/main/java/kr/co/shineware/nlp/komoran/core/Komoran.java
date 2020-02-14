@@ -17,14 +17,9 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
-import kr.co.shineware.nlp.komoran.constant.FILENAME;
-import kr.co.shineware.nlp.komoran.constant.SCORE;
-import kr.co.shineware.nlp.komoran.constant.SYMBOL;
-import kr.co.shineware.nlp.komoran.core.model.ContinuousSymbolBuffer;
-import kr.co.shineware.nlp.komoran.core.model.Lattice;
-import kr.co.shineware.nlp.komoran.core.model.LatticeNode;
-import kr.co.shineware.nlp.komoran.core.model.Resources;
+import kr.co.shineware.nlp.komoran.constant.*;
+import kr.co.shineware.nlp.komoran.core.model.*;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.*;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
@@ -33,7 +28,6 @@ import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
-import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -51,6 +45,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class Komoran implements Cloneable {
 
+    private List<CombinationRuleChecker> combinationRuleCheckerList;
     private Resources resources;
     private Observation userDic;
     private KoreanUnitParser unitParser;
@@ -104,6 +99,14 @@ public class Komoran implements Cloneable {
         this.resources.loadObservation(observationFile);
         this.resources.loadTransition(transitionFile);
         this.unitParser = new KoreanUnitParser();
+
+        MorphUtil morphUtil = new MorphUtil();
+        TagUtil tagUtil = new TagUtil(this.resources.getTable());
+        this.combinationRuleCheckerList = new ArrayList<>();
+        this.combinationRuleCheckerList.add(new MergedCombinationRuleChecker(morphUtil, tagUtil));
+//        this.combinationRuleCheckerList.add(new NounJosaCombinationRuleChecker(morphUtil, tagUtil));
+//        this.combinationRuleCheckerList.add(new VerbEomiCombinationRuleChecker(morphUtil));
+//        this.combinationRuleCheckerList.add(new NounEomiCombinationRuleChecker(tagUtil));
     }
 
     private InputStream getResourceStream(String path) {
@@ -200,7 +203,7 @@ public class Komoran implements Cloneable {
 
 //        sentence = sentence.replaceAll("[ ]+", " ").trim();
 
-        Lattice lattice = new Lattice(this.resources, this.userDic, nbest);
+        Lattice lattice = new Lattice(this.resources, this.userDic, nbest, this.combinationRuleCheckerList);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
         ContinuousSymbolBuffer continuousSymbolBuffer = new ContinuousSymbolBuffer();
@@ -255,7 +258,7 @@ public class Komoran implements Cloneable {
                 NAPenaltyScore += lattice.getNodeList(whitespaceIndex).get(0).getScore();
             }
             String combinedWord = unitParser.combineWithType(jasoUnitsWithType.subList(whitespaceIndex, jasoUnits.length()));
-            LatticeNode latticeNode = new LatticeNode(whitespaceIndex, jasoUnits.length(), new MorphTag(combinedWord, SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA)), NAPenaltyScore);
+            LatticeNode latticeNode = new LatticeNode(whitespaceIndex, jasoUnits.length(), new MorphTag(combinedWord, SYMBOL.NA, SEJONGTAGS.NA_ID), NAPenaltyScore);
             latticeNode.setPrevNodeIdx(0);
             lattice.appendNode(latticeNode);
             lattice.appendEndNode();
@@ -285,14 +288,14 @@ public class Komoran implements Cloneable {
     private void bridgeToken(Lattice lattice, int curIdx, String jasoUnits, int prevBeginSymbolIdx, List<Pair<Character, KoreanUnitParser.UnitType>> jasoUnitsWithType) {
 
 
-        if (lattice.put(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0)) {
+        if (lattice.put(curIdx, curIdx + 1, SYMBOL.EOE, SYMBOL.EOE, SEJONGTAGS.EOE_ID, 0.0)) {
             return;
         }
         //공백이라면 END 기호를 삽입
         LatticeNode naLatticeNode = lattice.makeNode(prevBeginSymbolIdx, curIdx, unitParser.combineWithType(jasoUnitsWithType.subList(prevBeginSymbolIdx, curIdx)), SYMBOL.NA, this.resources.getTable().getId(SYMBOL.NA), SCORE.NA, 0);
 
         int naNodeIndex = lattice.appendNode(naLatticeNode);
-        LatticeNode endLatticeNode = lattice.makeNode(curIdx, curIdx + 1, SYMBOL.END, SYMBOL.END, this.resources.getTable().getId(SYMBOL.END), 0.0, naNodeIndex);
+        LatticeNode endLatticeNode = lattice.makeNode(curIdx, curIdx + 1, SYMBOL.EOE, SYMBOL.EOE, SEJONGTAGS.EOE_ID, 0.0, naNodeIndex);
         lattice.appendNode(endLatticeNode);
     }
 
@@ -303,10 +306,10 @@ public class Komoran implements Cloneable {
         if (StringUtil.isNumeric(jaso)) {
         } else if (unicodeBlock == Character.UnicodeBlock.BASIC_LATIN) {
             if (!isEnglishCharacter(jaso) && !isWhitespaceCharacter(jaso) && !isDictionaryEntryCharacter(jaso)) {
-                lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
+                lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, SEJONGTAGS.SW_ID, SCORE.SW);
             }
         } else if (!StringUtil.isKorean(jaso) && !StringUtil.isJapanese(jaso) && !StringUtil.isChinese(jaso)) {
-            lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, this.resources.getTable().getId(SYMBOL.SW), SCORE.SW);
+            lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, SEJONGTAGS.SW_ID, SCORE.SW);
         }
     }
 
@@ -585,7 +588,7 @@ public class Komoran implements Cloneable {
                 lattice.put(beginIdx, endIdx, morph, scoredTag.getTag(), scoredTag.getTagId(), scoredTag.getScore());
                 //품사가 EC인 경우에 품사를 EF로 변환하여 lattice에 추가
                 if (scoredTag.getTag().equals(SYMBOL.EC)) {
-                    lattice.put(beginIdx, endIdx, morph, SYMBOL.EF, this.resources.getTable().getId(SYMBOL.EF), scoredTag.getScore());
+                    lattice.put(beginIdx, endIdx, morph, SYMBOL.EF, SEJONGTAGS.EF_ID, scoredTag.getScore());
                 }
             }
         }
