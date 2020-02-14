@@ -45,7 +45,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class Komoran implements Cloneable {
 
-    private List<CombinationRuleChecker> combinationRuleCheckerList;
+//    private List<CombinationRuleChecker> combinationRuleCheckerList;
+    private CombinationRuleChecker combinationRuleChecker;
     private Resources resources;
     private Observation userDic;
     private KoreanUnitParser unitParser;
@@ -102,11 +103,12 @@ public class Komoran implements Cloneable {
 
         MorphUtil morphUtil = new MorphUtil();
         TagUtil tagUtil = new TagUtil(this.resources.getTable());
-        this.combinationRuleCheckerList = new ArrayList<>();
-        this.combinationRuleCheckerList.add(new MergedCombinationRuleChecker(morphUtil, tagUtil));
+//        this.combinationRuleCheckerList = new ArrayList<>();
+//        this.combinationRuleCheckerList.add(new MergedCombinationRuleChecker(morphUtil, tagUtil));
 //        this.combinationRuleCheckerList.add(new NounJosaCombinationRuleChecker(morphUtil, tagUtil));
 //        this.combinationRuleCheckerList.add(new VerbEomiCombinationRuleChecker(morphUtil));
 //        this.combinationRuleCheckerList.add(new NounEomiCombinationRuleChecker(tagUtil));
+        this.combinationRuleChecker = new MergedCombinationRuleChecker(morphUtil, tagUtil);
     }
 
     private InputStream getResourceStream(String path) {
@@ -203,7 +205,7 @@ public class Komoran implements Cloneable {
 
 //        sentence = sentence.replaceAll("[ ]+", " ").trim();
 
-        Lattice lattice = new Lattice(this.resources, this.userDic, nbest, this.combinationRuleCheckerList);
+        Lattice lattice = new Lattice(this.resources, this.userDic, nbest, combinationRuleChecker);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
         ContinuousSymbolBuffer continuousSymbolBuffer = new ContinuousSymbolBuffer();

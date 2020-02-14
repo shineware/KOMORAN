@@ -31,7 +31,8 @@ public class Lattice {
     private FindContext<List<IrregularNode>> irregularFindContext;
     private FindContext<List<ScoredTag>> userDicFindContext;
 
-    private final List<CombinationRuleChecker> combinationRuleCheckerList;
+//    private final List<CombinationRuleChecker> combinationRuleCheckerList;
+    private final CombinationRuleChecker combinationRuleChecker;
 
     private double prevMaxScore;
     private LatticeNode prevMaxNode;
@@ -42,7 +43,7 @@ public class Lattice {
         this(resource, userDic, 1, null);
     }
 
-    public Lattice(Resources resource, Observation userDic, int nbest, List<CombinationRuleChecker> combinationRuleCheckerList) {
+    public Lattice(Resources resource, Observation userDic, int nbest, CombinationRuleChecker combinationRuleChecker) {
         this.setPosTable(resource.getTable());
         this.setTransition(resource.getTransition());
         this.setObservation(resource.getObservation());
@@ -51,7 +52,8 @@ public class Lattice {
         this.init();
         this.makeNewContexts();
         this.nbest = nbest;
-        this.combinationRuleCheckerList = combinationRuleCheckerList;
+//        this.combinationRuleCheckerList = combinationRuleChecker;
+        this.combinationRuleChecker = combinationRuleChecker;
     }
 
     private void setUserDicObservation(Observation userDic) {
@@ -316,12 +318,12 @@ public class Lattice {
     }
 
     private boolean isValidCombination(String prevMorph, int prevTagId, String morph, int tagId) {
-        for (CombinationRuleChecker combinationRuleChecker : this.combinationRuleCheckerList) {
-            if (!combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId)) {
-                return false;
-            }
-        }
-        return true;
+//        for (CombinationRuleChecker combinationRuleChecker : this.combinationRuleCheckerList) {
+//            if (!combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId)) {
+//                return false;
+//            }
+//        }
+        return this.combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId);
     }
 
     private boolean isNoun(int prevTagId) {
