@@ -40,22 +40,21 @@ public class MergedCombinationRuleChecker implements CombinationRuleChecker {
 
     private boolean checktNounWithJongsungAndEomiRul(String prevMorph, String morph, int tagId) {
         if (SEJONGTAGS.ETM_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅡㄹ")
-                        || this.morphUtil.isSameJaso(morph, "ㅇㅡㄴ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㄹ")
-                        || this.morphUtil.isSameJaso(morph, "ㄴ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅡㄹ")
+                    || this.morphUtil.isSameJaso(morph, "ㅇㅡㄴ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㄹ")
+                    || this.morphUtil.isSameJaso(morph, "ㄴ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //명사형 전성어미
         else if (SEJONGTAGS.ETN_ID == tagId) {
             boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅡㅁ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㅁ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅡㅁ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if(this.morphUtil.isSameJaso(morph, "ㅁ")){
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         return true;
@@ -64,74 +63,67 @@ public class MergedCombinationRuleChecker implements CombinationRuleChecker {
     private boolean chekcNounWithJongsungAndJosaRule(String prevMorph, String morph, int tagId) {
         //주격조사
         if (SEJONGTAGS.JKS_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅣ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㄱㅣ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅣ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㄱㅣ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //보격조사
         else if (SEJONGTAGS.JKC_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅣ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㄱㅏ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅣ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㄱㅏ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //목적격조사
         else if (SEJONGTAGS.JKO_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅡㄹ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㄹ")
-                        || this.morphUtil.isSameJaso(morph, "ㄹㅡㄹ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅡㄹ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㄹ")
+                    || this.morphUtil.isSameJaso(morph, "ㄹㅡㄹ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //호격조사
         else if (SEJONGTAGS.JKV_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅏ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅑ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅏ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㅇㅑ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //접속조사
         else if (SEJONGTAGS.JC_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㄱㅘ")
-                        || this.morphUtil.isSameJaso(morph, "ㅇㅣㄴㅏ")
-                        || this.morphUtil.isSameJaso(morph, "ㅇㅣㄹㅏㅇ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅘ")
-                        || this.morphUtil.isSameJaso(morph, "ㄴㅏ")
-                        || this.morphUtil.isSameJaso(morph, "ㄹㅏㅇ");
+            if (this.morphUtil.isSameJaso(morph, "ㄱㅘ")
+                    || this.morphUtil.isSameJaso(morph, "ㅇㅣㄴㅏ")
+                    || this.morphUtil.isSameJaso(morph, "ㅇㅣㄹㅏㅇ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㅇㅘ")
+                    || this.morphUtil.isSameJaso(morph, "ㄴㅏ")
+                    || this.morphUtil.isSameJaso(morph, "ㄹㅏㅇ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //부사격조사
         else if (SEJONGTAGS.JKB_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㄱㅘ")
-                        || this.morphUtil.isSameJaso(morph, "ㅇㅡㄹㅗ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅘ")
-                        || this.morphUtil.isSameJaso(morph, "ㄹㅗ");
+            if (this.morphUtil.isSameJaso(morph, "ㄱㅘ")
+                    || this.morphUtil.isSameJaso(morph, "ㅇㅡㄹㅗ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㅇㅘ")
+                    || this.morphUtil.isSameJaso(morph, "ㄹㅗ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         //보조사
         else if (SEJONGTAGS.JX_ID == tagId) {
-            boolean hasJongsung = this.morphUtil.hasJongsung(prevMorph);
-            if (hasJongsung) {
-                return this.morphUtil.isSameJaso(morph, "ㅇㅡㄴ")
-                        || this.morphUtil.isSameJaso(morph, "ㅇㅣㄹㅏㄴ");
-            } else {
-                return this.morphUtil.isSameJaso(morph, "ㄴㅡㄴ")
-                        || this.morphUtil.isSameJaso(morph, "ㄹㅏㄴ");
+            if (this.morphUtil.isSameJaso(morph, "ㅇㅡㄴ")
+                    || this.morphUtil.isSameJaso(morph, "ㅇㅣㄹㅏㄴ")) {
+                return this.morphUtil.hasJongsung(prevMorph);
+            } else if (this.morphUtil.isSameJaso(morph, "ㄴㅡㄴ")
+                    || this.morphUtil.isSameJaso(morph, "ㄹㅏㄴ")) {
+                return !this.morphUtil.hasJongsung(prevMorph);
             }
         }
         return true;

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //@Ignore
@@ -43,9 +44,9 @@ public class KomoranTest {
 
     @Test
     public void nBestAnalyzeResultTest() {
-        List<KomoranResult> nbestResult = this.komoran.analyze("치뜬", 1);
+        List<KomoranResult> nbestResult = this.komoran.analyze("거리에는", 1);
         for (KomoranResult result : nbestResult) {
-            System.out.println(result.getPlainText());
+            System.out.println(result.getResultNodeList().get(result.getResultNodeList().size()-1).getScore()+" : "+result.getPlainText());
         }
     }
 
@@ -169,7 +170,8 @@ public class KomoranTest {
 
     @Test
     public void analyze() {
-        KomoranResult komoranResult = this.komoran.analyze("네가 없는 거리에는 내가 할 일이 많아서 마냥 걷다보면 추억을 가끔 마주치지.");
+//        KomoranResult komoranResult = this.komoran.analyze("네가 없는 거리에는 내가 할 일이 많아서 마냥 걷다보면 추억을 가끔 마주치지.");
+        KomoranResult komoranResult = this.komoran.analyze("거리에는");
         List<Pair<String, String>> pairList = komoranResult.getList();
         for (Pair<String, String> morphPosPair : pairList) {
             System.out.println(morphPosPair);
@@ -248,5 +250,17 @@ public class KomoranTest {
         System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
 
         ElapsedTimeChecker.printTimes();
+    }
+
+    @Test
+    public void debugScore(){
+        List<String> analyzeMorphList = Arrays.asList("거리","에","는");
+        List<String> analyzePosList = Arrays.asList("NNG","JKB","JX");
+        System.out.println(this.komoran.scoreDebug(analyzeMorphList, analyzePosList));
+
+        analyzeMorphList = Arrays.asList("거","리","에","는");
+        analyzePosList = Arrays.asList("NNB","XSN","JKB","JX");
+        System.out.println(this.komoran.scoreDebug(analyzeMorphList, analyzePosList));
+
     }
 }

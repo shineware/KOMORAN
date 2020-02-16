@@ -466,9 +466,10 @@ public class Lattice {
                 continue;
             }
             totalLatticeSize += nodeList.size();
-
+            int nodeIndex = 0;
             for (LatticeNode latticeNode : nodeList) {
-                System.out.println(latticeNode);
+                System.out.println(nodeIndex + " : "+latticeNode);
+                nodeIndex++;
             }
             System.out.println();
         }

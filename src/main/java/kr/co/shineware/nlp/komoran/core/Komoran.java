@@ -17,6 +17,7 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
+import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.*;
 import kr.co.shineware.nlp.komoran.core.model.*;
 import kr.co.shineware.nlp.komoran.core.model.combinationrules.*;
@@ -192,6 +193,50 @@ public class Komoran implements Cloneable {
      */
     public KomoranResult analyze(String sentence) {
         return this.analyze(sentence, 1).get(0);
+    }
+
+    public double scoreDebug(List<String> analyzeResultList, List<String> analyzePosList){
+
+        String prevPos = SYMBOL.BOE;
+        double score = 0.0;
+
+        for(int i=0;i<analyzePosList.size();i++){
+            String currentMorph = analyzeResultList.get(i);
+            String currentPos = analyzePosList.get(i);
+            FindContext<List<ScoredTag>> findContext = this.resources.getObservation().getTrieDictionary().newFindContext();
+            String jasoUnits = unitParser.parse(currentMorph);
+            ScoredTag scoredTag = getScoredTag(jasoUnits, findContext, currentPos);
+            score += getScore(currentMorph, scoredTag, prevPos, currentPos);
+            prevPos = currentPos;
+        }
+        return score;
+    }
+
+    private double getScore(String currentMorph, ScoredTag scoredTag, String prevPos, String currentPos) {
+        int prevId = this.resources.getTable().getId(prevPos);
+        int currentId= this.resources.getTable().getId(currentPos);
+        double transitionScore = this.resources.getTransition().get(prevId, currentId);
+        System.out.println(prevPos+"->"+currentPos+":"+transitionScore);
+        System.out.println(currentMorph+ " : "+scoredTag);
+
+        return transitionScore + scoredTag.getScore();
+
+    }
+
+    private ScoredTag getScoredTag(String jasoUnits, FindContext<List<ScoredTag>> findContext, String posResult) {
+
+        for(int i=0;i<jasoUnits.length();i++){
+            Map<String, List<ScoredTag>> keyScoreTagMap = this.resources.getObservation().getTrieDictionary().get(findContext, jasoUnits.charAt(i));
+            if(keyScoreTagMap.get(jasoUnits) == null){
+                continue;
+            }
+            for (ScoredTag scoredTag : keyScoreTagMap.get(jasoUnits)) {
+                if(scoredTag.getTag().equals(posResult)){
+                    return scoredTag;
+                }
+            }
+        }
+        return null;
     }
 
     /**
