@@ -16,46 +16,42 @@ public class AnalyzeIssues {
     }
 
     @Test
+    public void selfIssues() {
+        assertEqualsOfAnalyzeResult("거리에는", "거리/NNG 에/JKB 는/JX");
+        assertEqualsOfAnalyzeResult("업데이트했어요ㅋㅋㅋㅋ 재밌네요", "업데이트했어요ㅋㅋㅋㅋ/NA 재미있/VA 네요/EC");
+        assertEqualsOfAnalyzeResult("하ㅎ 재밌었어요 캡틴마블", "하/NNG ㅎ/XSV 재미있/VA 었/EP 어요/EC 캡틴/NNG 마블/NNG");
+    }
+
+    @Test
     //https://github.com/shin285/KOMORAN/issues/74
     public void issue74() {
-        Assert.assertNotEquals("대학/NNG 로/JKB", komoran.analyze("대학로").getPlainText());
-        Assert.assertNotEquals("미남/NNG 로/JKB", komoran.analyze("미남로").getPlainText());
-        Assert.assertNotEquals("구남/NNG 로/JKB", komoran.analyze("구남로").getPlainText());
+        assertNotEqualsOfAnalyzeResult("대학로", "대학/NNG 로/JKB");
+        assertNotEqualsOfAnalyzeResult("미남로", "미남/NNG 로/JKB");
+        assertNotEqualsOfAnalyzeResult("구남로", "구남/NNG 로/JKB");
 
-        Assert.assertNotEquals("대학/NNG 로/JKB", komoran.analyze("대학로", 2).get(0).getPlainText());
-        Assert.assertNotEquals("미남/NNG 로/JKB", komoran.analyze("미남로", 2).get(0).getPlainText());
-        Assert.assertNotEquals("구남/NNG 로/JKB", komoran.analyze("구남로", 2).get(0).getPlainText());
+        assertNotEqualsOfAnalyzeResult("대학로", "대학/NNG 로/JKB");
+        assertNotEqualsOfAnalyzeResult("미남로", "미남/NNG 로/JKB");
+        assertNotEqualsOfAnalyzeResult("구남로", "구남/NNG 로/JKB");
     }
 
     @Test
     //https://github.com/shin285/KOMORAN/issues/75
     public void issue75() {
-        Assert.assertNotEquals("가/VV 을/ETM", komoran.analyze("가을").getPlainText());
-        Assert.assertNotEquals("가/VV 을/ETM", komoran.analyze("가을", 2).get(0).getPlainText());
+        assertNotEqualsOfAnalyzeResult("가을", "가/VV 을/ETM");
     }
 
     @Test
     //https://github.com/shin285/KOMORAN/issues/77
     public void issue77() {
-
-        String analyzeTarget = "황토은";
-
-        String analyzeResult = komoran.analyze(analyzeTarget).getPlainText();
-        String nBestAnalyzeResult = komoran.analyze(analyzeTarget, 2).get(0).getPlainText();
-
-        Assert.assertEquals(analyzeResult, nBestAnalyzeResult);
-        Assert.assertNotEquals("황토/NNG 은/JX", analyzeResult);
-        Assert.assertNotEquals("황토/NNG 은/JX", nBestAnalyzeResult);
-        Assert.assertNotEquals("황토/NNG 은/JC", analyzeResult);
-        Assert.assertNotEquals("황토/NNG 은/JC", nBestAnalyzeResult);
-        Assert.assertEquals("황토/NNG 은/NNG", analyzeResult);
-        Assert.assertEquals("황토/NNG 은/NNG", nBestAnalyzeResult);
+        assertNotEqualsOfAnalyzeResult("황토은", "황토/NNG 은/JX");
+        assertNotEqualsOfAnalyzeResult("황토은", "황토/NNG 은/JC");
+        assertEqualsOfAnalyzeResult("황토은", "황토/NNG 은/NNG");
+        assertEqualsOfAnalyzeResult("황토은", "황토/NNG 은/NNG");
     }
 
     @Test
     //https://github.com/shin285/KOMORAN/issues/88
     public void issue88() {
-        //TODO : 테스트 케이스 작성
         assertNotEqualsOfAnalyzeResult("가위은", "가위/NNG 은/JKS");
         assertNotEqualsOfAnalyzeResult("마늘는", "마늘/NNG 는/JKS");
 
@@ -92,5 +88,13 @@ public class AnalyzeIssues {
         Assert.assertEquals(analyzeResult, nBestAnalyzeResult);
         Assert.assertNotEquals(unexpected, analyzeResult);
         Assert.assertNotEquals(unexpected, nBestAnalyzeResult);
+    }
+
+    private void assertEqualsOfAnalyzeResult(String input, String unexpected) {
+        String analyzeResult = komoran.analyze(input).getPlainText();
+        String nBestAnalyzeResult = komoran.analyze(input, 2).get(0).getPlainText();
+        Assert.assertEquals(analyzeResult, nBestAnalyzeResult);
+        Assert.assertEquals(unexpected, analyzeResult);
+        Assert.assertEquals(unexpected, nBestAnalyzeResult);
     }
 }

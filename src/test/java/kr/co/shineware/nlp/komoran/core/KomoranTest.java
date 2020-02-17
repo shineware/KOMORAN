@@ -3,11 +3,9 @@ package kr.co.shineware.nlp.komoran.core;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
-import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
-import kr.co.shineware.util.common.string.StringUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//@Ignore
+@Ignore
 public class KomoranTest {
 
     private Komoran komoran;
@@ -25,46 +23,6 @@ public class KomoranTest {
     @Before
     public void init() {
         this.komoran = new Komoran(DEFAULT_MODEL.LIGHT);
-    }
-
-    @Test
-    public void getUnicode() throws UnsupportedEncodingException {
-        String korean = "되ᄅ";
-        korean = "난";
-        printcodePointAndUnicodeBlock(korean);
-    }
-
-    private void printcodePointAndUnicodeBlock(String korean) {
-        korean = StringUtil.korean2JasoString(korean);
-        for (int i = 0; i < korean.length(); i++) {
-            char ch = korean.charAt(i);
-            System.out.println(ch + " : " + Character.UnicodeBlock.of(ch) + "(" + String.format("U+%04X", korean.codePointAt(i)) + ")");
-        }
-    }
-
-    @Test
-    public void nBestAnalyzeResultTest() {
-        List<KomoranResult> nbestResult = this.komoran.analyze("거리에는", 1);
-        for (KomoranResult result : nbestResult) {
-            System.out.println(result.getResultNodeList().get(result.getResultNodeList().size()-1).getScore()+" : "+result.getPlainText());
-        }
-    }
-
-    @Test
-    public void notAnalyzeCombineTest() {
-
-        KomoranResult komoranResult = this.komoran.analyze("업데이트했어요ㅋㅋㅋㅋ 재밌네요");
-        System.out.println(komoranResult.getPlainText());
-        System.out.println(komoranResult.getList());
-        System.out.println(komoranResult.getMorphesByTags("NA"));
-        System.out.println(komoranResult.getTokenList());
-
-        komoranResult = this.komoran.analyze("하ㅎ 재밌었어요 캡틴마블");
-        System.out.println(komoranResult.getPlainText());
-
-        KoreanUnitParser koreanUnitParser = new KoreanUnitParser();
-        System.out.println(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ"));
-        System.out.println(koreanUnitParser.combineWithType(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ")));
     }
 
     @Test
