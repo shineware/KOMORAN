@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//@Ignore
+@Ignore
 public class KomoranTest {
 
     private Komoran komoran;
