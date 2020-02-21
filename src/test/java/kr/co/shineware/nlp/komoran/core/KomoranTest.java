@@ -11,11 +11,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Ignore
+//@Ignore
 public class KomoranTest {
 
     private Komoran komoran;
@@ -32,7 +33,9 @@ public class KomoranTest {
         int totalElapsedTime = 0;
         int step = 0;
         while (true) {
-            BufferedReader br = new BufferedReader(new FileReader("stress.test"));
+            FileInputStream fileInputStream = new FileInputStream("stress.test");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(inputStreamReader);
             String line;
             long begin, end;
             long elapsedTime = 0L;

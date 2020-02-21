@@ -17,7 +17,10 @@ public class AnalyzeIssues {
 
     @Test
     public void selfIssues() {
+        //TODO : https://github.com/shineware/KOMORAN/issues/94
+//        assertEqualsOfAnalyzeResult("재밌네요", "재미/NNG 있/VA 네요");
         assertEqualsOfAnalyzeResult("거리에는", "거리/NNG 에/JKB 는/JX");
+        //TODO : https://github.com/shineware/KOMORAN/issues/94 재밌/VA와 재미있/VA에 대한 올바른 분석 결과가 아님. 테스트 케이스 수정 필요
         assertEqualsOfAnalyzeResult("업데이트했어요ㅋㅋㅋㅋ 재밌네요", "업데이트했어요ㅋㅋㅋㅋ/NA 재미있/VA 네요/EC");
         assertEqualsOfAnalyzeResult("하ㅎ 재밌었어요 캡틴마블", "하/NNG ㅎ/XSV 재미있/VA 었/EP 어요/EC 캡틴/NNG 마블/NNG");
     }

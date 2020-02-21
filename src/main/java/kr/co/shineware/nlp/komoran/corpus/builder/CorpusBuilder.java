@@ -133,11 +133,51 @@ public class CorpusBuilder {
             }
         }
 
-        percentilePruning(0.01, 10);
-
+        //TODO : https://github.com/shineware/KOMORAN/issues/94
+//        removeInvalidWords();
+        pruningWordDictionary(0.01, 10);
+        pruningIrregularDictionary(10);
     }
 
-    private void percentilePruning(double pruningFactor, int pruningFreq) {
+    private void removeInvalidWords() {
+        Dictionary prunedWordDic = new Dictionary();
+        Map<String, Map<String, Integer>> wordDictionary = this.wordDic.getDictionary();
+        for (Map.Entry<String, Map<String, Integer>> morphPosFreqEntry : wordDictionary.entrySet()) {
+            Map<String, Integer> prunedPosFreqMap;
+            String morph = morphPosFreqEntry.getKey();
+            prunedPosFreqMap = removeNoise(morphPosFreqEntry);
+            updatePrunedDic(prunedWordDic, morph, prunedPosFreqMap);
+        }
+        this.wordDic = prunedWordDic;
+    }
+
+    private Map<String, Integer> removeNoise(Map.Entry<String, Map<String, Integer>> morphPosFreqEntry) {
+        double totalFreq = getTotalFreq(morphPosFreqEntry.getValue());
+        Map<String, Integer> prunedPosFreqMap = new HashMap<>();
+        for (Map.Entry<String, Integer> posFreqMap : morphPosFreqEntry.getValue().entrySet()) {
+            String pos = posFreqMap.getKey();
+            int freq = posFreqMap.getValue();
+            if(pos.equals("VA") && this.convertJaso(morphPosFreqEntry.getKey()).endsWith("ㅆ") && !morphPosFreqEntry.getKey().equals("있")){
+                continue;
+            }
+            prunedPosFreqMap.put(pos, freq);
+        }
+        return prunedPosFreqMap;
+    }
+
+    private void pruningIrregularDictionary(int pruningFreq) {
+        Dictionary prunedWordDic = new Dictionary();
+        Map<String, Map<String, Integer>> wordDictionary = this.irrDic.getDictionary();
+        for (Map.Entry<String, Map<String, Integer>> morphPosFreqEntry : wordDictionary.entrySet()) {
+            Map<String, Integer> prunedPosFreqMap;
+            String morph = morphPosFreqEntry.getKey();
+            prunedPosFreqMap = pruning(morphPosFreqEntry, 2.0, pruningFreq);
+            updatePrunedDic(prunedWordDic, morph, prunedPosFreqMap);
+        }
+        this.irrDic = prunedWordDic;
+    }
+
+    private void pruningWordDictionary(double pruningFactor, int pruningFreq) {
         Dictionary prunedWordDic = new Dictionary();
         Map<String, Map<String, Integer>> wordDictionary = this.wordDic.getDictionary();
         for (Map.Entry<String, Map<String, Integer>> morphPosFreqEntry : wordDictionary.entrySet()) {
