@@ -20,7 +20,8 @@ package kr.co.shineware.nlp.komoran.core;
 import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.*;
 import kr.co.shineware.nlp.komoran.core.model.*;
-import kr.co.shineware.nlp.komoran.core.model.combinationrules.*;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.CombinationRuleChecker;
+import kr.co.shineware.nlp.komoran.core.model.combinationrules.MergedCombinationRuleChecker;
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
@@ -29,6 +30,7 @@ import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
+import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -46,7 +48,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class Komoran implements Cloneable {
 
-//    private List<CombinationRuleChecker> combinationRuleCheckerList;
     private CombinationRuleChecker combinationRuleChecker;
     private Resources resources;
     private Observation userDic;
@@ -104,11 +105,6 @@ public class Komoran implements Cloneable {
 
         MorphUtil morphUtil = new MorphUtil();
         TagUtil tagUtil = new TagUtil(this.resources.getTable());
-//        this.combinationRuleCheckerList = new ArrayList<>();
-//        this.combinationRuleCheckerList.add(new MergedCombinationRuleChecker(morphUtil, tagUtil));
-//        this.combinationRuleCheckerList.add(new NounJosaCombinationRuleChecker(morphUtil, tagUtil));
-//        this.combinationRuleCheckerList.add(new VerbEomiCombinationRuleChecker(morphUtil));
-//        this.combinationRuleCheckerList.add(new NounEomiCombinationRuleChecker(tagUtil));
         this.combinationRuleChecker = new MergedCombinationRuleChecker(morphUtil, tagUtil);
     }
 
@@ -130,7 +126,6 @@ public class Komoran implements Cloneable {
 
             BufferedWriter bw = new BufferedWriter(
                     (new OutputStreamWriter(new FileOutputStream(outputFilename), StandardCharsets.UTF_8)));
-//            BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilename));
             List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
             ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
 
@@ -248,8 +243,6 @@ public class Komoran implements Cloneable {
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
 
-//        sentence = sentence.replaceAll("[ ]+", " ").trim();
-
         Lattice lattice = new Lattice(this.resources, this.userDic, nbest, combinationRuleChecker);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
@@ -286,7 +279,6 @@ public class Komoran implements Cloneable {
 
             //기타 기호인 경우
             this.symbolParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); // 기타 심볼 파싱
-
             this.userDicParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //사용자 사전 적용
 
             this.regularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //일반규칙 파싱

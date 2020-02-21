@@ -1,17 +1,9 @@
 package kr.co.shineware.nlp.komoran.run;
 
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder;
-import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
-import kr.co.shineware.util.common.file.FileUtil;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NewKomoranConsoleRunner2 {

@@ -31,7 +31,6 @@ public class Lattice {
     private FindContext<List<IrregularNode>> irregularFindContext;
     private FindContext<List<ScoredTag>> userDicFindContext;
 
-//    private final List<CombinationRuleChecker> combinationRuleCheckerList;
     private final CombinationRuleChecker combinationRuleChecker;
 
     private double prevMaxScore;
@@ -52,7 +51,6 @@ public class Lattice {
         this.init();
         this.makeNewContexts();
         this.nbest = nbest;
-//        this.combinationRuleCheckerList = combinationRuleChecker;
         this.combinationRuleChecker = combinationRuleChecker;
     }
 
@@ -152,7 +150,7 @@ public class Lattice {
                 this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
 
                 //일반 불규칙을 노드를 추가하기 위한 루틴
-                this.putFirstIrrgularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
+                this.putFirstIrregularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
                 this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
             }
         }
@@ -178,8 +176,6 @@ public class Lattice {
             Pair<String, Integer> morphPosId = morphPosIdList.get(i);
             //마지막 토큰에 대해서는 IRR 태그를 넣어줌 이때 score는 0.0을 줌
             if (i == morphPosIdList.size() - 1) {
-                //					this.put(irrIdx, endIdx, morphPosId.getFirst(), "IRR", morphPosId.getSecond(), 0.0);
-                //				LatticeNode latticeNode = new LatticeNode(irrIdx, endIdx,new MorphTag(morphPosId.getFirst(),"IRR", IRREGULAR_POS_ID),0.0);
                 LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, 0.0, 0);
                 this.appendNode(latticeNode);
 
@@ -195,9 +191,9 @@ public class Lattice {
         }
     }
 
-    private void putFirstIrrgularNode(int beginIdx, int endIdx,
-                                      List<Pair<String, Integer>> irregularTokens, double score,
-                                      int maxTransitionPrevIdx) {
+    private void putFirstIrregularNode(int beginIdx, int endIdx,
+                                       List<Pair<String, Integer>> irregularTokens, double score,
+                                       int maxTransitionPrevIdx) {
         if (irregularTokens.size() == 1) {
             Pair<String, Integer> morphPosId = irregularTokens.get(0);
             List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
@@ -318,18 +314,7 @@ public class Lattice {
     }
 
     private boolean isValidCombination(String prevMorph, int prevTagId, String morph, int tagId) {
-//        for (CombinationRuleChecker combinationRuleChecker : this.combinationRuleCheckerList) {
-//            if (!combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId)) {
-//                return false;
-//            }
-//        }
         return this.combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId);
-    }
-
-    private boolean isNoun(int prevTagId) {
-        return prevTagId == SEJONGTAGS.NNG_ID
-                || prevTagId == SEJONGTAGS.NNP_ID
-                || prevTagId == SEJONGTAGS.NP_ID;
     }
 
     private LatticeNode getMaxTransitionNodeFromPrevNodes(
@@ -415,7 +400,6 @@ public class Lattice {
                 continue;
             }
             int prevTagId;
-//            String prevMorph;
             if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
                 prevTagId = SEJONGTAGS.BOE_ID;
             } else {
@@ -435,18 +419,6 @@ public class Lattice {
                 this.prevMaxIdx = prevMaxNodeIdx;
             }
         }
-    }
-
-    private boolean hasJongsung(String str) {
-        char prevLastJaso = str.charAt(str.length() - 1);
-        if (0x3131 <= prevLastJaso && prevLastJaso <= 0x314e) {
-            return prevLastJaso != 0x3138 && prevLastJaso != 0x3143 && prevLastJaso != 0x3149;
-        }
-        return false;
-    }
-
-    public PosTable getPosTable() {
-        return posTable;
     }
 
     public void setPosTable(PosTable posTable) {
