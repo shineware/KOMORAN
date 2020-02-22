@@ -84,12 +84,6 @@ public class LatticeNode {
     public void setScore(double score) {
         this.score = score;
     }
-//	public String getMorph(){
-//		return this.morph;
-//	}
-//	public void setMorph(String morph){
-//		this.morph = morph;
-//	}
 
     public int getPrevNodeIdx() {
         return prevNodeIdx;

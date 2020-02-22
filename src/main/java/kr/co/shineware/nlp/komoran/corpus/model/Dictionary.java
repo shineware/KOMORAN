@@ -49,6 +49,10 @@ public class Dictionary implements FileAccessible {
         this.init();
     }
 
+    public Dictionary(Map<String, Map<String, Integer>> dictionary) {
+        this.dictionary = dictionary;
+    }
+
     /**
      * 사전 생성자로써 filename에 저장된 사전 데이터를 로딩
      * 데이터 로딩 시 init method 실행

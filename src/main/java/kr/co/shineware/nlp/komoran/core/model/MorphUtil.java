@@ -1,15 +1,12 @@
 package kr.co.shineware.nlp.komoran.core.model;
 
-import kr.co.shineware.util.common.string.StringUtil;
-
 public class MorphUtil {
 
     public MorphUtil() {
         ;
     }
 
-    public boolean isSameJaso(String sourceMorph, String compareMorph) {
-        String compareMorphJaso = StringUtil.korean2JasoString(compareMorph);
+    public boolean isSameJaso(String sourceMorph, String compareMorphJaso) {
         if (sourceMorph.length() == compareMorphJaso.length()) {
             for (int i = 0; i < compareMorphJaso.length(); i++) {
                 if (sourceMorph.charAt(i) != compareMorphJaso.charAt(i)) {

@@ -90,7 +90,7 @@ public class KomoranResult {
     public String getPlainText() {
         StringBuilder result = new StringBuilder();
         for (LatticeNode latticeNode : resultNodeList) {
-            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
+            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
             if (latticeNode.getTag().equals(SYMBOL.NA)) {
@@ -118,7 +118,7 @@ public class KomoranResult {
         List<Token> tokenList = new ArrayList<>();
         int prevBeginIdx = 0;
         for (LatticeNode latticeNode : resultNodeList) {
-            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
+            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
             //불규칙이거나 multi token 기분석 사전인 경우
@@ -157,7 +157,7 @@ public class KomoranResult {
     public List<Pair<String, String>> getList() {
         List<Pair<String, String>> resultList = new ArrayList<>();
         for (LatticeNode latticeNode : resultNodeList) {
-            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
+            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
             resultList.add(new Pair<>(parser.combine(latticeNode.getMorphTag().getMorph()), latticeNode.getTag()));

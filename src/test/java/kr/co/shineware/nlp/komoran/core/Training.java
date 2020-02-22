@@ -14,7 +14,7 @@ public class Training {
         CorpusBuilder corpusBuilder = new CorpusBuilder();
         corpusBuilder.setExclusiveIrrRule("resources/irrDic.remove.txt");
         //for windows
-//        corpusBuilder.buildPath("D:\\data\\komoran_training_data","refine.txt");
+//        corpusBuilder.buildPath("D:\\shineware\\data\\komoran_training","refine.txt");
         //for mac
         corpusBuilder.buildPath("/Users/shinjunsoo/shineware/data/komoran_training_data", "refine.txt");
         corpusBuilder.save("corpus_build");

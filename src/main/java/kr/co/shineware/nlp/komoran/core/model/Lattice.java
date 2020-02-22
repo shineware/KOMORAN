@@ -1,11 +1,9 @@
 package kr.co.shineware.nlp.komoran.core.model;
 
 import kr.co.shineware.ds.aho_corasick.FindContext;
+import kr.co.shineware.nlp.komoran.constant.SEJONGTAGS;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.core.model.combinationrules.CombinationRuleChecker;
-import kr.co.shineware.nlp.komoran.core.model.combinationrules.NounEomiCombinationRuleChecker;
-import kr.co.shineware.nlp.komoran.core.model.combinationrules.NounJosaCombinationRuleChecker;
-import kr.co.shineware.nlp.komoran.core.model.combinationrules.VerbEomiCombinationRuleChecker;
 import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.*;
@@ -33,7 +31,7 @@ public class Lattice {
     private FindContext<List<IrregularNode>> irregularFindContext;
     private FindContext<List<ScoredTag>> userDicFindContext;
 
-    private List<CombinationRuleChecker> combinationRuleCheckerList;
+    private final CombinationRuleChecker combinationRuleChecker;
 
     private double prevMaxScore;
     private LatticeNode prevMaxNode;
@@ -41,10 +39,10 @@ public class Lattice {
     private int nbest;
 
     public Lattice(Resources resource, Observation userDic) {
-        this(resource, userDic, 1);
+        this(resource, userDic, 1, null);
     }
 
-    public Lattice(Resources resource, Observation userDic, int nbest) {
+    public Lattice(Resources resource, Observation userDic, int nbest, CombinationRuleChecker combinationRuleChecker) {
         this.setPosTable(resource.getTable());
         this.setTransition(resource.getTransition());
         this.setObservation(resource.getObservation());
@@ -53,16 +51,7 @@ public class Lattice {
         this.init();
         this.makeNewContexts();
         this.nbest = nbest;
-        this.registCombinationRuleChecker();
-    }
-
-    private void registCombinationRuleChecker() {
-        MorphUtil morphUtil = new MorphUtil();
-        TagUtil tagUtil = new TagUtil(this.getPosTable());
-        this.combinationRuleCheckerList = new ArrayList<>();
-        this.combinationRuleCheckerList.add(new NounJosaCombinationRuleChecker(morphUtil, tagUtil));
-        this.combinationRuleCheckerList.add(new VerbEomiCombinationRuleChecker(morphUtil, tagUtil));
-        this.combinationRuleCheckerList.add(new NounEomiCombinationRuleChecker(tagUtil));
+        this.combinationRuleChecker = combinationRuleChecker;
     }
 
     private void setUserDicObservation(Observation userDic) {
@@ -109,7 +98,7 @@ public class Lattice {
     }
 
     private LatticeNode makeStartNode() {
-        return new LatticeNode(-1, 0, new MorphTag(SYMBOL.START, SYMBOL.START, this.getPosTable().getId(SYMBOL.START)), 0);
+        return new LatticeNode(-1, 0, new MorphTag(SYMBOL.BOE, SYMBOL.BOE, SEJONGTAGS.BOE_ID), 0);
     }
 
     //기분석 사전을 위한 lattice put
@@ -161,7 +150,7 @@ public class Lattice {
                 this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
 
                 //일반 불규칙을 노드를 추가하기 위한 루틴
-                this.putFirstIrrgularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
+                this.putFirstIrregularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
                 this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
             }
         }
@@ -187,8 +176,6 @@ public class Lattice {
             Pair<String, Integer> morphPosId = morphPosIdList.get(i);
             //마지막 토큰에 대해서는 IRR 태그를 넣어줌 이때 score는 0.0을 줌
             if (i == morphPosIdList.size() - 1) {
-                //					this.put(irrIdx, endIdx, morphPosId.getFirst(), "IRR", morphPosId.getSecond(), 0.0);
-                //				LatticeNode latticeNode = new LatticeNode(irrIdx, endIdx,new MorphTag(morphPosId.getFirst(),"IRR", IRREGULAR_POS_ID),0.0);
                 LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, 0.0, 0);
                 this.appendNode(latticeNode);
 
@@ -204,9 +191,9 @@ public class Lattice {
         }
     }
 
-    private void putFirstIrrgularNode(int beginIdx, int endIdx,
-                                      List<Pair<String, Integer>> irregularTokens, double score,
-                                      int maxTransitionPrevIdx) {
+    private void putFirstIrregularNode(int beginIdx, int endIdx,
+                                       List<Pair<String, Integer>> irregularTokens, double score,
+                                       int maxTransitionPrevIdx) {
         if (irregularTokens.size() == 1) {
             Pair<String, Integer> morphPosId = irregularTokens.get(0);
             List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
@@ -215,7 +202,7 @@ public class Lattice {
                     LatticeNode firstIrregularNode = this.makeNode(beginIdx, endIdx, morphPosId.getFirst(), scoredTag.getTag(), scoredTag.getTagId(), score + scoredTag.getScore(), maxTransitionPrevIdx);
                     this.appendNode(firstIrregularNode);
                     //마지막 노드가 EC인 경우에는 EF를 변환하여 노드를 추가한다
-                    if (scoredTag.getTagId() == this.posTable.getId(SYMBOL.EC)) {
+                    if (scoredTag.getTagId() == SEJONGTAGS.EC_ID) {
                         LatticeNode extendIrregularNode = this.makeNode(beginIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), score + scoredTag.getScore(), maxTransitionPrevIdx);
                         this.appendNode(extendIrregularNode);
                     }
@@ -275,9 +262,9 @@ public class Lattice {
             }
             int prevTagId;
             String prevMorph;
-            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
-                prevTagId = this.getPosTable().getId(SYMBOL.START);
-                prevMorph = SYMBOL.START;
+            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
+                prevTagId = SEJONGTAGS.BOE_ID;
+                prevMorph = SYMBOL.BOE;
             } else {
                 prevTagId = prevLatticeNode.getMorphTag().getTagId();
                 prevMorph = prevLatticeNode.getMorphTag().getMorph();
@@ -327,18 +314,7 @@ public class Lattice {
     }
 
     private boolean isValidCombination(String prevMorph, int prevTagId, String morph, int tagId) {
-        for (CombinationRuleChecker combinationRuleChecker : this.combinationRuleCheckerList) {
-            if (!combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isNoun(int prevTagId) {
-        return prevTagId == this.posTable.getId(SYMBOL.NNG)
-                || prevTagId == this.posTable.getId(SYMBOL.NNP)
-                || prevTagId == this.posTable.getId(SYMBOL.NP);
+        return this.combinationRuleChecker.isValidRule(prevMorph, prevTagId, morph, tagId);
     }
 
     private LatticeNode getMaxTransitionNodeFromPrevNodes(
@@ -357,9 +333,9 @@ public class Lattice {
             }
             int prevTagId;
             String prevMorph;
-            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
-                prevTagId = this.getPosTable().getId(SYMBOL.START);
-                prevMorph = SYMBOL.START;
+            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
+                prevTagId = SEJONGTAGS.BOE_ID;
+                prevMorph = SYMBOL.BOE;
             } else {
                 prevTagId = prevLatticeNode.getMorphTag().getTagId();
                 prevMorph = prevLatticeNode.getMorphTag().getMorph();
@@ -387,14 +363,6 @@ public class Lattice {
             return this.makeNode(beginIdx, endIdx, morph, tag, tagId, prevMaxScore + score, prevLatticeNodeIdx);
         }
         return null;
-    }
-
-    private boolean isPredicate(int prevTagId) {
-        return prevTagId == this.posTable.getId(SYMBOL.VV)
-                || prevTagId == this.posTable.getId(SYMBOL.VA)
-                || prevTagId == this.posTable.getId(SYMBOL.VX)
-                || prevTagId == this.posTable.getId(SYMBOL.VCP)
-                || prevTagId == this.posTable.getId(SYMBOL.VCN);
     }
 
     public LatticeNode makeNode(int beginIdx, int endIdx, String morph,
@@ -432,9 +400,8 @@ public class Lattice {
                 continue;
             }
             int prevTagId;
-//            String prevMorph;
-            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.END)) {
-                prevTagId = this.getPosTable().getId(SYMBOL.START);
+            if (prevLatticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
+                prevTagId = SEJONGTAGS.BOE_ID;
             } else {
                 prevTagId = prevLatticeNode.getMorphTag().getTagId();
             }
@@ -454,18 +421,6 @@ public class Lattice {
         }
     }
 
-    private boolean hasJongsung(String str) {
-        char prevLastJaso = str.charAt(str.length() - 1);
-        if (0x3131 <= prevLastJaso && prevLastJaso <= 0x314e) {
-            return prevLastJaso != 0x3138 && prevLastJaso != 0x3143 && prevLastJaso != 0x3149;
-        }
-        return false;
-    }
-
-    public PosTable getPosTable() {
-        return posTable;
-    }
-
     public void setPosTable(PosTable posTable) {
         this.posTable = posTable;
     }
@@ -483,9 +438,10 @@ public class Lattice {
                 continue;
             }
             totalLatticeSize += nodeList.size();
-
+            int nodeIndex = 0;
             for (LatticeNode latticeNode : nodeList) {
-                System.out.println(latticeNode);
+                System.out.println(nodeIndex + " : "+latticeNode);
+                nodeIndex++;
             }
             System.out.println();
         }
@@ -501,7 +457,7 @@ public class Lattice {
     }
 
     public boolean appendEndNode() {
-        return this.put(this.lastIdx, this.lastIdx + 1, SYMBOL.END, SYMBOL.END, this.getPosTable().getId(SYMBOL.END), 0);
+        return this.put(this.lastIdx, this.lastIdx + 1, SYMBOL.EOE, SYMBOL.EOE, SEJONGTAGS.EOE_ID, 0);
     }
 
     public List<LatticeNode> findPath() {
@@ -540,8 +496,8 @@ public class Lattice {
                 for (ScoredTag scoredTag : scoredTags) {
                     if (scoredTag.getTagId() == morphPosId.getSecond()) {
                         this.put(irrIdx, endIdx, morphPosId.getFirst(), this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond(), scoredTag.getScore());
-                        if (morphPosId.getSecond() == this.posTable.getId(SYMBOL.EC)) {
-                            this.put(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), scoredTag.getScore());
+                        if (morphPosId.getSecond() == SEJONGTAGS.EC_ID) {
+                            this.put(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, SEJONGTAGS.EF_ID, scoredTag.getScore());
                         }
                     }
                 }

@@ -3,19 +3,17 @@ package kr.co.shineware.nlp.komoran.core;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
-import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
 import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
-import kr.co.shineware.util.common.string.StringUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Ignore
@@ -29,78 +27,37 @@ public class KomoranTest {
     }
 
     @Test
-    public void getUnicode() throws UnsupportedEncodingException {
-        String korean = "되ᄅ";
-        korean = "난";
-        printcodePointAndUnicodeBlock(korean);
-    }
-
-    private void printcodePointAndUnicodeBlock(String korean) {
-        korean = StringUtil.korean2JasoString(korean);
-        for(int i=0;i<korean.length();i++){
-            char ch = korean.charAt(i);
-            System.out.println(ch + " : " +Character.UnicodeBlock.of(ch)+ "("+String.format("U+%04X",korean.codePointAt(i))+")");
-        }
-    }
-
-    @Test
-    public void nBestAnalyzeResultTest() {
-        List<KomoranResult> nbestResult = this.komoran.analyze("치뜬", 1);
-        for (KomoranResult result : nbestResult) {
-            System.out.println(result.getPlainText());
-        }
-    }
-
-    @Test
-    public void notAnalyzeCombineTest() {
-
-        KomoranResult komoranResult = this.komoran.analyze("업데이트했어요ㅋㅋㅋㅋ 재밌네요");
-        System.out.println(komoranResult.getPlainText());
-        System.out.println(komoranResult.getList());
-        System.out.println(komoranResult.getMorphesByTags("NA"));
-        System.out.println(komoranResult.getTokenList());
-
-        komoranResult = this.komoran.analyze("하ㅎ 재밌었어요 캡틴마블");
-        System.out.println(komoranResult.getPlainText());
-
-        KoreanUnitParser koreanUnitParser = new KoreanUnitParser();
-        System.out.println(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ"));
-        System.out.println(koreanUnitParser.combineWithType(koreanUnitParser.parseWithType("ㄱㅏㅁ가감ㅏ")));
-    }
-
-    @Test
     public void speedTest() throws Exception {
         Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
-//		komoran.setFWDic("komoran_benchmarker/fwd2.user");
-        int count = 100;
-        int avgElapsedTime = 0;
-        while(true){
-            BufferedReader br = new BufferedReader(new FileReader("stress.test"));
-            String line = null;
-            long begin,end;
-            long elapsedTime=0l;
-            while((line = br.readLine()) != null){
-//				String[] tmp = line.split(" ");
-//				for (String t : tmp) {
-//					begin = System.currentTimeMillis();
-//					komoran.analyze(t);
-//					end = System.currentTimeMillis();
-//					elapsedTime += (end-begin);
-//				}
-//				tmp = null;
+        int totalTestCount = 10;
+        int totalElapsedTime = 0;
+        int step = 0;
+        while (true) {
+            FileInputStream fileInputStream = new FileInputStream("stress.test");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(inputStreamReader);
+            String line;
+            long begin, end;
+            long elapsedTime = 0L;
+            while ((line = br.readLine()) != null) {
                 begin = System.currentTimeMillis();
                 komoran.analyze(line);
                 end = System.currentTimeMillis();
-                elapsedTime += (end-begin);
+
+                elapsedTime += (end - begin);
 
             }
             br.close();
-            System.out.println(elapsedTime);
-            avgElapsedTime += elapsedTime;
-//			TimeChecker.printElapsedTimeRatio(acc);
-            if(count-- == 0)break;
+            System.out.println("Step " + step + " : " + elapsedTime);
+            //skip first step
+            if (step == 0) {
+                elapsedTime = 0;
+            }
+            totalElapsedTime += elapsedTime;
+            step++;
+            if (step == totalTestCount + 1) break;
         }
-        System.out.println("Avg. ElapsedTime : "+avgElapsedTime/100);
+        System.out.println("Avg. ElapsedTime : " + totalElapsedTime / totalTestCount);
     }
 
     @Test
@@ -174,7 +131,8 @@ public class KomoranTest {
 
     @Test
     public void analyze() {
-        KomoranResult komoranResult = this.komoran.analyze("네가 없는 거리에는 내가 할 일이 많아서 마냥 걷다보면 추억을 가끔 마주치지.");
+//        KomoranResult komoranResult = this.komoran.analyze("네가 없는 거리에는 내가 할 일이 많아서 마냥 걷다보면 추억을 가끔 마주치지.");
+        KomoranResult komoranResult = this.komoran.analyze("거리에는");
         List<Pair<String, String>> pairList = komoranResult.getList();
         for (Pair<String, String> morphPosPair : pairList) {
             System.out.println(morphPosPair);
@@ -244,7 +202,7 @@ public class KomoranTest {
                 KomoranResult komoranResultList = this.komoran.analyze(line);
             }
             long end = System.currentTimeMillis();
-            if(i>=2) {
+            if (i >= 2) {
                 avgElapsedTime += (end - begin);
             }
             System.out.println("Elapsed time : " + (end - begin));
@@ -253,5 +211,17 @@ public class KomoranTest {
         System.out.println("Avg. elapsed time : " + (avgElapsedTime / 10.0));
 
         ElapsedTimeChecker.printTimes();
+    }
+
+    @Test
+    public void debugScore(){
+        List<String> analyzeMorphList = Arrays.asList("거리","에","는");
+        List<String> analyzePosList = Arrays.asList("NNG","JKB","JX");
+        System.out.println(this.komoran.scoreDebug(analyzeMorphList, analyzePosList));
+
+        analyzeMorphList = Arrays.asList("거","리","에","는");
+        analyzePosList = Arrays.asList("NNB","XSN","JKB","JX");
+        System.out.println(this.komoran.scoreDebug(analyzeMorphList, analyzePosList));
+
     }
 }
