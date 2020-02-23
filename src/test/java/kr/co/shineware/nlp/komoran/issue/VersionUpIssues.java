@@ -11,5 +11,6 @@ public class VersionUpIssues {
 //    https://github.com/shineware/KOMORAN/issues/96
     public void issue96() {
         performanceValidation.analyzeSpeedTest();
+        performanceValidation.dataStructureSpeedTest();
     }
 }
