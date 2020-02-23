@@ -32,4 +32,8 @@ public class ElapsedTimeChecker {
             System.out.println(timeSnapshotKey+" : "+accumulatedTimeSnapshotMap.get(timeSnapshotKey));
         }
     }
+
+    public static Long getElapsedTime(String key){
+        return accumulatedTimeSnapshotMap.get(key);
+    }
 }
