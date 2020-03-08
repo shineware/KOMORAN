@@ -1,5 +1,7 @@
 package kr.co.shineware.nlp.komoran.model;
 
+import java.util.Objects;
+
 public class Token {
 	private String morph;
 	private String pos;
@@ -46,5 +48,18 @@ public class Token {
 		return "Token [morph=" + morph + ", pos=" + pos + ", beginIndex="
 				+ beginIndex + ", endIndex=" + endIndex + "]";
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Token token = (Token) o;
+		return Objects.equals(morph, token.morph) &&
+				Objects.equals(pos, token.pos);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(morph, pos);
+	}
 }

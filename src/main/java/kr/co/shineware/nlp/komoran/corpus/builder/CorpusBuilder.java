@@ -125,16 +125,22 @@ public class CorpusBuilder {
         for (String filename : filenames) {
             if (suffix != null && filename.endsWith(suffix)) {
                 System.out.println(filename);
-                this.build(filename);
+                this.build(FileUtil.load2List(filename, StandardCharsets.UTF_8));
             }
             if (suffix == null) {
                 System.out.println(filename);
-                this.build(filename);
+                this.build(FileUtil.load2List(filename, StandardCharsets.UTF_8));
             }
         }
 
         //TODO : https://github.com/shineware/KOMORAN/issues/94
 //        removeInvalidWords();
+        pruningWordDictionary(0.01, 10);
+        pruningIrregularDictionary(10);
+    }
+
+    public void buildFromLine(List<String> lines) {
+        this.build(lines);
         pruningWordDictionary(0.01, 10);
         pruningIrregularDictionary(10);
     }
@@ -157,7 +163,7 @@ public class CorpusBuilder {
         for (Map.Entry<String, Integer> posFreqMap : morphPosFreqEntry.getValue().entrySet()) {
             String pos = posFreqMap.getKey();
             int freq = posFreqMap.getValue();
-            if(pos.equals("VA") && this.convertJaso(morphPosFreqEntry.getKey()).endsWith("ㅆ") && !morphPosFreqEntry.getKey().equals("있")){
+            if (pos.equals("VA") && this.convertJaso(morphPosFreqEntry.getKey()).endsWith("ㅆ") && !morphPosFreqEntry.getKey().equals("있")) {
                 continue;
             }
             prunedPosFreqMap.put(pos, freq);
@@ -217,6 +223,35 @@ public class CorpusBuilder {
             totalFreq += posFreq.getValue();
         }
         return totalFreq;
+    }
+
+    private void build(List<String> lines) {
+        try {
+            for (String line : lines) {
+                int lineCount = 0;
+                lineCount += 1;
+                line = this.refineFormat(line);
+                if (line.length() == 0) {
+                    continue;
+                }
+
+                ProblemAnswerPair paPair = null;
+                try {
+                    paPair = this.corpusParser.parse(line);
+                } catch (FileFormatException e) {
+                    System.err.println(lineCount + " : " + line);
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                this.appendWordDictionary(paPair.getAnswerList());
+
+                this.appendIrregularDictionary(paPair);
+
+                this.appendGrammar(paPair.getAnswerList());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
