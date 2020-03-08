@@ -73,9 +73,9 @@ public class SejongToTrainingData {
     public void loadKEBilingualCorpusAndConvertUTF8() throws IOException {
 //        봤습니다만,	보/VX /ㅏㅆ 습니다/EF 만/JX ,/SP
         BufferedWriter bw = new BufferedWriter
-                (new OutputStreamWriter(new FileOutputStream("D:\\data\\komoran_training_data\\한영병렬_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
-        List<String> filenames = FileUtil.getFileNames("D:\\data\\komoran_training_data\\한영병렬_형태분석_말뭉치", "KK.txt");
-        filenames.addAll(FileUtil.getFileNames("D:\\data\\komoran_training_data\\한영병렬_형태분석_말뭉치", "EK.txt"));
+                (new OutputStreamWriter(new FileOutputStream("D:\\shineware\\data\\komoran_training\\한영병렬_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
+        List<String> filenames = FileUtil.getFileNames("D:\\shineware\\data\\komoran_training\\한영병렬_형태분석_말뭉치", "KK.txt");
+        filenames.addAll(FileUtil.getFileNames("D:\\shineware\\data\\komoran_training\\한영병렬_형태분석_말뭉치", "EK.txt"));
         for (String filename : filenames) {
             List<String> lines = FileUtil.load2List(filename, StandardCharsets.UTF_16);
             String problem = "";
@@ -176,9 +176,9 @@ public class SejongToTrainingData {
     @Test
     public void loadKJBilingualCorpusAndConvertUTF8() throws IOException {
         BufferedWriter bw = new BufferedWriter
-                (new OutputStreamWriter(new FileOutputStream("D:\\data\\komoran_training_data\\한일병렬_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
-        List<String> filenames = FileUtil.getFileNames("D:\\data\\komoran_training_data\\한일병렬_형태분석_말뭉치", "KK.txt");
-        filenames.addAll(FileUtil.getFileNames("D:\\data\\komoran_training_data\\한일병렬_형태분석_말뭉치", "JK.txt"));
+                (new OutputStreamWriter(new FileOutputStream("D:\\shineware\\data\\komoran_training\\한일병렬_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
+        List<String> filenames = FileUtil.getFileNames("D:\\shineware\\data\\komoran_training\\한일병렬_형태분석_말뭉치", "KK.txt");
+        filenames.addAll(FileUtil.getFileNames("D:\\shineware\\data\\komoran_training\\한일병렬_형태분석_말뭉치", "JK.txt"));
         for (String filename : filenames) {
             List<String> lines = FileUtil.load2List(filename, StandardCharsets.UTF_16);
             boolean isHeadArea = false;
@@ -213,13 +213,13 @@ public class SejongToTrainingData {
                     }
                     String problem = entity[0];
                     String answer = entity[1];
-                    //구어체의 경우에는 불규칙의 형태가 타 코퍼스와 다르기 때문에 제외시킴
-                    if (this.hasSingleJungSung(answer)) {
-                        continue;
-                    }
                     answer = answer.replaceAll("\\+", " ").replaceAll(" {2}", " +");
                     if (!isValidFormat(problem + "\t" + answer)) {
 //                        System.out.println(filename + ":" + lineCount + ":" + line);
+                        continue;
+                    }
+                    //구어체의 경우에는 불규칙의 형태가 타 코퍼스와 다르기 때문에 제외시킴
+                    if (this.hasSingleJungSung(answer)) {
                         continue;
                     }
                     bw.write(problem + "\t" + answer);
@@ -234,8 +234,8 @@ public class SejongToTrainingData {
     @Test
     public void loadSejongSpeechTextAndConvertUTF8() throws IOException {
         BufferedWriter bw = new BufferedWriter
-                (new OutputStreamWriter(new FileOutputStream("D:\\data\\komoran_training_data\\현대구어_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
-        List<String> filenames = FileUtil.getFileNames("D:\\data\\komoran_training_data\\현대구어_형태분석_말뭉치");
+                (new OutputStreamWriter(new FileOutputStream("D:\\shineware\\data\\komoran_training\\현대구어_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
+        List<String> filenames = FileUtil.getFileNames("D:\\shineware\\data\\komoran_training\\현대구어_형태분석_말뭉치");
         for (String filename : filenames) {
             List<String> lines = FileUtil.load2List(filename, StandardCharsets.UTF_16);
 
@@ -268,12 +268,13 @@ public class SejongToTrainingData {
                     String answer = entity[2];
                     //구어체에는 + 기호가 나오지 않기 때문에 바로 치환
                     answer = answer.replaceAll("\\+", " ");
-                    //구어체의 경우에는 불규칙의 형태가 타 코퍼스와 다르기 때문에 제외시킴
-                    if (this.hasSingleJungSung(answer)) {
-                        continue;
-                    }
+
                     if (!isValidFormat(problem + "\t" + answer)) {
 //                        System.out.println(filename + ":" + lineCount + ":" + line);
+                        continue;
+                    }
+                    //구어체의 경우에는 불규칙의 형태가 타 코퍼스와 다르기 때문에 제외시킴
+                    if (this.hasSingleJungSung(answer)) {
                         continue;
                     }
                     bw.write(problem + "\t" + answer);
@@ -289,8 +290,8 @@ public class SejongToTrainingData {
     @Test
     public void loadSejongTextAndConvertUTF8() throws IOException {
         BufferedWriter bw = new BufferedWriter
-                (new OutputStreamWriter(new FileOutputStream("D:\\data\\komoran_training_data\\현대문어_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
-        List<String> filenames = FileUtil.getFileNames("D:\\data\\komoran_training_data\\현대문어_형태분석_말뭉치");
+                (new OutputStreamWriter(new FileOutputStream("D:\\shineware\\data\\komoran_training\\현대문어_형태분석_말뭉치.refine.txt"), StandardCharsets.UTF_8));
+        List<String> filenames = FileUtil.getFileNames("D:\\shineware\\data\\komoran_training\\현대문어_형태분석_말뭉치");
         for (String filename : filenames) {
             List<String> lines = FileUtil.load2List(filename, StandardCharsets.UTF_16);
             boolean isHeadArea = false;
