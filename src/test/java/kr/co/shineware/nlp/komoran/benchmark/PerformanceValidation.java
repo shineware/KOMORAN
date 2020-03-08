@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Ignore
+//@Ignore
 public class PerformanceValidation {
 
     private static final Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
@@ -78,8 +78,13 @@ public class PerformanceValidation {
 
         int correctCount = 0;
         int incorrectCount = 0;
+        boolean isIncorrect = false;
 
         for (String testData : testDataSet) {
+            isIncorrect = false;
+            if(testData.trim().length() == 0){
+                continue;
+            }
             String word = testData.split("\t")[0];
             String answer = testData.split("\t")[1];
             List<Token> analyzeResultList = komoran.analyze(word).getTokenList();
@@ -90,8 +95,16 @@ public class PerformanceValidation {
                     correctCount++;
                 } else {
                     incorrectCount++;
+                    isIncorrect = true;
                 }
             }
+
+//            if(isIncorrect){
+//                System.out.println(testData);
+//                System.out.println(analyzeResultList);
+//                System.out.println(answerResultList);
+//                System.out.println();
+//            }
         }
 
         System.out.println("Accuracy : " + (correctCount / (double) (correctCount + incorrectCount)));
