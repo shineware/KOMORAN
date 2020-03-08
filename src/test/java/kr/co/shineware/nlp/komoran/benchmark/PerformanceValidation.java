@@ -7,6 +7,7 @@ import kr.co.shineware.nlp.komoran.corpus.model.Dictionary;
 import kr.co.shineware.nlp.komoran.model.Token;
 import kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder;
 import kr.co.shineware.util.common.file.FileUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Ignore
 public class PerformanceValidation {
 
     private static final Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
