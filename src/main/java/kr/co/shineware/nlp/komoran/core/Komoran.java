@@ -30,7 +30,6 @@ import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
 import kr.co.shineware.nlp.komoran.parser.KoreanUnitParser;
-import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.nlp.komoran.util.KomoranCallable;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
@@ -66,6 +65,9 @@ public class Komoran implements Cloneable {
         this.resources = new Resources();
         this.load(modelPath);
         this.unitParser = new KoreanUnitParser();
+        MorphUtil morphUtil = new MorphUtil();
+        TagUtil tagUtil = new TagUtil(this.resources.getTable());
+        this.combinationRuleChecker = new MergedCombinationRuleChecker(morphUtil, tagUtil);
     }
 
     /**
@@ -84,7 +86,7 @@ public class Komoran implements Cloneable {
         } else if (modelType == DEFAULT_MODEL.LIGHT) {
             modelPath = FILENAME.LIGHT_MODEL;
         } else {
-            modelPath = FILENAME.FULL_MODEL;
+            modelPath = FILENAME.LIGHT_MODEL;
         }
 
         String delimiter = "/";
