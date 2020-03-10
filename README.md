@@ -1,5 +1,5 @@
 ## KOMORAN 3.0
-[![Build Status](https://travis-ci.org/shin285/KOMORAN.svg?branch=master)](https://travis-ci.org/shin285/KOMORAN)
+![Java CI](https://github.com/shineware/KOMORAN/workflows/Java%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/shin285/KOMORAN/badge.svg?branch=master)](https://coveralls.io/github/shin285/KOMORAN?branch=master)
 
 [English](README.md) | [한국어](README.ko.md)
