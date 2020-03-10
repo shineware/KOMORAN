@@ -1,7 +1,7 @@
-plugins {
-    id 'net.saliman.cobertura' version '2.3.1'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
-}
+//plugins {
+//    id 'net.saliman.cobertura' version '2.3.1'
+//    id 'com.github.kt3k.coveralls' version '2.6.3'
+//}
 
 group = 'com.github.shin285'
 
@@ -10,7 +10,7 @@ apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+//cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
 
 
 repositories {
