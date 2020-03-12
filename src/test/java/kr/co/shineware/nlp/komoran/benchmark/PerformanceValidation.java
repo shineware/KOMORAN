@@ -15,7 +15,7 @@ import java.util.List;
 @Ignore
 public class PerformanceValidation {
 
-    private static final Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+    private static final Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
 
     @Test
     //from https://github.com/shineware/KOMORAN/issues/96
