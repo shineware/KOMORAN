@@ -150,18 +150,35 @@ public class Lattice {
                 this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
 
                 //일반 불규칙을 노드를 추가하기 위한 루틴
-                this.putFirstIrregularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
-                this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
+//                this.putFirstIrregularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
+//                this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
             }
         }
     }
 
     private void putIrregularExtendTokens(int beginIdx, int endIdx,
-                                          List<Pair<String, Integer>> morphPosIdList, double prevMaxScore, int prevMaxIdx) {
+                                          List<Pair<String, Integer>> irregularTokens, double prevMaxScore, int prevMaxIdx) {
 
+        if (irregularTokens.size() == 1) {
+            Pair<String, Integer> morphPosId = irregularTokens.get(0);
+            List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
+            for (ScoredTag scoredTag : scoredTags) {
+                if (scoredTag.getTagId() == morphPosId.getSecond()) {
+                    LatticeNode firstIrregularNode = this.makeNode(beginIdx, endIdx, morphPosId.getFirst(), scoredTag.getTag(), scoredTag.getTagId(), prevMaxScore + scoredTag.getScore(), prevMaxIdx);
+                    this.appendNode(firstIrregularNode);
+                    //마지막 노드가 EC인 경우에는 EF를 변환하여 노드를 추가한다
+                    if (scoredTag.getTagId() == SEJONGTAGS.EC_ID) {
+                        LatticeNode extendIrregularNode = this.makeNode(beginIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), prevMaxScore + scoredTag.getScore(), prevMaxIdx);
+                        this.appendNode(extendIrregularNode);
+                    }
+                }
+            }
+            return;
+        } 
+        
         //첫번쨰 토큰에 대한 처리
-        if (morphPosIdList.size() != 0) {
-            Pair<String, Integer> morphPosId = morphPosIdList.get(0);
+        if (irregularTokens.size() != 0) {
+            Pair<String, Integer> morphPosId = irregularTokens.get(0);
             List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
             for (ScoredTag scoredTag : scoredTags) {
                 if (scoredTag.getTagId() == morphPosId.getSecond()) {
@@ -172,10 +189,22 @@ public class Lattice {
             }
         }
 
-        for (int i = 1; i < morphPosIdList.size(); i++) {
-            Pair<String, Integer> morphPosId = morphPosIdList.get(i);
+        for (int i = 1; i < irregularTokens.size(); i++) {
+            Pair<String, Integer> morphPosId = irregularTokens.get(i);
             //마지막 토큰에 대해서는 IRR 태그를 넣어줌 이때 score는 0.0을 줌
-            if (i == morphPosIdList.size() - 1) {
+            if (i == irregularTokens.size() - 1) {
+//			이 부분도 필요한지 모르겠습니다. 
+/*
+            	List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
+                for (ScoredTag scoredTag : scoredTags) {
+                    if (scoredTag.getTagId() == morphPosId.getSecond()) {
+                        this.put(irrIdx, endIdx, morphPosId.getFirst(), this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond(), scoredTag.getScore());
+                        if (morphPosId.getSecond() == SEJONGTAGS.EC_ID) {
+                            this.put(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.EF, SEJONGTAGS.EF_ID, scoredTag.getScore());
+                        }
+                    }
+                }
+*/
                 LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, 0.0, 0);
                 this.appendNode(latticeNode);
 
