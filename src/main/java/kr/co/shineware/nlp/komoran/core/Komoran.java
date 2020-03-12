@@ -81,12 +81,12 @@ public class Komoran implements Cloneable {
         this.resources = new Resources();
         this.resources.init();
         String modelPath;
-        if (modelType == DEFAULT_MODEL.FULL) {
-            modelPath = FILENAME.FULL_MODEL;
-        } else if (modelType == DEFAULT_MODEL.LIGHT) {
-            modelPath = FILENAME.LIGHT_MODEL;
+        if (modelType == DEFAULT_MODEL.EXPERIMENT) {
+            modelPath = FILENAME.EXPERIMENT_MODEL;
+        } else if (modelType == DEFAULT_MODEL.STABLE) {
+            modelPath = FILENAME.STABLE_MODEL;
         } else {
-            modelPath = FILENAME.LIGHT_MODEL;
+            modelPath = FILENAME.STABLE_MODEL;
         }
 
         String delimiter = "/";

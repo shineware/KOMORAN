@@ -12,7 +12,7 @@ public class NewKomoranConsoleRunner {
 
         int thread = Integer.parseInt(args[0]);
 
-        Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+        Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
         ElapsedTimeChecker.checkBeginTime("FILE_ANALYSIS");
         komoran.analyzeTextFile("wiki.titles", "wiki.titles.out", thread);
         ElapsedTimeChecker.checkEndTime("FILE_ANALYSIS");

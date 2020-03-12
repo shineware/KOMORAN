@@ -23,12 +23,12 @@ public class KomoranTest {
 
     @Before
     public void init() {
-        this.komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+        this.komoran = new Komoran(DEFAULT_MODEL.STABLE);
     }
 
     @Test
     public void speedTest() throws Exception {
-        Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+        Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
         int totalTestCount = 10;
         int totalElapsedTime = 0;
         int step = 0;

@@ -32,6 +32,6 @@ public class FILENAME {
     public static final String OBSERVATION="observation.model";
     public static final String TRANSITION="transition.model";
     public static final String IRREGULAR_MODEL="irregular.model";
-    public static final String FULL_MODEL = "models_full";
-    public static final String LIGHT_MODEL = "models_light";
+    public static final String EXPERIMENT_MODEL = "models_full";
+    public static final String STABLE_MODEL = "models_light";
 }

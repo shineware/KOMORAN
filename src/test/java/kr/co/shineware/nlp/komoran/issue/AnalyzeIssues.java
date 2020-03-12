@@ -12,7 +12,7 @@ public class AnalyzeIssues {
 
     @Before
     public void initKomoran() {
-        this.komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+        this.komoran = new Komoran(DEFAULT_MODEL.STABLE);
     }
 
     @Test

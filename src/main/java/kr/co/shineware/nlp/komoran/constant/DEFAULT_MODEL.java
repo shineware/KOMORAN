@@ -9,5 +9,5 @@ package kr.co.shineware.nlp.komoran.constant;
  * </pre>
  */
 public enum DEFAULT_MODEL {
-	LIGHT, FULL
+	STABLE, EXPERIMENT
 }
