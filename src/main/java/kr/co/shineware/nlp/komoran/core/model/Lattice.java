@@ -150,47 +150,77 @@ public class Lattice {
                 this.putIrregularExtendTokens(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
 
                 //일반 불규칙을 노드를 추가하기 위한 루틴
-                this.putFirstIrregularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
-                this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
+//                this.putFirstIrregularNode(beginIdx, endIdx, irregularTokens, prevMaxScore, prevMaxIdx);
+//                this.putIrregularTokens(beginIdx, endIdx, irregularTokens);
             }
         }
     }
 
     private void putIrregularExtendTokens(int beginIdx, int endIdx,
-                                          List<Pair<String, Integer>> morphPosIdList, double prevMaxScore, int prevMaxIdx) {
+                                          List<Pair<String, Integer>> irregularTokens, double prevMaxScore, int prevMaxIdx) {
+    	
+        if (irregularTokens == null || irregularTokens.size() == 0) {
+            return;
+        }
+        
+    	Pair<String, Integer> morphPosPair = null;
+    	List<ScoredTag> scoredTags = null;
 
-        //첫번쨰 토큰에 대한 처리
-        if (morphPosIdList.size() != 0) {
-            Pair<String, Integer> morphPosId = morphPosIdList.get(0);
-            List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
+    	if (irregularTokens.size() == 1) {
+        	morphPosPair = irregularTokens.get(0);
+            scoredTags = this.observation.getTrieDictionary().getValue(morphPosPair.getFirst());
             for (ScoredTag scoredTag : scoredTags) {
-                if (scoredTag.getTagId() == morphPosId.getSecond()) {
-                    LatticeNode firstIrregularNode = this.makeNode(beginIdx, irrIdx - 1, morphPosId.getFirst(), scoredTag.getTag(), scoredTag.getTagId(), prevMaxScore + scoredTag.getScore(), prevMaxIdx);
-                    irrIdx--;
+                if (scoredTag.getTagId() == morphPosPair.getSecond()) {
+                    LatticeNode firstIrregularNode = this.makeNode(beginIdx, endIdx, morphPosPair.getFirst(), scoredTag.getTag(), scoredTag.getTagId(), prevMaxScore + scoredTag.getScore(), prevMaxIdx);
                     this.appendNode(firstIrregularNode);
+                    //마지막 노드가 EC인 경우에는 EF를 변환하여 노드를 추가한다
+                    if (scoredTag.getTagId() == SEJONGTAGS.EC_ID) {
+                        LatticeNode extendIrregularNode = this.makeNode(beginIdx, endIdx, morphPosPair.getFirst(), SYMBOL.EF, this.posTable.getId(SYMBOL.EF), prevMaxScore + scoredTag.getScore(), prevMaxIdx);
+                        this.appendNode(extendIrregularNode);
+                    }
                 }
+            }
+            return;
+        } 
+        
+        //첫번쨰 토큰에 대한 처리
+       	morphPosPair = irregularTokens.get(0);
+        scoredTags = this.observation.getTrieDictionary().getValue(morphPosPair.getFirst());
+        for (ScoredTag scoredTag : scoredTags) {
+            if (scoredTag.getTagId() == morphPosPair.getSecond()) {
+                LatticeNode firstIrregularNode = this.makeNode(beginIdx, irrIdx - 1, morphPosPair.getFirst(), scoredTag.getTag(), scoredTag.getTagId(), prevMaxScore + scoredTag.getScore(), prevMaxIdx);
+                irrIdx--;
+                this.appendNode(firstIrregularNode);
             }
         }
 
-        for (int i = 1; i < morphPosIdList.size(); i++) {
-            Pair<String, Integer> morphPosId = morphPosIdList.get(i);
+        for (int i = 1; i < irregularTokens.size(); i++) {
+        	morphPosPair = irregularTokens.get(i);
+        	scoredTags = this.observation.getTrieDictionary().getValue(morphPosPair.getFirst());
             //마지막 토큰에 대해서는 IRR 태그를 넣어줌 이때 score는 0.0을 줌
-            if (i == morphPosIdList.size() - 1) {
-                LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosId.getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, 0.0, 0);
+            if (i == irregularTokens.size() - 1) {
+                for (ScoredTag scoredTag : scoredTags) {
+                    if (scoredTag.getTagId() == morphPosPair.getSecond()) {
+                        this.put(irrIdx, endIdx, morphPosPair.getFirst(), this.posTable.getPos(morphPosPair.getSecond()), morphPosPair.getSecond(), scoredTag.getScore());
+                        if (morphPosPair.getSecond() == SEJONGTAGS.EC_ID) {
+                            this.put(irrIdx, endIdx, morphPosPair.getFirst(), SYMBOL.EF, SEJONGTAGS.EF_ID, scoredTag.getScore());
+                        }
+                    }
+                }
+                LatticeNode latticeNode = this.makeNode(irrIdx, endIdx, morphPosPair.getFirst(), SYMBOL.IRREGULAR, IRREGULAR_POS_ID, 0.0, 0);
                 this.appendNode(latticeNode);
 
             } else {
-                List<ScoredTag> scoredTags = this.observation.getTrieDictionary().getValue(morphPosId.getFirst());
                 for (ScoredTag scoredTag : scoredTags) {
-                    if (scoredTag.getTagId() == morphPosId.getSecond()) {
-                        this.put(irrIdx, irrIdx - 1, morphPosId.getFirst(), this.posTable.getPos(morphPosId.getSecond()), morphPosId.getSecond(), scoredTag.getScore());
+                    if (scoredTag.getTagId() == morphPosPair.getSecond()) {
+                        this.put(irrIdx, irrIdx - 1, morphPosPair.getFirst(), this.posTable.getPos(morphPosPair.getSecond()), morphPosPair.getSecond(), scoredTag.getScore());
                     }
                 }
             }
             irrIdx--;
         }
     }
-
+/*
     private void putFirstIrregularNode(int beginIdx, int endIdx,
                                        List<Pair<String, Integer>> irregularTokens, double score,
                                        int maxTransitionPrevIdx) {
@@ -221,7 +251,7 @@ public class Lattice {
 
         }
     }
-
+*/
     public boolean put(int beginIdx, int endIdx, String morph, String tag, int tagId, double score) {
 
         List<LatticeNode> prevLatticeNodes = this.getNodeList(beginIdx);
@@ -486,7 +516,7 @@ public class Lattice {
         return shortestPathList;
     }
 
-
+/*
     private void putIrregularTokens(int beginIdx, int endIdx, List<Pair<String, Integer>> morphPosIdList) {
 
         for (int i = 1; i < morphPosIdList.size(); i++) {
@@ -511,7 +541,7 @@ public class Lattice {
             irrIdx--;
         }
     }
-
+*/
     public void setObservation(Observation observation) {
         this.observation = observation;
     }
