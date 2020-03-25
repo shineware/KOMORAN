@@ -3,7 +3,7 @@
 //    id 'com.github.kt3k.coveralls' version '2.6.3'
 //}
 
-group = 'com.github.shin285'
+group = 'com.github.shineware'
 
 
 apply plugin: 'maven'
