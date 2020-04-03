@@ -7,12 +7,9 @@ analyze_result.txt
 .classpath
 .project
 .settings
-.classpath
-.project
 SpeedValidation.java
 StdinTest.java
 /bin/
-*.class
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -34,11 +31,7 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
-
-*.class
-
 # Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 #*.jar
@@ -46,11 +39,9 @@ gradle-app.setting
 *.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
 
 # Gradle
 # ------
-.gradle
 /build
 
 # IDEA
@@ -99,3 +90,27 @@ hs_err_pid*
 .DS_Store
 
 
+### STS ###
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+*.iws
+*.iml
+*.ipr
+/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+AdminDB.*.db
+bin/
+uploads/
+models/
+diff_logs/

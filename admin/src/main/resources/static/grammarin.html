@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>KOMORAN 관리도구</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+    <!-- jQuery UI 1.12.1 -->
+    <link rel="stylesheet" href="/libs/jquery-ui/jquery-ui.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/libs/Ionicons/css/ionicons.min.css">
+    <!-- Tabulator 3.5 -->
+    <link rel="stylesheet" href="/libs/tabulator/dist/css/tabulator.min.css">
+    <link rel="stylesheet" href="/libs/tabulator/dist/css/bootstrap/tabulator_bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Used blue one-->
+    <link rel="stylesheet" href="/css/skins/skin-blue.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/KOMORANAdmin.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>KA</b></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>K</b>OMORAN <b>A</b>dmin</span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <!-- Nothing Here -->
+            </div>
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">분석</li>
+                <li><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
+                <li class="header">보정</li>
+                <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
+                <li class="active"><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
+                <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
+                <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
+                <li class="header">비교</li>
+                <li><a href="./compareSentence.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
+                <li><a href="./compareFile.html"><i class="fa fa-arrows-h"></i> <span>파일 단위 비교</span></a></li>
+                <li class="header">배포</li>
+                <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
+                <li class="header">참조</li>
+                <li>
+                    <a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i
+                            class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i
+                            class="fa fa-external-link"></i></span></a></li>
+                <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i
+                        class="fa fa-external-link"></i></span></a></li>
+                <li><a href="https://github.com/9bow"><i class="fa fa-github text-aqua"></i> <span>GitHub/9bow <i
+                        class="fa fa-external-link"></i></span></a></li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                품사 빈도 관리
+                <small>Grammar Frequency</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="./"><i class="fa fa-dashboard"></i> 홈</a></li>
+                <li class="active">품사 빈도 관리</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div class="box">
+                        <div class="box-body">
+                            <p><strong>[사용법]</strong> 올리기 / 내려받기 버튼을 이용하여 품사 빈도를 올리거나 내려받을 수 있습니다. 또한, 각 시작 품사 / 다음 품사 및
+                                빈도 값을 클릭하여 값을 변경할 수 있습니다.</p>
+                            <div class="row btn-row">
+                                <div class="pull-left">
+                                    <div class="btn-group">
+                                        <button id="dictUploadBtn" class="btn btn-primary btn-flat"
+                                                data-target="#dictUploadModal"><i class="fa fa-upload"></i> 올리기
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a href="/grammar/in/download" class="btn btn-primary btn-flat"><i
+                                                class="fa fa-download"></i> 내려받기</a>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <div class="btn-group">
+                                        <button id="dictAddItemBtn" type="button" class="btn btn-danger btn-flat"><i
+                                                class="fa fa-plus-circle"></i> 등록
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div id="dictTable" class="table table-bordered table-hover"></div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            Designed by <a href="https://adminlte.io">Almsaeed Studio</a>, <strong>AdminLTE</strong> 2.4.0
+        </div>
+        <a href="http://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-footer">KOMORAN
+            형태소 분석기</a>를 위해 <a href="https://github.com/9bow">9bow</a>가 개발하였습니다.
+    </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- Modal - Upload Dict File -->
+<div id="dictUploadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dictUploadModalTitle">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="dictUploadModalTitle">사전 파일 올리기</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>아래 버튼을 눌러 사전 파일을 올려주세요.</p>
+                        <p><i class="fa fa-exclamation-triangle text-red"></i> 주의하세요! 기존 사전은 <b class="text-red">모두
+                            삭제</b>됩니다. 기존 사전을 반드시 <a href="/grammar/in/download"><i class="fa fa-download"></i> 내려받기</a>
+                            해주세요.</p>
+                        <input id="dictUploadFile" type="file" name="file" title="사전 파일을 선택해주세요.">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
+                <button id="dictUploadBtnInModal" type="button" class="btn btn-primary btn-flat" disabled>올리기</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- /Modal - Upload Dict File -->
+
+<!-- Modal - Add Item -->
+<div id="dictAddItemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dictAddItemModalTitle">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="dictAddItemModalTitle">새로운 단어 등록하기</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>시작 품사</label>
+                            <select id="dictAddItemModalStartSelect" name="start" class="form-control "
+                                    style="width: 100%;">
+                                <option value="">--- 다음 품사를 선택해주세요 ---</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>다음 품사</label>
+                            <select id="dictAddItemModalNextSelect" name="next" class="form-control "
+                                    style="width: 100%;">
+                                <option value="">--- 다음 품사를 선택해주세요 ---</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>빈도</label>
+                            <input type="text" id="dictAddItemModalTfInput" name="tf" class="form-control" value="0"
+                                   style="width: 100%;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">닫기</button>
+                <button id="dictAddItemBtnInModal" type="button" class="btn btn-primary btn-flat">등록하기</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- /Modal - Add Item -->
+
+<!-- jQuery 3 -->
+<script src="/libs/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.12.1 -->
+<script src="/libs/jquery-ui/jquery-ui.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="/libs/jquery-fileupload/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/libs/jquery-fileupload/jquery.fileupload.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
+<!-- Tabulator -->
+<script src="/libs/tabulator/dist/js/tabulator.min.js"></script>
+<!-- SlimScroll -->
+<script src="/libs/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/libs/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<!--<script src="/js/demo.js"></script>-->
+<!-- page script -->
+<script>
+  var grammarTable = {};
+  var grammarSearchTable = {};
+  var delIcon = function(value, data, cell, row, options){
+    return "<i class='fa fa-trash'></i>"
+  };
+
+  function redrawTabulator() {
+    setTimeout(function(){ $("#dictTable").tabulator("redraw"); }, 300);
+  }
+
+  // Resizing Table
+  $(document).on("expanded.pushMenu", redrawTabulator);
+  $(document).on("collapsed.pushMenu", redrawTabulator);
+
+  // Dict File Upload
+  $("#dictUploadModal").on("hidden.bs.modal", function() {
+    $("#dictUploadBtnInModal").prop("disabled", true);
+    $("#dictUploadMesgInModal").text("");
+    $("#dictUploadFile").val("");
+  });
+
+  $("#dictUploadBtn").on("click", function() {
+    $("#dictUploadModal").modal("show");
+  });
+
+  $("#dictUploadFile").fileupload({
+    dataType: "json",
+    autoUpload: false,
+    replaceFileInput:false,
+    url: "/grammar/in/upload",
+    add: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", false).text("올리기")
+                                .click(function () {
+                                  $("#dictUploadBtnInModal").prop("disabled", true).text("올리는 중...")
+                                  data.submit();
+                                });
+    },
+    error: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", false).text("올리기");
+      $("#dictUploadMesgInModal").text("");
+      $("#dictUploadFile").val("");
+      alert(e.responseJSON.message);
+    },
+    done: function (e, data) {
+      $("#dictUploadBtnInModal").prop("disabled", true).text('올리기 완료');
+      location.reload();
+    }
+  });
+
+
+  // Add Dict Item
+  $("#dictAddItemModal").on("hidden.bs.modal", function() {
+    $("#dictAddItemModalStartSelect").val("");
+    $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
+    $("#dictAddItemModalTfInput").val(0);
+  });
+
+  $("#dictAddItemBtn").on("click", function() {
+    $("#dictAddItemModal").modal("show");
+  });
+
+  $("#dictAddItemModalTfInput").on("keypress keyup blur",function (event) {
+      $(this).val($(this).val().replace(/[^\d].+/, ""));
+      if ((event.which < 48 || event.which > 57)) {
+          event.preventDefault();
+      }
+  });
+
+  $("#dictAddItemBtnInModal").on("click", addNewItem);
+
+  $("#dictAddItemModalStartSelect").on("keypress", submitOnEnter);
+  $("#dictAddItemModalNextSelect").on("keypress", submitOnEnter);
+  $("#dictAddItemModalTfInput").on("keypress", submitOnEnter);
+
+  function submitOnEnter(e) {
+    if (e.which == 13) {
+      addNewItem();
+    }
+  }
+
+  function addNewItem() {
+    var passStart = false;
+    var passNext = false;
+    var passTf = false;
+
+    if ($("#dictAddItemModalStartSelect").val() === "" || !($("#dictAddItemModalStartSelect").val() in grammarTable)) {
+      $("#dictAddItemModalStartSelect").parent().addClass("has-error");
+      passStart = false;
+    }
+    else {
+      $("#dictAddItemModalStartSelect").parent().removeClass("has-error");
+      passStart = true;
+    }
+
+    if ($("#dictAddItemModalNextSelect").val() === "" || !($("#dictAddItemModalNextSelect").val() in grammarTable)) {
+      $("#dictAddItemModalNextSelect").parent().addClass("has-error");
+      passNext = false;
+    }
+    else {
+      $("#dictAddItemModalNextSelect").parent().removeClass("has-error");
+      passNext = true;
+    }
+
+    if ($("#dictAddItemModalTfInput").val() === "" || $("#dictAddItemModalTfInput").val() == 0
+        || !$.isNumeric($("#dictAddItemModalTfInput").val()) || $("#dictAddItemModalTfInput").val() < 0) {
+      $("#dictAddItemModalTfInput").parent().addClass("has-error");
+      passTf = false;
+    }
+    else {
+      $("#dictAddItemModalTfInput").parent().removeClass("has-error");
+      passTf = true;
+    }
+
+    if (passStart && passNext && passTf) {
+      $.ajax({
+        method: "POST",
+        url: "/grammar/in/item",
+        data: {
+          start: $("#dictAddItemModalStartSelect").val(),
+          next: $("#dictAddItemModalNextSelect").val(),
+          tf: $("#dictAddItemModalTfInput").val()
+          },
+        dataType: "json",
+        success: function (result) {
+          if (result.error) {
+            alert(result.message + " (ERR_GRAMMARIN_E_ADD_0)");
+          }
+          else {
+            $("#dictTable").tabulator("addData", [result.data]);
+            alert("등록되었습니다.");
+            $("#dictAddItemModalStartSelect").prop("selectedIndex", 0);
+            $("#dictAddItemModalNextSelect").prop("selectedIndex", 0);
+            $("#dictAddItemModalTfInput").val(0);
+          }
+        },
+        error: function(e) {
+          alert("등록 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+        }
+      });
+    }
+  }
+
+  $(function () {
+    // Grammar Table
+    var getGrammarTable = function() {
+      var deferred = $.Deferred();
+      $.get({
+        url: "/grammar/type",
+        success: function(result) {
+          grammarTable = result;
+          grammarSearchTable = grammarTable;
+          grammarSearchTable[''] = '[전체]';
+          deferred.resolve(grammarTable);
+        },
+        error: function(result) {
+          deferred.reject(result);
+        }
+      });
+      return deferred.promise();
+    }
+
+
+    getGrammarTable().done(function() {
+      // Add Select Options
+      $.each(grammarTable, function (key, val) {
+        if (key === "") return;
+        $("#dictAddItemModalStartSelect").append($('<option>', {
+          value: key,
+          text : val + "(" + key +")"
+        }));
+        $("#dictAddItemModalNextSelect").append($('<option>', {
+          value: key,
+          text : val + "(" + key +")"
+        }));
+      });
+
+      // Draw Dict Table
+      $("#dictTable").tabulator({
+        ajaxURL: "/grammar/in/list",
+        ajaxSorting: true,
+        ajaxFiltering: true,
+
+        pagination: "remote",
+        paginationSize: 20,
+
+        selectable: false,
+        layout: "fitColumns",
+
+        initialSort:[
+          {
+            column: "start",
+            dir: "asc"
+          },
+        ],
+
+        columns:[
+          {
+            title: "ID",
+            field: "id",
+            visible: false
+          },
+          {
+            title: "시작 품사",
+            field: "start",
+            align: "center",
+            formatter: "lookup",
+            formatterParams: grammarTable,
+            editor:"select",
+            editorParams: grammarTable,
+            sorter: "string",
+            headerFilter: true,
+            headerFilterParams: grammarSearchTable,
+            cellEdited: function(item) {
+              data = item.getData();
+              $.ajax({
+                method: "PUT",
+                url: "/grammar/in/"+ data.id +"/start",
+                data: { start: data.start },
+                dataType: "json",
+                success: function (result) {
+                  if (result.error) {
+                    alert(result.message + " (ERR_GRAMMARIN_E_START_0)");
+                    item.restoreOldValue();
+                  }
+                },
+                error: function(e) {
+                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+                }
+              });
+            }
+          },
+          {
+            title: "다음 품사",
+            field: "next",
+            align: "center",
+            formatter: "lookup",
+            formatterParams: grammarTable,
+            editor:"select",
+            editorParams: grammarTable,
+            sorter: "string",
+            headerFilter: true,
+            headerFilterParams: grammarSearchTable,
+            cellEdited: function(item) {
+              data = item.getData();
+              $.ajax({
+                method: "PUT",
+                url: "/grammar/in/"+ data.id +"/next",
+                data: { next: data.next },
+                dataType: "json",
+                success: function (result) {
+                  if (result.error) {
+                    alert(result.message + " (ERR_GRAMMARIN_E_NEXT_0)");
+                    item.restoreOldValue();
+                  }
+                },
+                error: function(e) {
+                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+                }
+              });
+            }
+          },
+          {
+            title: "빈도",
+            field: "tf",
+            align: "center",
+            sorter: "number",
+            headerFilter: "number",
+            headerFilterFunc: ">=",
+            headerFilterPlaceholder: "기준 빈도(최소값)를 입력해주세요",
+            editor: "input",
+            validator: ["required", "min:0", "numeric"],
+            cellEdited: function(item) {
+              data = item.getData();
+              $.ajax({
+                method: "PUT",
+                url: "/grammar/in/"+ data.id +"/tf",
+                data: { tf: data.tf },
+                dataType: "json",
+                success: function (result) {
+                  if (result.error) {
+                    alert(result.message + " (ERR_GRAMMARIN_E_TF_0)");
+                    item.restoreOldValue();
+                  }
+                },
+                error: function(e) {
+                  alert("수정 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+                }
+              });
+            }
+          },
+          {
+            title: "삭제",
+            formatter: delIcon,
+            headerSort: false,
+            width: 50,
+            minWidth: 40,
+            align: "center",
+            cellClick: function(ev, item) {
+              data = item.getData();
+              $.ajax({
+                method: "DELETE",
+                url: "/grammar/in/"+ data.id,
+                success: function (result) {
+                  if (result.error) {
+                    alert(result.message + " (ERR_GRAMMARIN_DEL_0)");
+                  }
+                  else {
+                    item.getRow().delete();
+                  }
+                },
+                error: function(e) {
+                  alert("삭제 중 에러가 발생했습니다. ("+ e.responseJSON.message +")");
+                }
+              });
+            }
+          }
+        ],
+      });
+    });
+  })
+
+</script>
+</body>
+</html>

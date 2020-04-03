@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>KOMORAN 관리도구</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+    <!-- jQuery UI 1.12.1 -->
+    <link rel="stylesheet" href="/libs/jquery-ui/jquery-ui.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/libs/Ionicons/css/ionicons.min.css">
+    <!-- Tabulator 3.5 -->
+    <link rel="stylesheet" href="/libs/tabulator/dist/css/tabulator.min.css">
+    <link rel="stylesheet" href="/libs/tabulator/dist/css/bootstrap/tabulator_bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Used blue one-->
+    <link rel="stylesheet" href="/css/skins/skin-blue.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/KOMORANAdmin.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>KA</b></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>K</b>OMORAN <b>A</b>dmin</span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <!-- Nothing Here -->
+            </div>
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">분석</li>
+                <li><a href="./analyze.html"><i class="fa fa-search"></i> <span>기본 형태소 분석</span></a></li>
+                <li class="header">보정</li>
+                <li><a href="./dicword.html"><i class="fa fa-book"></i> <span>단어 빈도 관리</span></a></li>
+                <li><a href="./grammarin.html"><i class="fa fa-book"></i> <span>품사 빈도 관리</span></a></li>
+                <li><a href="./dicuser.html"><i class="fa fa-book"></i> <span>사용자 사전 관리</span></a></li>
+                <li><a href="./fwduser.html"><i class="fa fa-book"></i> <span>기분석 사전 관리</span></a></li>
+                <li class="header">비교</li>
+                <li><a href="./compareSentence.html"><i class="fa fa-arrows-h"></i> <span>문장 단위 비교</span></a></li>
+                <li><a href="./compareFile.html"><i class="fa fa-arrows-h"></i> <span>파일 단위 비교</span></a></li>
+                <li class="header">배포</li>
+                <li><a href="./models.html"><i class="fa fa-code"></i> <span>모델 관리 및 배포</span></a></li>
+                <li class="header">참조</li>
+                <li>
+                    <a href="http://www.shineware.co.kr/products/komoran/#demo?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-menu"><i
+                            class="fa fa-desktop text-red"></i> <span>KOMORAN Demo <i
+                            class="fa fa-external-link"></i></span></a></li>
+                <li><a href="https://github.com/shin285/KOMORAN"><i class="fa fa-github text-red"></i> <span>KOMORAN 저장소 <i
+                        class="fa fa-external-link"></i></span></a></li>
+                <li><a href="https://github.com/9bow"><i class="fa fa-github text-aqua"></i> <span>GitHub/9bow <i
+                        class="fa fa-external-link"></i></span></a></li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                KOMORAN 관리 도구
+                <small>Home</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="./"><i class="fa fa-dashboard"></i> 홈</a></li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <i class="fa fa-columns"></i>
+
+                            <h3 class="box-title">KOMORAN 관리 도구 소개</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <p>KOMORAN 관리 도구는 한국어 형태소 분석기인 KOMORAN(KOrean MORphological ANalyzer)을 잘 사용할 수 있게 도와주는
+                                도구입니다.</p>
+                            <p>KOMORAN 관리 도구는 SHINEWARE 팀에서 <a href="https://github.com/shineware/KOMORANAdmin"
+                                                               target="_blank">GitHub 저장소</a>를 통하여 배포 및 관리합니다.</p>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <i class="fa fa-list"></i>
+
+                            <h3 class="box-title">주요 기능</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <p>KOMORAN 관리 도구는 크게 '분석 - 조정 - 비교'의 주기로 사용한 후 '배포'를 할 수 있는 기능을 제공합니다.</p>
+                            <p>각각의 기능은 다음과 같습니다.</p>
+
+                            <h4>분석</h4>
+                            <p>KOMORAN이 기본으로 제공하는 LIGHT 모델로 말뭉치를 직접 형태소 분석할 수 있습니다.</p>
+
+                            <h4>보정</h4>
+                            <p>단어 빈도 관리, 품사 빈도 관리 및 사용자 사전과 기분석 사전 관리 메뉴에서 사용자 모델 생성을 위한 기초 데이터를 생성합니다.</p>
+
+                            <h4>비교</h4>
+                            <p>사용자 모델을 생성하고, KOMORAN 기본 모델과 사용자 모델들 중 2가지를 선택하여 형태소 분석 결과를 비교할 수 있습니다.</p>
+
+                            <h4>배포</h4>
+                            <p>이상의 '분석 - 조정 - 비교' 메뉴를 통해 원하는 분석 결과를 갖는 사용자 모델을 생성하거나 삭제할 수 있습니다.<br/>또한, 보정 메뉴에서 최적화한
+                                각각의 사전들로 생성한 사용자 모델을 적용하는 방법을 안내합니다.</p>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-6">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <i class="fa fa-th"></i>
+
+                            <h3 class="box-title">KOMORAN 소개 및 특징</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <p>KOMORAN은 SHINEWARE 팀에서 연구 및 개발한 한국어 형태소 분석기입니다. 타 형태소 분석기와 달리 여러 어절을 하나의 품사로 분석 가능함으로써
+                                형태소 분석기의 적용 분야에 따라 공백이 포함된 고유명사(영화 제목, 음식점명, 노래 제목, 전문 용어 등)를 더 정확하게 분석할 수 있습니다.</p>
+                            <p>KOMORAN의 주요 특징은 다음과 같습니다.</p>
+                            <ul>
+                                <li>Pure Java
+                                    <ul>
+                                        <li>100% Java로만 개발되었기 때문에 Java가 설치된 환경이라면 어디서든지 사용 가능합니다.</li>
+                                    </ul>
+                                </li>
+                                <li>외부 라이브러리 독립적
+                                    <ul>
+                                        <li>자체 제작한 Library들만을 사용하여 외부 Library와의 의존성 문제가 없습니다.</li>
+                                    </ul>
+                                </li>
+                                <li>경량화
+                                    <ul>
+                                        <li>자소 단위 처리, TRIE 사전 등으로 약 50MB 메모리 상에서도 동작 가능합니다.</li>
+                                    </ul>
+                                </li>
+                                <li>Easy to Use
+                                    <ul>
+                                        <li>Library 적용 후 소스 코드 내 1줄만 추가하여 형태소 분석기를 사용할 수 있습니다.</li>
+                                    </ul>
+                                </li>
+                                <li>사전 관리 용이
+                                    <ul>
+                                        <li>일반 텍스트 파일의 형태로 구성되어 가독성이 높으며 바로 편집이 가능합니다.</li>
+                                    </ul>
+                                </li>
+                                <li>새로운 분석 결과
+                                    <ul>
+                                        <li>타 형태소 분석기와 달리 공백이 포함된 형태소 단위로 분석이 가능합니다.</li>
+                                    </ul>
+                                </li>
+
+                                <p>KOMORAN과 관련된 더 자세한 정보는 <a
+                                        href="https://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&utm_medium=Referral&utm_campaign=url-redirect"
+                                        target="_blank">SHINEWARE 홈페이지</a>
+                                    또는
+                                    <a href="https://docs.komoran.kr?utm_source=komoran-admin&utm_medium=Referral&utm_campaign=url-redirect"
+                                       target="_blank">KOMORAN 문서 사이트</a>에서 얻으실 수 있습니다.</p>
+                            </ul>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <i class="fa fa-book"></i>
+
+                            <h3 class="box-title">LICENSE</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <p>
+                                KOMORAN과 KOMORAN 관리 도구는 Apache License 2.0에 따라 배포되고 있습니다. Apache License 2.0의 전문은 <a
+                                    href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">여기</a>에서 보실 수
+                                있습니다.
+                            </p>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            Designed by <a href="https://adminlte.io">Almsaeed Studio</a>, <strong>AdminLTE</strong> 2.4.0
+        </div>
+        <a href="http://www.shineware.co.kr/products/komoran/?utm_source=komoran-admin&amp;utm_medium=Referral&amp;utm_campaign=komoran-admin-footer">KOMORAN
+            형태소 분석기</a>를 위해 <a href="https://github.com/9bow">9bow</a>가 개발하였습니다.
+    </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+<script src="/libs/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.12.1 -->
+<script src="/libs/jquery-ui/jquery-ui.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="/libs/jquery-fileupload/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/libs/jquery-fileupload/jquery.fileupload.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
+<!-- Tabulator -->
+<script src="/libs/tabulator/dist/js/tabulator.min.js"></script>
+<!-- SlimScroll -->
+<script src="/libs/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/libs/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<!--<script src="/js/demo.js"></script>-->
+<!-- page script -->
+<script>
+</script>
+</body>
+</html>
