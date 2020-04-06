@@ -1,0 +1,30 @@
+.btn-row {
+    margin: 10px 0 10px 0;
+}
+
+.btn-row button {
+    margin: 0 10px 0 10px
+}
+
+div#analyzeDestResult {
+    min-height: 240px;
+}
+
+div#analyzeSrcResult {
+    min-height: 240px;
+}
+
+span.editOldInline {
+    color: red;
+    text-decoration: line-through;
+    font-weight: bold;
+}
+
+span.editNewInline {
+    color: red;
+    font-weight: bold;
+}
+
+span.FilenameGuide {
+    color: red;
+}
