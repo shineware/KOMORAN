@@ -57,7 +57,7 @@ Gradle/Maven 없이 형태소 분석 따라하기
 
   public class App {
     public static void main(String[] args){
-      Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
+      Komoran komoran = new Komoran(DEFAULT_MODEL.EXPERIMENT);
       String strToAnalyze = "대한민국은 민주공화국이다.";
 
       KomoranResult analyzeResultList = komoran.analyze(strToAnalyze);

@@ -643,7 +643,7 @@ public class Komoran implements Cloneable {
      * 형태소 분석 시 사용될 기분석 사전을 로드합니다. </p>
      * 형태소 분석 진행 전에 로드되어야 합니다. </p>
      * <pre>
-     *     Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+     *     Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
      *     komoran.setFWDic("user_data/fwd.user");
      *     KomoranResult komoranResult = komoran.analyze("감기는 자주 걸리는 병이다");
      * </pre>
@@ -685,7 +685,7 @@ public class Komoran implements Cloneable {
      * 형태소 분석 시 사용될 사용자 사전을 로드합니다. </p>
      * 형태소 분석 진행 전에 로드되어야 합니다.
      * <pre>
-     *     Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+     *     Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
      *     komoran.setUserDic("user_date/dic.user");
      *     KomoranResult komoranResult = komoran.analyze("바람과 함께 사라지다를 봤어");
      * </pre>

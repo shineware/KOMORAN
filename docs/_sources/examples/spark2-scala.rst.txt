@@ -36,7 +36,7 @@ KOMORAN을 아직 설치하지 않으셨거나 프로젝트에 포함하는 방�
   import scala.collection.JavaConverters._
 
   object Main {
-    val komoran = new Komoran(DEFAULT_MODEL.LIGHT)
+    val komoran = new Komoran(DEFAULT_MODEL.STABLE)
 
     val getPlainTextUdf: UserDefinedFunction = udf[String, String] { sentence =>
       komoran.analyze(sentence).getPlainText
