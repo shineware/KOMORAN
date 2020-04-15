@@ -1,0 +1,69 @@
+server:
+  address: 127.0.0.1
+  port: 3579
+
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 50MB
+      max-request-size: 50MB
+  datasource:
+    #    url: jdbc:h2:mem:AdminDB;
+    url: jdbc:h2:./AdminDB;
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    database-platform: kr.co.shineware.nlp.komoran.admin.config.CustomH2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+        use_sql_comments: false
+        format_sql: true
+        jdbc:
+          batch_size: 50
+  h2:
+    console:
+      enabled: true
+      path: /console
+      settings:
+        trace: false
+        web-allow-others: false
+
+
+files:
+  default:
+    basedir: defaults/    # should exist under src/main/resources
+  upload:
+    basedir: uploads/     # will be created under Project Root
+  name:
+    dicword: dic.word
+    grammarin: grammar.in
+    dicuser: dic.user
+    fwduser: fwd.user
+    irregular: dic.irregular
+
+komoran:
+  options:
+    numThreads: 4
+
+models:
+  default:
+    basedir: models/
+    corpusdir: corpus_build/
+  model:
+    dir: model/
+
+
+logging:
+  level:
+    kr.co.shineware.nlp.komoran.admin.*: INFO
+    org.springframework: ERROR
+    org.hibernate: ERROR
+    com.zaxxer.hikari.*: ERROR
