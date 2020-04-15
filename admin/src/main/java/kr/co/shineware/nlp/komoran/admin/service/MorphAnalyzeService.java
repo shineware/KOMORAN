@@ -50,7 +50,7 @@ public class MorphAnalyzeService {
 
     MorphAnalyzeService() {
         logger.debug("Init Komoran Model...");
-        komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+        komoran = new Komoran(DEFAULT_MODEL.STABLE);
         logger.debug("Init Komoran Model... DONE");
     }
 

@@ -39,7 +39,7 @@ KOMORAN을 아직 설치하지 않으셨거나 프로젝트에 포함하는 방�
 
     public static void main(String[] args) throws Exception {
 
-      Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+      Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
       komoran.setFWDic("user_data/fwd.user");
       komoran.setUserDic("user_data/dic.user");
 

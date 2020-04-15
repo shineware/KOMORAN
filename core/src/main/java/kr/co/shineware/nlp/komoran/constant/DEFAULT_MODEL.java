@@ -5,7 +5,7 @@ package kr.co.shineware.nlp.komoran.constant;
  * KOMORAN 객체 생성 시 사용됩니다.
  * 사용법 :
  * <pre>
- *     Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
+ *     Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
  * </pre>
  */
 public enum DEFAULT_MODEL {
