@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     // use latest KOMORAN
-    compile project(':core')
+    compile 'com.github.shin285:KOMORAN:3.3.8'
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -49,3 +49,4 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
+

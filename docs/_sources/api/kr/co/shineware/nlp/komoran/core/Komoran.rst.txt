@@ -141,7 +141,7 @@ setFWDic
 
    .. parsed-literal::
 
-      Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+      Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
       komoran.setFWDic("user_data/fwd.user");
       KomoranResult komoranResult = komoran.analyze("감기는 자주 걸리는 병이다");
 
@@ -159,7 +159,7 @@ setUserDic
 
    .. parsed-literal::
 
-      Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+      Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
       komoran.setUserDic("user_date/dic.user");
       KomoranResult komoranResult = komoran.analyze("바람과 함께 사라지다를 봤어");
 

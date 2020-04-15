@@ -19,4 +19,5 @@ include 'services:webservice'
 rootProject.name = 'KOMORAN'
 include 'core'
 include 'admin'
+include 'admin'
 
