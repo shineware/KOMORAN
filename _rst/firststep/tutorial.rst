@@ -92,7 +92,7 @@
 
   public class App {
       public static void main(String[] args) {
-          Komoran komoran = new Komoran(DEFAULT_MODEL.EXPERIMENT);
+          Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
           String strToAnalyze = "대한민국은 민주공화국이다.";
 
           KomoranResult analyzeResultList = komoran.analyze(strToAnalyze);
@@ -107,10 +107,10 @@
       }
   }
 
-10번째 줄에서는 EXPERIMENT 모델을 갖는 ``Komoran`` 객체를 선언하였습니다. 모델의 종류와 설명에 대해서는 이 문서를 참고해주세요.
+10번째 줄에서는 FULL 모델을 갖는 ``Komoran`` 객체를 선언하였습니다. 모델의 종류와 설명에 대해서는 이 문서를 참고해주세요.
 
 .. todo::
-  EXPERIMENT / STABLE 모델의 차이를 설명한 문서를 작성하고, 링크합니다.
+  FULL / LIGHT 모델의 차이를 설명한 문서를 작성하고, 링크합니다.
 
 13번째 줄에서 생성한 ``Komoran`` 객체의 ``analyze()`` 메소드의 인자로 분석할 문장을 전달하고, 그 결과를
 ``KomoranResult`` 객체로 저장합니다. ``KomoranResult`` 객체는 분석 결과를 보여주는 몇 가지 메소드들을 갖고
