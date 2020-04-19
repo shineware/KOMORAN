@@ -7,6 +7,7 @@ import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.util.common.file.FileUtil;
 import kr.co.shineware.util.common.model.Pair;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-//@Ignore
+@Ignore
 public class KomoranTest {
 
     private Komoran komoran;
