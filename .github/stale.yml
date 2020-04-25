@@ -5,12 +5,12 @@ daysUntilClose: 7
 # Issues with these labels will never be considered stale
 exemptLabels:
   - pinned
-  - need follow-up
-  - help wanted
+  - "need follow-up"
+  - "help wanted"
   - bug
   - enhancement
 # Label to use when marking an issue as stale
-staleLabel: auto-colsed
+staleLabel: "close soon"
 # Comment to post when marking an issue as stale. Set to `false` to disable
 markComment: >
   이 이슈에는 오랜기간 활동이 없었습니다.
