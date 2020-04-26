@@ -21,6 +21,7 @@ project.ext {
 }
 
 task makePlugin(type: Zip) {
+    println "Making Elasticsearch Plugin"
     dependsOn(":elasticsearch-plugin:build")
     from {
         configurations.includeCompile.collect {
@@ -29,8 +30,9 @@ task makePlugin(type: Zip) {
             } else {
                 if (!project.elist.contains(it)) {
                     project.elist.add(it)
-                    if (it.name == "core.jar") {
+                    if (it.name == "core.jar" || it.name == "commons-1.0.1.jar" || it.name == "aho-corasick-1.1.0.jar") {
                         include it.name
+                        println "Archiving "+it.name
                     }
                 }
                 return it
@@ -50,10 +52,12 @@ task makePlugin(type: Zip) {
 
 
 dependencies {
+    includeCompile 'com.github.shineware:commons:1.0.1'
+    includeCompile 'com.github.shineware:aho-corasick:1.1.0'
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '8.2.0'
     testCompile group: 'org.apache.lucene', name: 'lucene-test-framework', version: '8.2.0'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.4.1'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.6.2'
     includeCompile project(':core')
     configurations.compile.extendsFrom(configurations.includeCompile)
 }
