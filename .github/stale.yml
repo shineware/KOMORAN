@@ -1,0 +1,20 @@
+# Number of days of inactivity before an issue becomes stale
+daysUntilStale: 60
+# Number of days of inactivity before a stale issue is closed
+daysUntilClose: 7
+# Issues with these labels will never be considered stale
+exemptLabels:
+  - pinned
+  - "need follow-up"
+  - "help wanted"
+  - bug
+  - enhancement
+# Label to use when marking an issue as stale
+staleLabel: "close soon"
+# Comment to post when marking an issue as stale. Set to `false` to disable
+markComment: >
+  이 이슈에는 오랜기간 활동이 없었습니다.
+  이후에도 아무런 활동이 없으면 이 이슈를 닫을 예정입니다. 
+  감사합니다.
+# Comment to post when closing a stale issue. Set to `false` to disable
+closeComment: false
