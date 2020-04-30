@@ -30,12 +30,10 @@ public class AnalyzeIssues {
     //https://github.com/shin285/KOMORAN/issues/119
     public void issue119() {
         KomoranResult komoranResult = this.komoran.analyze("");
-        System.out.println(komoranResult.getTokenList());
-        System.out.println(komoranResult.getPlainText());
-        System.out.println(komoranResult.getResultNodeList());
-        System.out.println(komoranResult.getList());
-        System.out.println(komoranResult.getNouns());
-        System.out.println(komoranResult.getMorphesByTags("NNG", "NA"));
+        Assert.assertEquals(0, komoranResult.getTokenList().size());
+        Assert.assertEquals("", komoranResult.getPlainText());
+        Assert.assertEquals(0, komoranResult.getResultNodeList().size());
+        Assert.assertEquals(0, komoranResult.getList().size());
     }
 
     @Test
