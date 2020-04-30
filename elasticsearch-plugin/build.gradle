@@ -55,8 +55,8 @@ dependencies {
     includeCompile 'com.github.shineware:commons:1.0.1'
     includeCompile 'com.github.shineware:aho-corasick:1.1.0'
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '8.2.0'
-    testCompile group: 'org.apache.lucene', name: 'lucene-test-framework', version: '8.2.0'
+    compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '8.4.0'
+    testCompile group: 'org.apache.lucene', name: 'lucene-test-framework', version: '8.4.0'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.6.2'
     includeCompile project(':core')
     configurations.compile.extendsFrom(configurations.includeCompile)
