@@ -65,6 +65,9 @@ public class KomoranTokenizer extends Tokenizer {
             buffer = br.readLine();
             br.close();
         }
+        if(buffer == null){
+            buffer = "";
+        }
     }
 
     @Override

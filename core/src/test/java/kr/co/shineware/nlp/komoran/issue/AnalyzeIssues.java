@@ -34,6 +34,12 @@ public class AnalyzeIssues {
         Assert.assertEquals("", komoranResult.getPlainText());
         Assert.assertEquals(0, komoranResult.getResultNodeList().size());
         Assert.assertEquals(0, komoranResult.getList().size());
+
+        komoranResult = this.komoran.analyze(null);
+        Assert.assertEquals(0, komoranResult.getTokenList().size());
+        Assert.assertEquals("", komoranResult.getPlainText());
+        Assert.assertEquals(0, komoranResult.getResultNodeList().size());
+        Assert.assertEquals(0, komoranResult.getList().size());
     }
 
     @Test
