@@ -173,8 +173,8 @@ w	SW:10
 봉다리	NNG:6
 최종하	NNP:2
 ×	SW:336	SO:71
-낙안읍성	NNP:11
 국민일보	NNP:10
+낙안읍성	NNP:11
 고로면	NNP:1
 물지랄	NNG:1
 재퍼니즈	NNG:3
@@ -10619,8 +10619,8 @@ Na2CO3	NNG:1
 미들맨	NNG:1
 지라고	EC:1
 유오성	NNP:4
-에구구	IC:2
 제너레이션	NNG:5
+에구구	IC:2
 히오랬다	NA:1
 이발병	NNG:1
 수변	NNG:7
@@ -12270,8 +12270,8 @@ Na2CO3	NNG:1
 윤영식	NNP:2
 파노라마줌	NNG:1
 회천서국민학교	NNP:1
-호소다	NNP:3
 순원	NNP:3	NNG:3
+호소다	NNP:3
 수음	NNG:11
 수은	NNG:46
 본란덴	NNP:28
@@ -16100,9 +16100,9 @@ TV저널	NNP:5
 실점	NNG:100
 중계기	NNG:4
 권정근	NNP:1
-시주	NNG:42
 실전	NNG:86
 쌍쌍	NNG:13
+시주	NNG:42
 써레	NNG:8
 개념하	NNG:1
 뇌연화증	NNG:1
@@ -16319,8 +16319,8 @@ TV저널	NNP:5
 아티스트	NNG:36
 스템	NNG:3
 그린피	NNG:2
-실증	NNG:224
 스텝	NNG:53
+실증	NNG:224
 아티스티	NNG:1
 아티스틱	NNG:1
 폭신폭신	MAG:4
@@ -16571,8 +16571,8 @@ TV저널	NNP:5
 스파	NNP:2	NNG:4
 웬간히	MAG:1
 시책	NNG:133
-메이지	NNP:26
 스판	NNG:3
+메이지	NNP:26
 수부희	NNG:1
 일본국	NNP:4	NNG:1
 스팅	NNP:2	NNG:1
@@ -23283,8 +23283,8 @@ N-포밀디메틸아민	NNG:1
 U.L.신	NNP:1
 얄궂	VA:16
 아선데	EC:1
-나부랭이	NNG:26
 기획부	NNG:45
+나부랭이	NNG:26
 사라제시카	NNP:1
 오연호	NNP:1
 추유엽	NNP:1
@@ -25267,8 +25267,8 @@ M.기요마	NNP:1
 연거	NNG:1
 안색	NNG:71
 도중하차	NNG:33
-명치유신	NNP:7
 안성기	NNP:17
+명치유신	NNP:7
 아셈	NNP:21
 천문군지인	NNG:1
 상제회	NNP:2	NNG:1
@@ -25282,8 +25282,8 @@ M.기요마	NNP:1
 만리동	NNP:7
 독금법	NNG:2
 역관	NNG:15
-전자계산기에	NNP:1
 양력	NNG:59
+전자계산기에	NNP:1
 캄미디어	NNP:1
 화서동	NNP:1
 스탕달	NNP:9
@@ -25491,8 +25491,8 @@ M.기요마	NNP:1
 ㄴ다등만요	EF:1
 양티나무	NNG:2
 정자살문	NNG:2
-야마토	NNP:2
 위트레흐트	NNP:4
+야마토	NNP:2
 메트로포리탄	NNP:1
 공모주	NNG:35
 부리부리	MAG:12	XR:1
@@ -26915,8 +26915,8 @@ M.기요마	NNP:1
 겂	NNG:2
 것	NP:41	NNB:216875	NNG:15	EP:79
 수성구	NNP:10
-조개관자	NNG:2
 겄	EP:245
+조개관자	NNG:2
 스탠리	NNP:28
 검진단	NNG:1
 연결문	NNG:3
@@ -28035,8 +28035,8 @@ BC카드	NNG:4
 왕관	NNG:31
 염량	NNG:2
 안축	NNP:2
-여리	VA:124
 사과나무	NNG:40
+여리	VA:124
 오다	NNP:8
 돌고폴	NNP:2
 녘	NNB:58	NNG:2
@@ -28584,8 +28584,8 @@ BC카드	NNG:4
 양위	NNG:5
 머큐리세이블	NNG:1
 뎌	MM:1
-여미	VV:65
 시바스리갈	NNP:4	NNG:2
+여미	VV:65
 박현미	NNP:3
 어슴	NNG:1
 삐까리	NNG:1
@@ -30455,8 +30455,8 @@ W.K.김	NNP:2
 연겨자	NNG:2
 영석	NNP:1
 빙퇴석	NNG:3
-연곡사	NNP:3
 영선	NNP:161	NNG:11
+연곡사	NNP:3
 엄존	NNG:17
 어쩧	VA:7
 삼두마차	NNG:3
@@ -30845,8 +30845,8 @@ W.K.김	NNP:2
 어린이부	NNG:1
 오비	VV:2	NNP:1	NNG:1
 윤진식	NNP:3
-벼	NNG:316
 왜란	NNP:2	NNG:14
+벼	NNG:316
 낙원빌딩	NNP:1
 벽	NNG:1841
 용기	NNG:1057
@@ -31969,8 +31969,8 @@ W.K.김	NNP:2
 섞	VV:705
 섟	NNG:7
 선	NNP:29	NNB:37	NNG:2402
-원금	NNG:82
 요때	NNG:13
+원금	NNG:82
 스키화	NNG:1
 월권	NNG:10
 오시	NNG:2
@@ -32200,8 +32200,8 @@ W.K.김	NNP:2
 숨	VV:1047	NNG:1830
 영접	NNG:33
 숫	NNP:1	NNG:2
-영정	NNG:58
 얼큰	XR:26
+영정	NNG:58
 외리	NNP:3
 우다	EF:1
 숭	NNP:7	NNG:5
@@ -33608,8 +33608,8 @@ W.K.김	NNP:2
 젊	VA:2749
 촐랑이	NNP:1
 디저트	NNG:22
-이사므	NNP:1
 엄하	VA:154
+이사므	NNP:1
 예총	NNP:2	NNG:5
 알선업	NNG:1
 수상히	MAG:6
@@ -36348,8 +36348,8 @@ p요	EF:1
 인공	NNG:512
 동양그룹	NNP:20
 경기일보	NNP:2
-인골	NNG:8
 앰블란스	NNG:5
+인골	NNG:8
 유랑	NNG:58
 오형	NNG:1
 저탄장	NNG:1
@@ -36399,8 +36399,8 @@ p요	EF:1
 화갱염매	NNG:1
 풋	NNG:3	XPN:92	IC:2
 레모네이드	NNG:11
-우아	XR:179	IC:6
 오호	NNP:1	IC:27
+우아	IC:6	XR:179
 이상억	NNP:1
 자가발전	NNG:6
 우악	MAG:1	XR:20
@@ -37055,8 +37055,8 @@ BK-44	NNG:1
 우익	NNG:159
 훠	NNG:1
 에틸렌	NNG:7
-외침	NNG:161
 훨	MAG:4
+외침	NNG:161
 패왕별희	NNP:3
 자것	NP:1
 운율	NNG:102
@@ -37464,8 +37464,8 @@ BK-44	NNG:1
 아폴리네르	NNP:5
 영은미술관	NNP:1
 태평양산업연구원	NNP:1
-뿜어내	VV:81
 웬수	NNG:48
+뿜어내	VV:81
 원야	NNP:1	NNG:2
 일남	NNG:1
 으로	JKB:157709
@@ -37593,8 +37593,8 @@ BK-44	NNG:1
 오일금속	NNP:1
 월인천강지곡체	NNG:1
 상징화	NNG:1
-일념	NNG:44
 윤미	NNP:40	NNG:1
+일념	NNG:44
 이선복	NNP:1
 쇠죽물	NNG:1
 레어포트	NNG:1
@@ -39434,8 +39434,8 @@ O형	NNG:3
 은장봉	NNP:1
 끄물거리	VV:2
 안진회계법인	NNP:2
-유야	NNP:2
 장땡	NNG:6
+유야	NNP:2
 우파	NNG:54
 임률	NNG:3
 우려먹	VV:10
@@ -39951,8 +39951,8 @@ O형	NNG:3
 육장	MAG:2	NNG:16
 어당께야	EF:1
 오피니언	NNG:18
-의성	NNP:15	NNG:4
 제일제당	NNP:113
+의성	NNP:15	NNG:4
 디즐부	NNG:1
 잘르	VV:2
 월터	NNP:37
@@ -41089,8 +41089,8 @@ O형	NNG:3
 원화	NNG:208
 윷짝	NNG:2
 장벽	NNG:232
-이슬	NNG:155
 멍청이	MAG:2	NNG:23
+이슬	NNG:155
 전태준	NNP:13
 중남부	NNG:4
 털버덕	MAG:6
@@ -43328,8 +43328,8 @@ O형	NNG:3
 은파	NNP:1
 인책	NNG:12
 조기	NP:7	NNG:459
-이체	NNP:8	NNG:159
 제로	NR:73	NNG:69
+이체	NNP:8	NNG:159
 장웅	NNP:3
 점말	NNP:6
 사모예드인	NNG:1
@@ -46773,8 +46773,8 @@ CNN	NNP:5
 컨실러	NNG:1
 회복세	NNG:53
 통쾌감	NNG:3
-피아골	NNP:6
 재희	NNP:1
+피아골	NNP:6
 서광명실	NNP:1
 귀울림	NNG:4
 칼쿨리	NNG:1
@@ -47132,9 +47132,9 @@ DBC	NNP:1
 헤즐타인	NNP:3
 조숙	NNG:32
 베이직	NNG:13
-조수	NNG:80
 주네	NNP:2
 베이지	NNG:33
+조수	NNG:80
 정총	NNG:1
 외뿔소	NNG:4
 제채	NNG:2
@@ -56177,8 +56177,8 @@ TBC	NNP:1
 권광한	NNP:2
 새코미꾸리	NNG:1
 중림동성당	NNP:1
-기무라	NNP:6
 계열사	NNG:326
+기무라	NNP:6
 육친애	NNG:2
 연성국교	NNP:2
 나다나	EC:1
@@ -62899,8 +62899,8 @@ ___	SO:1
 화이자	NNP:1
 찰싹	MAG:36
 효부상	NNG:1
-청동	NNG:58
 체대	NNG:10
+청동	NNG:58
 본산지	NNG:3
 안재봉	NNP:3
 지오바나	NNP:4
@@ -67090,8 +67090,8 @@ TASS통신사	NNP:1
 안정주	NNG:1
 구둣방	NNG:3
 개벽	NNP:4	NNG:187
-밸런스	NNP:1	NNG:31
 그러더니	MAJ:24
+밸런스	NNP:1	NNG:31
 충격	NNG:1199
 충견	NNG:2
 백라이트	NNG:1
@@ -67241,8 +67241,8 @@ TASS통신사	NNP:1
 갯물	NNG:3
 거덜	NNG:29
 라오콘	NNP:8
-각색	NNG:87
 거던	EF:37	EC:13
+각색	NNG:87
 산난뱅이	NNP:3
 초선	NNG:20
 반박문	NNG:11
@@ -69576,8 +69576,8 @@ km²	SW:1
 승호리	NNP:1
 학우낸	NNP:1
 이인석	NNP:3
-격랑	NNG:17
 브래드피트	NNP:2
+격랑	NNG:17
 구드리	NNP:1
 골안개	NNG:3
 초채	NNG:1
@@ -69586,8 +69586,8 @@ km²	SW:1
 이인성	NNP:58
 장생현	NNP:5
 이정기	NNP:2
-초창	NNG:13
 공업수학	NNG:1
+초창	NNG:13
 가찹	VA:3
 이인섭	NNP:1
 염세주의자	NNG:3
@@ -70964,8 +70964,8 @@ km²	SW:1
 출석	NNG:197
 정동영	NNP:7
 남포항	NNP:2
-거야	EF:1
 고러	VV:1	XR:1
+거야	EF:1
 경방	NNP:1	NNG:1
 추수	NNP:1	NNG:83
 미니어처	NNG:6
@@ -71892,8 +71892,8 @@ IPAL계산기용일본어기본사서	NNP:1
 미륵보살	NNP:1
 관련	NNG:6081
 칩거	NNG:28
-격식	NNG:103
 거진	NNP:6	MAG:34	NNG:1
+격식	NNG:103
 시네이터	NNG:1
 공리	NNP:1	NNG:84
 수정판	NNG:2
@@ -73197,8 +73197,8 @@ IPAL계산기용일본어기본사서	NNP:1
 퇴계원면	NNP:1
 산포도	NNG:5
 결재	NNG:93
-하이구	NNP:1	IC:1
 목적어	NNG:31
+하이구	NNP:1	IC:1
 수중보	NNG:3
 구냥	NNG:1
 시뻐개지	VV:1
@@ -77770,8 +77770,8 @@ G17사	NNP:1
 박봉향	NNP:1
 남현동	NNP:4
 치료책	NNG:3
-건더기	NNG:12
 남해안	NNP:27	NNG:7
+건더기	NNG:12
 타피에스	NNP:1
 구완	NNG:9
 정혜선	NNP:3
@@ -79889,9 +79889,9 @@ G17사	NNP:1
 도로교	NNG:1
 마른과자	NNG:1
 조록싸리	NNG:2
-기만	NNG:122
 한의사	NNG:110
 현대사	NNG:194
+기만	NNG:122
 캐츠	NNP:8	NNG:1
 에리에	NNP:1
 기막	NNG:1
@@ -80165,8 +80165,8 @@ G17사	NNP:1
 고임돌	NNG:8
 황인종	NNG:15
 교황	NNG:163
-하이진	NNP:1
 기무	NNG:18
+하이진	NNP:1
 교화	NNG:102
 구티	NNP:1
 빠리꾼	NNG:1
@@ -80988,8 +80988,8 @@ GE사	NNP:1
 호강허	VV:1
 브룩우트네	NNP:1
 우걱우걱	MAG:2
-꺽꺽	MAG:6
 이중섭	NNP:28
+꺽꺽	MAG:6
 지리학회	NNG:3
 동네방네	NNG:16
 취재단	NNG:7
@@ -81152,8 +81152,8 @@ GE사	NNP:1
 한자식	NNG:5
 내무부령	NNG:1
 산해경	NNP:3
-껄껄	MAG:57	XR:2
 케잌	NNG:8
+껄껄	MAG:57	XR:2
 기산	NNP:3	NNG:4
 모직물	NNG:12
 현대증	NNP:1
@@ -90055,8 +90055,8 @@ PR통	NNG:2
 아가베	NNP:1
 성일동	NNP:1
 통념	NNG:219
-나돌	VV:183
 지우개	NNG:44
+나돌	VV:183
 갈치속젓	NNG:1
 세영이	NNP:3
 제제서열	NNG:1
@@ -90420,8 +90420,8 @@ U자곡	NNG:2
 지식인상	NNG:5
 헤어초크	NNP:4
 령도자	NNG:1
-RWC텍스트데이터베이스제2판	NNP:1
 한국문화사	NNP:1
+RWC텍스트데이터베이스제2판	NNP:1
 지기스문트	NNP:1
 퇴각	NNG:30
 포드강	NNP:1
@@ -92468,8 +92468,8 @@ SANDOZ	NNP:1
 다학제	NNG:1
 드리븐	NNP:2
 낫살	NNG:4
-통산	NNG:78
 신학원	NNG:2
+통산	NNG:78
 강석진	NNP:3
 삥그르르	MAG:1
 박성래	NNP:9
@@ -94474,8 +94474,8 @@ e-mail	NNG:2
 맥시엄	NNG:2
 녹두	NNP:3	NNG:48
 신행철	NNP:1
-냉증	NNG:78
 데미무어	NNP:1
+냉증	NNG:78
 놀덴	NNP:2
 내차	VV:2
 요코하마시	NNP:2
@@ -98343,8 +98343,8 @@ P.S.조	NNP:1
 패령	NNG:1
 팔모	NNG:7
 팔목	NNG:65
-아트로몰	NNP:1
 농짱	NNG:1
+아트로몰	NNP:1
 전무웅	NNP:1
 구만요	EF:33
 패렴	NNG:1
@@ -99967,8 +99967,8 @@ P.S.조	NNP:1
 정교분리	NNG:1
 댁댁댁	MAG:1
 정트리오	NNP:7
-노후	NNG:147
 누에	NNG:128
+노후	NNG:147
 머리칼	NNG:223
 칸막이	NNG:88
 삼거리대장간	NNP:4
@@ -100451,8 +100451,8 @@ P.S.조	NNP:1
 단골	NNG:183
 편도	NNG:32
 내랑이	NNP:1
-포구	NNP:4	NNG:183
 약정서	NNG:32
+포구	NNP:4	NNG:183
 단공	NNG:1
 다구	EF:285	EC:322
 티치아노	NNP:1
@@ -105149,8 +105149,8 @@ SBC그룹	NNP:1
 사립고	NNG:17
 디딤새	NNG:1
 대양	NNP:4	NNG:26
-에노시마	NNP:22
 포주	NNG:59
+에노시마	NNP:22
 신라본기	NNP:2
 단종	NNP:59	NNG:10
 동조영기	NNP:1
@@ -106817,8 +106817,8 @@ SBC그룹	NNP:1
 와신상담	NNG:11
 열목어	NNG:2
 폐허	NNP:5	NNG:165
-덴샤	NNG:1
 살려주	VV:1
+덴샤	NNG:1
 관전평	NNG:8
 커트라인	NNG:8
 라구나	NNP:2
@@ -107621,8 +107621,8 @@ SBC그룹	NNP:1
 취임식장	NNG:1
 아른하임	NNP:1
 방송망	NNG:6
-도미	NNP:11	NNG:17
 오호어	IC:1
+도미	NNP:11	NNG:17
 되뇌	VV:66
 당풍	NNG:1
 매각의뢰	NNG:1
@@ -108814,8 +108814,8 @@ SBC그룹	NNP:1
 오호오	IC:1
 시무28조	NNP:1
 발신자	NNG:13
-게르마늄	NNG:5
 되려	MAG:10
+게르마늄	NNG:5
 갱생원	NNG:1
 서견대	NNP:2
 필독	NNG:4
@@ -110222,8 +110222,8 @@ H.G.웰스	NNP:1
 동정	NNP:47	NNG:376
 두리	NNG:3
 공군칠관학교	NNP:1
-돈부리	NNP:3	IC:2
 하리	VV:4	NNP:43	NNG:3
+돈부리	NNP:3	IC:2
 동접	NNG:2
 살리기	NNG:2
 식량청	NNG:2
@@ -111682,8 +111682,8 @@ H.G.웰스	NNP:1
 두송	NNG:1
 내소주방	NNG:14
 등기	NNG:196
-마이니치	NNP:19	NNG:1
 세러모니	NNG:2
+마이니치	NNP:19	NNG:1
 뒤란	NNG:61
 해비	NNG:1
 향로	NNG:27
@@ -112167,8 +112167,8 @@ H.G.웰스	NNP:1
 산림주	NNG:1
 숭검초	NNG:1
 엄소용	NNP:7
-돈푼	NNG:23
 해사	NNP:20	NNG:6	XR:7
+돈푼	NNG:23
 뜨레아	NNP:1
 피이	IC:11
 피익	MAG:5
@@ -113063,8 +113063,8 @@ AFKN	NNP:3
 혈담	NNG:7
 소산물	NNG:11
 강역고	NNG:1
-학제	NNG:42
 은행차	NNG:1
+학제	NNG:42
 허모	NNG:1
 허목	NNP:11
 여보슈	IC:9
@@ -115875,8 +115875,8 @@ A.C.박	NNP:1
 헌종	NNP:15
 허줄	XR:1
 값어치	NNG:31
-혈세	NNG:9
 속삭임	NNG:24
+혈세	NNG:9
 검정콩알	NNG:1
 치마장안	NNG:2
 하회	NNP:8	NNG:14
@@ -117507,8 +117507,8 @@ B-50	NNG:1
 형용사어	NNG:2
 화색	NNG:14
 일기장	NNG:66
-느슨하	VA:1
 ㄴ런대는	ETM:1
+느슨하	VA:1
 샤프트	NNG:5
 화상	NNG:228
 광주대	NNP:3
@@ -125593,8 +125593,8 @@ EDR코퍼스	NNP:3
 혼효림	NNG:4
 북바위	NNG:1
 성취욕	NNG:6
-희화	NNG:47
 육일전쟁	NNP:1
+희화	NNG:47
 조대현	NNP:1
 염보현	NNP:3
 산보로	NNG:1
@@ -126543,8 +126543,8 @@ EDR코퍼스	NNP:3
 하나꼬	NNP:2
 원기왕성	XR:1
 윤명철	NNP:1
-문의(	SS:1
 라믄	EC:1
+문의(	SS:1
 신문명	NNG:1
 복고기	NNG:1
 소식지	NNG:17
@@ -128999,8 +128999,8 @@ C.S.리	NNP:1
 생면부지	NNG:22
 진강이	NNP:1
 워드프로세싱	NNG:6
-타모쯔	NNP:1
 비즈니스맨	NNG:38
+타모쯔	NNP:1
 김장밭	NNG:1
 반듯반듯	MAG:7
 김일성	NNP:452
@@ -132775,8 +132775,8 @@ C.R.최	NNP:1
 박준성	NNP:6
 관광성	NNG:4
 유부녀	NNG:30
-르골	NNP:1
 그르니까	MAJ:42
+르골	NNP:1
 지국주	NNP:1
 법률안	NNG:25
 맥클라글렌	NNP:1
@@ -134682,8 +134682,8 @@ TASS	NNP:1
 접속문	NNG:116
 막내	NNG:213
 매국	NNG:15
-료코	NNP:8
 뢰트	NNG:1
+료코	NNP:8
 죽어삐면	NA:1
 맷데이먼	NNP:7
 만끽	NNG:105
@@ -139234,15 +139234,15 @@ n각형	NNG:3
 겨릅대	NNG:2
 어쨌건	MAG:4
 동성왕	NNP:6
-가마쿠라	NNP:3
 ㄴ대거나	EC:3
+가마쿠라	NNP:3
 망청	MAG:1
 몫돈	NNG:6
 즉흥곡	NNG:2
 주요인	NNG:6
 삼도도순변사	NNG:1
-인플라	NNG:1
 고슴도치	NNG:17
+인플라	NNG:1
 미군기	NNG:2
 구순주	NNP:1	NNG:6
 명록	NNG:1
@@ -141914,8 +141914,8 @@ CK-3012	NNG:1
 오베른	NNP:2
 ㄹ란다고	EC:3
 무독	NNG:2
-무도	NNG:17	XR:14
 서대원	NNP:1
+무도	NNG:17	XR:14
 오베르	NNP:5
 명줄	NNG:8
 문덕	NNP:1	NNG:2
@@ -144010,8 +144010,8 @@ IPAL사전	NNP:5
 수원이악우	NNG:1
 문속	NNG:1
 외폭발	NNG:1
-공통음	NNP:1
 챔피언스	NNP:1	NNG:15
+공통음	NNP:1
 이혁진	NNP:4
 끼이익	MAG:2
 건설과	NNG:5
@@ -148316,8 +148316,8 @@ AT&T사	NNP:1
 거무틱틱	XR:2
 고동치	VV:6
 분석문	NNG:1
-기찌미몽	NNP:1
 미역	NNG:82
+기찌미몽	NNP:1
 밍겔라	NNP:2
 친잠례	NNG:1
 웨이러	NNG:2
@@ -148716,9 +148716,9 @@ AT&T사	NNP:1
 사르나트	NNP:3
 파리채	NNG:6
 과수원집	NNG:1
-어우러지	VV:248
 미점	NNG:2
 불사르	VV:69
+어우러지	VV:248
 허준구	NNP:2
 에피그라프	NNG:1
 동부이촌동	NNP:3
@@ -149138,8 +149138,8 @@ AT&T사	NNP:1
 오무룩히	MAG:2
 반월	NNP:6	NNG:4
 기춘이	NNP:1
-버림	NNG:3
 스텐바이	NNG:1
+버림	NNG:3
 반원	NNG:57
 부산기상청	NNP:1
 최영기	NNP:1
@@ -149527,8 +149527,8 @@ AT&T사	NNP:1
 보글	MAG:2
 무위불언	NNG:1
 박준	NNP:6
-본궁	NNG:6
 끝처리	NNG:6
+본궁	NNG:6
 보근	NNP:1
 강창훈	NNP:1
 신유대훈	NNP:1
@@ -151702,8 +151702,8 @@ Kbps	SW:1
 반허	VV:1
 수렵도	NNG:2
 법운	NNP:2
-발하	VV:117
 광운대학교	NNP:2
+발하	VV:117
 법우	NNG:2
 한국오페라단	NNP:1
 손정완	NNP:1
@@ -154079,8 +154079,8 @@ Kbps	SW:1
 의무관	NNG:6
 복중	NNG:3
 부령	NNP:2	NNG:6
-텟카동	NNP:3
 레프리젠테이션	NNG:1
+텟카동	NNP:3
 애틀랜타시	NNP:2
 문재구	NNP:1
 복주	NNP:2	NNG:1
@@ -154517,8 +154517,8 @@ Kbps	SW:1
 계룡사	NNP:2
 비석거리	NNP:1
 불리	VV:1514	NNG:247	XR:116
-예스맨	NNG:7
 레이다	NNG:8
+예스맨	NNG:7
 2?13	NNP:1
 모랫속	NNG:1
 현수정	NNP:1
@@ -160784,8 +160784,8 @@ N-디메틸메탄아미드	NNG:1
 뽑기	NNG:8
 송정숙	NNP:3
 의미있	VA:1
-마린랜드	NNP:1	NNG:1
 어쩌고저쩌구	MAG:1
+마린랜드	NNP:1	NNG:1
 제약사	NNG:24
 명성왕후	NNP:5
 딩굴딩굴	MAG:1
@@ -160995,8 +160995,8 @@ N-디메틸메탄아미드	NNG:1
 민자당사	NNP:1	NNG:5
 바깥담	NNG:1
 절제력	NNG:1
-진도개	NNG:3
 뻔뻔	XR:99
+진도개	NNG:3
 계몽주의자	NNG:3
 버선짝	NNG:1
 뺀들뺀들	MAG:1
@@ -163852,8 +163852,8 @@ WGBH­TV	NNP:2
 연재물	NNG:6
 관할관	NNG:1
 평의전	NNP:1
-우나동	NNP:1
 말썽피우	VV:1
+우나동	NNP:1
 금호동	NNP:17
 김삼대자	NNP:1
 조민선	NNP:1
