@@ -537,3 +537,6 @@ remove : ㅁㅕㄴ/NNG ㅇㅔㅅㅓ
 
 key : ㄷㅗ
 remove : ㅈㅜㅇ
+
+key : ㅇㅣ
+remove : ㅇㅣ/NP ㅇㅣ

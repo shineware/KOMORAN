@@ -27,6 +27,12 @@ public class AnalyzeIssues {
     }
 
     @Test
+    //https://github.com/shineware/KOMORAN/issues/118
+    public void issue118() {
+        assertEqualsOfAnalyzeResult("입니다.", "이/VCP ㅂ니다/EF ./SF");
+    }
+
+    @Test
     //https://github.com/shin285/KOMORAN/issues/119
     public void issue119() {
         KomoranResult komoranResult = this.komoran.analyze("");
