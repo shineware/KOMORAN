@@ -245,9 +245,9 @@ public class Komoran implements Cloneable {
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
 
-        if(sentence.length() == 0){
+        if(sentence == null || sentence.length() == 0){
             return new ArrayList<>(
-                    Collections.singletonList(new KomoranResult(new ArrayList<>(), sentence))
+                    Collections.singletonList(new KomoranResult(new ArrayList<>(), ""))
             );
         }
 
