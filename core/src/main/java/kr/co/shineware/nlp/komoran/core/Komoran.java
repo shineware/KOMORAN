@@ -245,6 +245,12 @@ public class Komoran implements Cloneable {
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
 
+        if(sentence == null || sentence.length() == 0){
+            return new ArrayList<>(
+                    Collections.singletonList(new KomoranResult(new ArrayList<>(), ""))
+            );
+        }
+
         Lattice lattice = new Lattice(this.resources, this.userDic, nbest, combinationRuleChecker);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼

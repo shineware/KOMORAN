@@ -2,6 +2,7 @@ package kr.co.shineware.nlp.komoran.issue;
 
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,28 @@ public class AnalyzeIssues {
         //TODO : https://github.com/shineware/KOMORAN/issues/94 재밌/VA와 재미있/VA에 대한 올바른 분석 결과가 아님. 테스트 케이스 수정 필요
         assertEqualsOfAnalyzeResult("업데이트했어요ㅋㅋㅋㅋ 재밌네요", "업데이트했어요ㅋㅋㅋㅋ/NA 재미있/VA 네요/EC");
         assertEqualsOfAnalyzeResult("하ㅎ 재밌었어요 캡틴마블", "하/NNG ㅎ/XSV 재미있/VA 었/EP 어요/EC 캡틴/NNG 마블/NNG");
+    }
+
+    @Test
+    //https://github.com/shineware/KOMORAN/issues/118
+    public void issue118() {
+        assertEqualsOfAnalyzeResult("입니다.", "이/VCP ㅂ니다/EF ./SF");
+    }
+
+    @Test
+    //https://github.com/shin285/KOMORAN/issues/119
+    public void issue119() {
+        KomoranResult komoranResult = this.komoran.analyze("");
+        Assert.assertEquals(0, komoranResult.getTokenList().size());
+        Assert.assertEquals("", komoranResult.getPlainText());
+        Assert.assertEquals(0, komoranResult.getResultNodeList().size());
+        Assert.assertEquals(0, komoranResult.getList().size());
+
+        komoranResult = this.komoran.analyze(null);
+        Assert.assertEquals(0, komoranResult.getTokenList().size());
+        Assert.assertEquals("", komoranResult.getPlainText());
+        Assert.assertEquals(0, komoranResult.getResultNodeList().size());
+        Assert.assertEquals(0, komoranResult.getList().size());
     }
 
     @Test
