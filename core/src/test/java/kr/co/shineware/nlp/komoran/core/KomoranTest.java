@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Ignore
 public class KomoranTest {
@@ -33,8 +34,7 @@ public class KomoranTest {
         int totalElapsedTime = 0;
         int step = 0;
         while (true) {
-            FileInputStream fileInputStream = new FileInputStream("stress.test");
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("stress.test")), StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(inputStreamReader);
             String line;
             long begin, end;
@@ -214,13 +214,13 @@ public class KomoranTest {
     }
 
     @Test
-    public void debugScore(){
-        List<String> analyzeMorphList = Arrays.asList("거리","에","는");
-        List<String> analyzePosList = Arrays.asList("NNG","JKB","JX");
+    public void debugScore() {
+        List<String> analyzeMorphList = Arrays.asList("거리", "에", "는");
+        List<String> analyzePosList = Arrays.asList("NNG", "JKB", "JX");
         System.out.println(this.komoran.scoreDebug(analyzeMorphList, analyzePosList));
 
-        analyzeMorphList = Arrays.asList("거","리","에","는");
-        analyzePosList = Arrays.asList("NNB","XSN","JKB","JX");
+        analyzeMorphList = Arrays.asList("거", "리", "에", "는");
+        analyzePosList = Arrays.asList("NNB", "XSN", "JKB", "JX");
         System.out.println(this.komoran.scoreDebug(analyzeMorphList, analyzePosList));
 
     }
