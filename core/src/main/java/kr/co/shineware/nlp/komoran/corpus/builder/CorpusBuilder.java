@@ -60,6 +60,7 @@ public class CorpusBuilder {
 
     private Set<String> irrExclusiveSet;
     private Map<String, Map<String, Integer>> correctGrammarMap;
+    private boolean hasCorrectGrammar = false;
 
     public CorpusBuilder() {
 
@@ -73,6 +74,7 @@ public class CorpusBuilder {
 
         irrExclusiveSet = new HashSet<>();
         correctGrammarMap = new HashMap<>();
+        hasCorrectGrammar = false;
     }
 
     /**
@@ -374,13 +376,21 @@ public class CorpusBuilder {
     private void appendGrammar(List<Pair<String, String>> answerList) {
         String prevPos = SYMBOL.BOE;
         for (Pair<String, String> wordPosPair : answerList) {
-            if (this.correctGrammarMap.getOrDefault(prevPos, new HashMap<>()).containsKey(wordPosPair.getSecond())) {
+            if (hasCorrectGrammar) {
+                if (this.correctGrammarMap.getOrDefault(prevPos, new HashMap<>()).containsKey(wordPosPair.getSecond())) {
+                    this.grammar.append(prevPos, wordPosPair.getSecond());
+                }
+            } else {
                 this.grammar.append(prevPos, wordPosPair.getSecond());
             }
             prevPos = wordPosPair.getSecond();
         }
         String endPos = SYMBOL.EOE;
-        if (this.correctGrammarMap.getOrDefault(prevPos, new HashMap<>()).containsKey(endPos)) {
+        if (hasCorrectGrammar) {
+            if (this.correctGrammarMap.getOrDefault(prevPos, new HashMap<>()).containsKey(endPos)) {
+                this.grammar.append(prevPos, endPos);
+            }
+        } else {
             this.grammar.append(prevPos, endPos);
         }
     }
@@ -502,5 +512,6 @@ public class CorpusBuilder {
         correctGrammarMap = new HashMap<>();
         Grammar grammar = new Grammar(filename);
         correctGrammarMap = grammar.getGrammar();
+        hasCorrectGrammar = true;
     }
 }
