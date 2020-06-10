@@ -13,6 +13,7 @@ public class Training {
     public void training() {
         CorpusBuilder corpusBuilder = new CorpusBuilder();
         corpusBuilder.setExclusiveIrrRule("resources/irrDic.remove.txt");
+        corpusBuilder.setIncludeGrammar("resources/correct_grammar.in");
         //for windows
 //        corpusBuilder.buildPath("D:\\shineware\\data\\komoran_training","refine.txt");
         //for mac

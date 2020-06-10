@@ -159,10 +159,12 @@ public class ModelBuilder {
 			
 			//전이 확률
 			if(prevPosId != -1){
-//				if(this.transition.get(prevPosId, posId) == null){
-//					System.out.println(irr);
-//					System.out.println(convert);
-//				}
+				if(this.transition.get(prevPosId, posId) == null){
+					System.out.println(irr);
+					System.out.println(convert);
+					System.out.println(this.table.getPos(prevPosId)+" and "+this.table.getPos(posId));
+					continue;
+				}
 				score += this.transition.get(prevPosId, posId);
 			}
 			prevPosId = posId;
