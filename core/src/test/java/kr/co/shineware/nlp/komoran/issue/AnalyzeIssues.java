@@ -23,13 +23,13 @@ public class AnalyzeIssues {
         assertEqualsOfAnalyzeResult("거리에는", "거리/NNG 에/JKB 는/JX");
         //TODO : https://github.com/shineware/KOMORAN/issues/94 재밌/VA와 재미있/VA에 대한 올바른 분석 결과가 아님. 테스트 케이스 수정 필요
         assertEqualsOfAnalyzeResult("업데이트했어요ㅋㅋㅋㅋ 재밌네요", "업데이트했어요ㅋㅋㅋㅋ/NA 재미있/VA 네요/EC");
-        assertEqualsOfAnalyzeResult("하ㅎ 재밌었어요 캡틴마블", "하/NNG ㅎ/XSV 재미있/VA 었/EP 어요/EC 캡틴/NNG 마블/NNG");
+        assertEqualsOfAnalyzeResult("하ㅎ 재밌었어요 캡틴마블", "하ㅎ/NA 재미있/VA 었/EP 어요/EC 캡틴/NNG 마블/NNG");
     }
 
     @Test
     //https://github.com/shineware/KOMORAN/issues/118
     public void issue118() {
-        assertEqualsOfAnalyzeResult("입니다.", "이/VCP ㅂ니다/EF ./SF");
+        assertEqualsOfAnalyzeResult("감기입니다.", "감기/NNG 이/VCP ㅂ니다/EF ./SF");
     }
 
     @Test
@@ -116,11 +116,11 @@ public class AnalyzeIssues {
         Assert.assertNotEquals(unexpected, nBestAnalyzeResult);
     }
 
-    private void assertEqualsOfAnalyzeResult(String input, String unexpected) {
+    private void assertEqualsOfAnalyzeResult(String input, String expected) {
         String analyzeResult = komoran.analyze(input).getPlainText();
         String nBestAnalyzeResult = komoran.analyze(input, 2).get(0).getPlainText();
         Assert.assertEquals(analyzeResult, nBestAnalyzeResult);
-        Assert.assertEquals(unexpected, analyzeResult);
-        Assert.assertEquals(unexpected, nBestAnalyzeResult);
+        Assert.assertEquals(expected, analyzeResult);
+        Assert.assertEquals(expected, nBestAnalyzeResult);
     }
 }
