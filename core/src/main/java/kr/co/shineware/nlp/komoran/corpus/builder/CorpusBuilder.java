@@ -59,6 +59,7 @@ public class CorpusBuilder {
     private Grammar grammar;
 
     private Set<String> irrExclusiveSet;
+    private Map<String, Map<String, Integer>> correctGrammarMap;
 
     public CorpusBuilder() {
 
@@ -71,6 +72,7 @@ public class CorpusBuilder {
         grammar = new Grammar();
 
         irrExclusiveSet = new HashSet<>();
+        correctGrammarMap = new HashMap<>();
     }
 
     /**
@@ -231,26 +233,7 @@ public class CorpusBuilder {
     private void build(List<String> lines) {
         try {
             for (String line : lines) {
-                int lineCount = 0;
-                lineCount += 1;
-                line = this.refineFormat(line);
-                if (line.length() == 0) {
-                    continue;
-                }
-
-                ProblemAnswerPair paPair = null;
-                try {
-                    paPair = this.corpusParser.parse(line);
-                } catch (FileFormatException e) {
-                    System.err.println(lineCount + " : " + line);
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-                this.appendWordDictionary(paPair.getAnswerList());
-
-                this.appendIrregularDictionary(paPair);
-
-                this.appendGrammar(paPair.getAnswerList());
+                appendResources(line);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,38 +249,33 @@ public class CorpusBuilder {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
             String line;
-            int lineCount = 0;
-
             while ((line = br.readLine()) != null) {
-                lineCount += 1;
-                line = this.refineFormat(line);
-                if (lineCount < 10) {
-                    System.out.println(line);
-                }
-                if (line.length() == 0) {
-                    continue;
-                }
-
-                ProblemAnswerPair paPair = null;
-                try {
-                    paPair = this.corpusParser.parse(line);
-                } catch (FileFormatException e) {
-                    System.err.println(lineCount + " : " + line);
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-                this.appendWordDictionary(paPair.getAnswerList());
-
-                this.appendIrregularDictionary(paPair);
-
-                this.appendGrammar(paPair.getAnswerList());
+                appendResources(line);
             }
-
             br.close();
-            br = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void appendResources(String line) {
+        line = this.refineFormat(line);
+        if (line.length() == 0) {
+            return;
+        }
+
+        ProblemAnswerPair paPair = null;
+        try {
+            paPair = this.corpusParser.parse(line);
+        } catch (FileFormatException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        this.appendWordDictionary(paPair.getAnswerList());
+
+        this.appendIrregularDictionary(paPair);
+
+        this.appendGrammar(paPair.getAnswerList());
     }
 
     /**
@@ -396,11 +374,15 @@ public class CorpusBuilder {
     private void appendGrammar(List<Pair<String, String>> answerList) {
         String prevPos = SYMBOL.BOE;
         for (Pair<String, String> wordPosPair : answerList) {
-            this.grammar.append(prevPos, wordPosPair.getSecond());
+            if (this.correctGrammarMap.getOrDefault(prevPos, new HashMap<>()).containsKey(wordPosPair.getSecond())) {
+                this.grammar.append(prevPos, wordPosPair.getSecond());
+            }
             prevPos = wordPosPair.getSecond();
         }
         String endPos = SYMBOL.EOE;
-        this.grammar.append(prevPos, endPos);
+        if (this.correctGrammarMap.getOrDefault(prevPos, new HashMap<>()).containsKey(endPos)) {
+            this.grammar.append(prevPos, endPos);
+        }
     }
 
     /**
@@ -514,5 +496,11 @@ public class CorpusBuilder {
             }
         }
         filenames = null;
+    }
+
+    public void setIncludeGrammar(String filename) {
+        correctGrammarMap = new HashMap<>();
+        Grammar grammar = new Grammar(filename);
+        correctGrammarMap = grammar.getGrammar();
     }
 }
