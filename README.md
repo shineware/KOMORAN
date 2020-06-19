@@ -60,10 +60,7 @@ shineware에서 개발한 공식 wrapper 자료입니다.
 ### 그 외 참고 자료
 
 사용자 분들께서 만들어주신 참고자료입니다.
-
-* [9bow](/9bow)님께서 간단히 실행해볼 수 있는 [Simple API Server](/9bow/KOMORANRestAPIServer)을 공개해주셨습니다.
 * [Hyunjoong Kim](lovit)님께서 Python 버전의 KOMORAN3Py(/lovit/komoran3py)를 공개해주셨습니다.
-* 사전 관리 도구
 
 ### 인용
 
