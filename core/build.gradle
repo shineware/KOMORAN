@@ -2,13 +2,14 @@
 //    id 'net.saliman.cobertura' version '2.3.1'
 //    id 'com.github.kt3k.coveralls' version '2.6.3'
 //}
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'eclipse'
+}
+
 
 group = 'com.github.shineware'
-
-
-apply plugin: 'maven'
-apply plugin: 'java'
-apply plugin: 'eclipse'
 
 //cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
 
@@ -39,9 +40,9 @@ repositories {
 //}
 
 dependencies {
-    compile 'com.github.shineware:commons:1.0.1'
-    compile 'com.github.shineware:aho-corasick:1.1.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.github.shineware:commons:1.0.1'
+    implementation 'com.github.shineware:aho-corasick:1.1.0'
+    testImplementation 'junit:junit:4.12'
 }
 
 task uberJar(type: Jar) {
@@ -56,6 +57,6 @@ task uberJar(type: Jar) {
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10.2'
-}
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '4.10.2'
+//}
