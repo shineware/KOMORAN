@@ -1,12 +1,10 @@
 package kr.co.shineware.nlp.komoran.issue;
 
 import kr.co.shineware.nlp.komoran.benchmark.PerformanceValidation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 
-@Ignore
 public class VersionUpIssues {
 
     private static PerformanceValidation performanceValidation = new PerformanceValidation();
