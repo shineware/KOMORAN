@@ -24,7 +24,7 @@ Gradle/Maven 없이 형태소 분석 따라하기
   .
   ├── App.java
   └── libs
-      └── KOMORAN-3.3.4.jar
+      └── KOMORAN-3.3.9.jar
 
 
 의존성 추가하기
@@ -34,7 +34,7 @@ Gradle/Maven 없이 형태소 분석 따라하기
 
 .. Note::
   직접 생성한 Jar 파일의 이름은 ``KOMORAN.jar`` 이지만, 여기서는 관리를 위해 뒤에 버전을 추가하여
-  ``KOMORAN-3.3.4.jar`` 로 파일명을 변경하였습니다.
+  ``KOMORAN-3.3.9.jar`` 로 파일명을 변경하였습니다.
 
 
 형태소 분석하기
@@ -97,12 +97,12 @@ Gradle/Maven 없이 형태소 분석 따라하기
 ---------------------------------------
 ``App.java`` 파일이 위치한 곳에서 다음과 같이 Java 파일을 Class 파일로 컴파일합니다.::
 
-  javac -cp "./libs/KOMORAN-3.3.4.jar:" App.java
+  javac -cp "./libs/KOMORAN-3.3.9.jar:" App.java
 
-위 명령어는 ``libs`` 디렉토리 내에 있는 ``KOMORAN-3.3.4.jar`` 파일을 포함하여 ``App.java`` 를 컴파일하도록 하는 명령어입니다.
+위 명령어는 ``libs`` 디렉토리 내에 있는 ``KOMORAN-3.3.9.jar`` 파일을 포함하여 ``App.java`` 를 컴파일하도록 하는 명령어입니다.
 이제, ``App.class`` 파일이 생성된 것을 확인하실 수 있는데요, 이 파일을 실행해보겠습니다.::
 
-  java -cp ".:./libs/KOMORAN-3.3.4.jar:" App
+  java -cp ".:./libs/KOMORAN-3.3.9.jar:" App
 
 다음과 같이 실행 결과를 볼 수 있습니다. ::
 

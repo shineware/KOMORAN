@@ -20,11 +20,11 @@ sys.path.insert(0, os.path.abspath('../src/main/java'))
 # -- Project information -----------------------------------------------------
 
 project = 'KOMORAN'
-copyright = '2019, SHINEWARE TEAM'
+copyright = '2019-2023, SHINEWARE TEAM'
 author = 'SHINEWARE TEAM'
 
 # The short X.Y version
-version = '3.3.4'
+version = '3.3.9'
 # The full version, including alpha/beta/rc tags
 release = version
 

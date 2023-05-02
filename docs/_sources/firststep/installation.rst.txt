@@ -62,13 +62,13 @@ Maven 이용하기
   </repositories>
 
 이후, 다음과 같이 의존성(dependency)을 추가합니다. ``pom.xml`` 파일 내에 이미 ``dependencies`` 항목이
-존재한다면 ``<dependency>...</dependency>`` 부분만 추가합니다. 다음은 ``3.3.4`` 버전을 추가하는 예시입니다. ::
+존재한다면 ``<dependency>...</dependency>`` 부분만 추가합니다. 다음은 ``3.3.9`` 버전을 추가하는 예시입니다. ::
 
   <dependencies>
     <dependency>
       <groupId>com.github.shin285</groupId>
       <artifactId>KOMORAN</artifactId>
-      <version>3.3.4</version>
+      <version>3.3.9</version>
     </dependency>
   </dependencies>
 
@@ -88,10 +88,10 @@ Gradle 이용하기
   }
 
 이후, 다음과 같이 의존성(dependency)을 추가합니다. ``build.gradle`` 파일 내에 이미 ``dependencies`` 항목이 존재한다면
-``implementation ...`` 부분만 추가합니다. 다음은 ``3.3.4`` 버전을 추가하는 예시입니다. ::
+``implementation ...`` 부분만 추가합니다. 다음은 ``3.3.9`` 버전을 추가하는 예시입니다. ::
 
   dependencies {
-    implementation 'com.github.shin285:KOMORAN:3.3.4'
+    implementation 'com.github.shin285:KOMORAN:3.3.9'
   }
 
 이렇게 구성된 `build.gralde 파일 <https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-gradle/build.gradle>`_ 을
@@ -103,9 +103,9 @@ sbt 이용하기
 
   resolvers += "jitpack" at "https://jitpack.io"
 
-이후, 다음과 같이 의존성(dependency)을 추가합니다. 다음은 ``3.3.4`` 버전을 추가하는 예시입니다. ::
+이후, 다음과 같이 의존성(dependency)을 추가합니다. 다음은 ``3.3.9`` 버전을 추가하는 예시입니다. ::
 
-  libraryDependencies += "com.github.shin285" % "KOMORAN" % "3.3.4"
+  libraryDependencies += "com.github.shin285" % "KOMORAN" % "3.3.9"
 
 
 소스코드 다운로드

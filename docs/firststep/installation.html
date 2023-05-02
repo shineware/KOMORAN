@@ -1,458 +1,386 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>설치하기 &mdash; KOMORAN 3.3.9 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>설치하기 &mdash; KOMORAN 3.3.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css"/>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
-    <link rel="index" title="Index" href="../genindex.html"/>
-    <link rel="search" title="Search" href="../search.html"/>
-    <link rel="next" title="3분 만에 형태소 분석 따라하기" href="tutorial.html"/>
-    <link rel="prev" title="KOMORAN 문서" href="../index.html"/>
+  
 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3분 만에 형태소 분석 따라하기" href="tutorial.html" />
+    <link rel="prev" title="KOMORAN 문서" href="../index.html" /> 
 
-    <script src="../_static/js/modernizr.min.js"></script>
+  
+  <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="../index.html" class="icon icon-home"> KOMORAN
+          
 
-                <a href="../index.html" class="icon icon-home"> KOMORAN
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                3.3.9
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    3.3.4
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">설치하기</a>
-                        <ul>
-                            <li class="toctree-l2"><a class="reference internal" href="#id2">환경 준비</a>
-                                <ul>
-                                    <li class="toctree-l3"><a class="reference internal" href="#java">Java</a></li>
-                                    <li class="toctree-l3"><a class="reference internal" href="#id4">운영체제</a></li>
-                                    <li class="toctree-l3"><a class="reference internal" href="#git">Git 도구 또는 개발 환경</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal" href="#id5">프로젝트 관리도구 사용</a>
-                                <ul>
-                                    <li class="toctree-l3"><a class="reference internal" href="#maven">Maven 이용하기</a>
-                                    </li>
-                                    <li class="toctree-l3"><a class="reference internal" href="#gradle">Gradle 이용하기</a>
-                                    </li>
-                                    <li class="toctree-l3"><a class="reference internal" href="#sbt">sbt 이용하기</a></li>
-                                </ul>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal" href="#id6">소스코드 다운로드</a></li>
-                            <li class="toctree-l2"><a class="reference internal" href="#jar">Jar 파일 만들기</a></li>
-                        </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="tutorial.html">3분 만에 형태소 분석 따라하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="tutorial-java.html">Gradle/Maven 없이 형태소
-                        분석 따라하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="postypes.html">품사표 (PoS Table)</a></li>
-                </ul>
-                <p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/analyze.html">분석 예제</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/train-model.html">모델 학습
-                        예제</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석
-                        예제 (Scala)</a></li>
-                </ul>
-                <p class="caption"><span class="caption-text">API</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a>
-                    </li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">설치하기</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#section-2">환경 준비</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#java">Java</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#section-3">운영체제</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#git">Git 도구 또는 개발 환경</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#section-4">프로젝트 관리도구 사용</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#maven">Maven 이용하기</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gradle">Gradle 이용하기</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sbt">sbt 이용하기</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#section-5">소스코드 다운로드</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jar">Jar 파일 만들기</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">3분 만에 형태소 분석 따라하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-java.html">Gradle/Maven 없이 형태소 분석 따라하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postypes.html">품사표 (PoS Table)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analyze.html">분석 예제</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/train-model.html">모델 학습 예제</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석 예제 (Scala)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">models</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/models.html">STABLE, EXP Model 차이</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="../index.html">KOMORAN</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KOMORAN</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="../index.html">Docs</a> &raquo;</li>
-
-                        <li>설치하기</li>
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="../_sources/firststep/installation.rst.txt" rel="nofollow"> View page source</a>
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
 
-                        <div class="section" id="id1">
-                            <h1>설치하기<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
-                            <p>이 문서에서는 KOMORAN을 개발 프로젝트에 포함하거나 다운로드받는 방법을 살펴보겠습니다.</p>
-                            <div class="admonition note">
-                                <p class="first admonition-title">Note</p>
-                                <p class="last">문서의 내용 중 지원되지 않거나 잘못된 내용을 발견하실 경우,
-                                    <a class="reference external"
-                                       href="https://github.com/shineware/KOMORANDocs/issues">KOMORAN 문서 프로젝트에 이슈</a> 를
-                                    남겨주세요.</p>
-                            </div>
-                            <hr class="docutils"/>
-                            <div class="section" id="id2">
-                                <h2>환경 준비<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
-                                <div class="section" id="java">
-                                    <h3>Java<a class="headerlink" href="#java" title="Permalink to this headline">¶</a>
-                                    </h3>
-                                    <p>KOMORAN은 Java 8을 기준으로 개발 및 배포되었습니다. Java 8 이전 버전을 사용하고 계시는 경우 업그레이드해주시기 바랍니다.
-                                        사용하시는 Java 버전은 다음과 같이 확인하실 수 있습니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span class="n">java</span> <span
-                                                class="o">-</span><span class="n">version</span>
-</pre>
-                                        </div>
-                                    </div>
-                                    <p>또는, <a class="reference external"
-                                              href="https://www.oracle.com/technetwork/java/javase/overview/index.html">Oracle
-                                        Java 홈페이지</a> 에서 최신 버전의 Java를
-                                        설치하실 수 있습니다.</p>
-                                    <div class="admonition note">
-                                        <p class="first admonition-title">Note</p>
-                                        <p class="last">OpenJDK에서의 동작은 별다른 문제점이 보고되지 않았습니다.
-                                            OpenJDK 사용 중 이슈가 발생한다면 <a class="reference external"
-                                                                      href="https://github.com/shin285/KOMORAN/issues">알려주시기를</a>
-                                            부탁드립니다.</p>
-                                    </div>
-                                </div>
-                                <div class="section" id="id4">
-                                    <h3>운영체제<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a>
-                                    </h3>
-                                    <p>KOMORAN은 JVM이 설치된 환경이라면 별도로 운영체제를 가리지는 않습니다. 다만, 이 문서에서는 macOS를 기준으로 설명합니다.</p>
-                                </div>
-                                <div class="section" id="git">
-                                    <h3>Git 도구 또는 개발 환경<a class="headerlink" href="#git"
-                                                          title="Permalink to this headline">¶</a></h3>
-                                    <p>KOMORAN 다운로드를 위해 Git 도구를 준비해주시기 바랍니다.
-                                        또는 IntelliJ나 Eclipse 등과 같은 통합 개발 환경(IDE)을 사용하신다면 해당 도구를 통해서 다운로드 받으실 수도
-                                        있습니다.</p>
-                                </div>
-                            </div>
-                            <div class="section" id="id5">
-                                <h2>프로젝트 관리도구 사용<a class="headerlink" href="#id5"
-                                                   title="Permalink to this headline">¶</a></h2>
-                                <p>maven이나 gradle과 같은 프로젝트 관리 도구를 이용하고 계시다면, 다음과 같은 방법으로 프로젝트에 KOMORAN을 포함하실 수
-                                    있습니다. KOMORAN은 <a class="reference external" href="https://jitpack.io/">jitpack</a>
-                                    을 이용하여 패키지를 제공하고 있습니다.</p>
-                                <div class="admonition note">
-                                    <p class="first admonition-title">Note</p>
-                                    <p class="last">KOMORAN 최신 버전은 <a class="reference external"
-                                                                      href="https://github.com/shin285/KOMORAN/releases">GitHub
-                                        저장소의 배포 메뉴</a> 에서 확인하실 수 있습니다.</p>
-                                </div>
-                                <div class="section" id="maven">
-                                    <h3>Maven 이용하기<a class="headerlink" href="#maven"
-                                                     title="Permalink to this headline">¶</a></h3>
-                                    <p>먼저, <code class="docutils literal notranslate"><span
-                                            class="pre">pom.xml</span></code> 파일 내에 다음과 같이 저장소(repository)를 추가합니다. 이미
-                                        <code class="docutils literal notranslate"><span class="pre">repositories</span></code>
-                                        항목이 존재한다면,
-                                        <code class="docutils literal notranslate"><span class="pre">&lt;repository&gt;...&lt;/repository&gt;</span></code>
-                                        부분만 추가합니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span class="o">&lt;</span><span
-                                                class="n">repositories</span><span class="o">&gt;</span>
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>설치하기</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/firststep/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="section-1">
+<h1>설치하기<a class="headerlink" href="#section-1" title="Permalink to this headline">¶</a></h1>
+<p>이 문서에서는 KOMORAN을 개발 프로젝트에 포함하거나 다운로드받는 방법을 살펴보겠습니다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">문서의 내용 중 지원되지 않거나 잘못된 내용을 발견하실 경우,
+<a class="reference external" href="https://github.com/shineware/KOMORANDocs/issues">KOMORAN 문서 프로젝트에 이슈</a> 를 남겨주세요.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="section-2">
+<h2>환경 준비<a class="headerlink" href="#section-2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="java">
+<h3>Java<a class="headerlink" href="#java" title="Permalink to this headline">¶</a></h3>
+<p>KOMORAN은 Java 8을 기준으로 개발 및 배포되었습니다. Java 8 이전 버전을 사용하고 계시는 경우 업그레이드해주시기 바랍니다.
+사용하시는 Java 버전은 다음과 같이 확인하실 수 있습니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">version</span>
+</pre></div>
+</div>
+<p>또는, <a class="reference external" href="https://www.oracle.com/technetwork/java/javase/overview/index.html">Oracle Java 홈페이지</a> 에서 최신 버전의 Java를
+설치하실 수 있습니다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">OpenJDK에서의 동작은 별다른 문제점이 보고되지 않았습니다.
+OpenJDK 사용 중 이슈가 발생한다면 <a class="reference external" href="https://github.com/shin285/KOMORAN/issues">알려주시기를</a> 부탁드립니다.</p>
+</div>
+</div>
+<div class="section" id="section-3">
+<h3>운영체제<a class="headerlink" href="#section-3" title="Permalink to this headline">¶</a></h3>
+<p>KOMORAN은 JVM이 설치된 환경이라면 별도로 운영체제를 가리지는 않습니다. 다만, 이 문서에서는 macOS를 기준으로 설명합니다.</p>
+</div>
+<div class="section" id="git">
+<h3>Git 도구 또는 개발 환경<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h3>
+<p>KOMORAN 다운로드를 위해 Git 도구를 준비해주시기 바랍니다.
+또는 IntelliJ나 Eclipse 등과 같은 통합 개발 환경(IDE)을 사용하신다면 해당 도구를 통해서 다운로드 받으실 수도 있습니다.</p>
+</div>
+</div>
+<div class="section" id="section-4">
+<h2>프로젝트 관리도구 사용<a class="headerlink" href="#section-4" title="Permalink to this headline">¶</a></h2>
+<p>maven이나 gradle과 같은 프로젝트 관리 도구를 이용하고 계시다면, 다음과 같은 방법으로 프로젝트에 KOMORAN을 포함하실 수
+있습니다. KOMORAN은 <a class="reference external" href="https://jitpack.io/">jitpack</a> 을 이용하여 패키지를 제공하고 있습니다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">KOMORAN 최신 버전은 <a class="reference external" href="https://github.com/shin285/KOMORAN/releases">GitHub 저장소의 배포 메뉴</a> 에서 확인하실 수 있습니다.</p>
+</div>
+<div class="section" id="maven">
+<h3>Maven 이용하기<a class="headerlink" href="#maven" title="Permalink to this headline">¶</a></h3>
+<p>먼저, <code class="docutils literal notranslate"><span class="pre">pom.xml</span></code> 파일 내에 다음과 같이 저장소(repository)를 추가합니다. 이미 <code class="docutils literal notranslate"><span class="pre">repositories</span></code> 항목이 존재한다면,
+<code class="docutils literal notranslate"><span class="pre">&lt;repository&gt;...&lt;/repository&gt;</span></code> 부분만 추가합니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">repositories</span><span class="o">&gt;</span>
   <span class="o">&lt;</span><span class="n">repository</span><span class="o">&gt;</span>
-      <span class="o">&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span
-                                                    class="n">jitpack</span><span class="o">.</span><span
-                                                    class="n">io</span><span class="o">&lt;/</span><span
-                                                    class="nb">id</span><span class="o">&gt;</span>
-      <span class="o">&lt;</span><span class="n">url</span><span class="o">&gt;</span><span class="n">https</span><span
-                                                    class="p">:</span><span class="o">//</span><span
-                                                    class="n">jitpack</span><span class="o">.</span><span
-                                                    class="n">io</span><span class="o">&lt;/</span><span
-                                                    class="n">url</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="n">jitpack</span><span class="o">.</span><span class="n">io</span><span class="o">&lt;/</span><span class="nb">id</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">url</span><span class="o">&gt;</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">jitpack</span><span class="o">.</span><span class="n">io</span><span class="o">&lt;/</span><span class="n">url</span><span class="o">&gt;</span>
   <span class="o">&lt;/</span><span class="n">repository</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">repositories</span><span class="o">&gt;</span>
-</pre>
-                                        </div>
-                                    </div>
-                                    <p>이후, 다음과 같이 의존성(dependency)을 추가합니다. <code
-                                            class="docutils literal notranslate"><span class="pre">pom.xml</span></code>&nbsp;파일
-                                        내에 이미 <code class="docutils literal notranslate"><span
-                                                class="pre">dependencies</span></code> 항목이
-                                        존재한다면 <code class="docutils literal notranslate"><span class="pre">&lt;dependency&gt;...&lt;/dependency&gt;</span></code>
-                                        부분만 추가합니다. 다음은 <code class="docutils literal notranslate"><span class="pre">3.3.4</span></code>
-                                        버전을 추가하는 예시입니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span class="o">&lt;</span><span
-                                                class="n">dependencies</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>이후, 다음과 같이 의존성(dependency)을 추가합니다. <code class="docutils literal notranslate"><span class="pre">pom.xml</span></code>&nbsp;파일 내에 이미 <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> 항목이
+존재한다면 <code class="docutils literal notranslate"><span class="pre">&lt;dependency&gt;...&lt;/dependency&gt;</span></code> 부분만 추가합니다. 다음은 <code class="docutils literal notranslate"><span class="pre">3.3.9</span></code> 버전을 추가하는 예시입니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependencies</span><span class="o">&gt;</span>
   <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span
-                                                    class="o">.</span><span class="n">github</span><span
-                                                    class="o">.</span><span class="n">shin285</span><span class="o">&lt;/</span><span
-                                                    class="n">groupId</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span
-                                                    class="n">KOMORAN</span><span class="o">&lt;/</span><span class="n">artifactId</span><span
-                                                    class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">3.3</span><span
-                                                    class="o">.</span><span class="mi">4</span><span
-                                                    class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shin285</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">KOMORAN</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">3.3.9</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
   <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">dependencies</span><span class="o">&gt;</span>
-</pre>
-                                        </div>
-                                    </div>
-                                    <p>이렇게 구성된 <a class="reference external"
-                                                  href="https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-maven/pom.xml">pom.xml
-                                        파일</a> 을
-                                        확인해보실 수 있습니다.</p>
-                                </div>
-                                <div class="section" id="gradle">
-                                    <h3>Gradle 이용하기<a class="headerlink" href="#gradle"
-                                                      title="Permalink to this headline">¶</a></h3>
-                                    <p>먼저, <code class="docutils literal notranslate"><span
-                                            class="pre">build.gradle</span></code> 파일 내에 다음과 같이 저장소(repository)를 추가합니다.
-                                        이미 <code class="docutils literal notranslate"><span
-                                                class="pre">repositories</span></code> 항목이 존재한다면
-                                        <code class="docutils literal notranslate"><span class="pre">maven</span> <span
-                                                class="pre">...</span></code> 부분만 추가합니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span
-                                                class="n">allprojects</span> <span class="p">{</span>
+</pre></div>
+</div>
+<p>이렇게 구성된 <a class="reference external" href="https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-maven/pom.xml">pom.xml 파일</a> 을
+확인해보실 수 있습니다.</p>
+</div>
+<div class="section" id="gradle">
+<h3>Gradle 이용하기<a class="headerlink" href="#gradle" title="Permalink to this headline">¶</a></h3>
+<p>먼저, <code class="docutils literal notranslate"><span class="pre">build.gradle</span></code> 파일 내에 다음과 같이 저장소(repository)를 추가합니다. 이미 <code class="docutils literal notranslate"><span class="pre">repositories</span></code> 항목이 존재한다면
+<code class="docutils literal notranslate"><span class="pre">maven</span> <span class="pre">...</span></code> 부분만 추가합니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">allprojects</span> <span class="p">{</span>
   <span class="n">repositories</span> <span class="p">{</span>
     <span class="o">...</span>
-    <span class="n">maven</span> <span class="p">{</span> <span class="n">url</span> <span class="s1">&#39;https://jitpack.io&#39;</span> <span
-                                                    class="p">}</span>
+    <span class="n">maven</span> <span class="p">{</span> <span class="n">url</span> <span class="s1">&#39;https://jitpack.io&#39;</span> <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</pre>
-                                        </div>
-                                    </div>
-                                    <p>이후, 다음과 같이 의존성(dependency)을 추가합니다. <code
-                                            class="docutils literal notranslate"><span
-                                            class="pre">build.gradle</span></code> 파일 내에 이미 <code
-                                            class="docutils literal notranslate"><span
-                                            class="pre">dependencies</span></code> 항목이 존재한다면
-                                        <code class="docutils literal notranslate"><span
-                                                class="pre">implementation</span> <span class="pre">...</span></code>
-                                        부분만 추가합니다. 다음은 <code class="docutils literal notranslate"><span class="pre">3.3.4</span></code>
-                                        버전을 추가하는 예시입니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span
-                                                class="n">dependencies</span> <span class="p">{</span>
-  <span class="n">implementation</span> <span class="s1">&#39;com.github.shin285:KOMORAN:3.3.4&#39;</span>
+</pre></div>
+</div>
+<p>이후, 다음과 같이 의존성(dependency)을 추가합니다. <code class="docutils literal notranslate"><span class="pre">build.gradle</span></code> 파일 내에 이미 <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> 항목이 존재한다면
+<code class="docutils literal notranslate"><span class="pre">implementation</span> <span class="pre">...</span></code> 부분만 추가합니다. 다음은 <code class="docutils literal notranslate"><span class="pre">3.3.9</span></code> 버전을 추가하는 예시입니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="p">{</span>
+  <span class="n">implementation</span> <span class="s1">&#39;com.github.shin285:KOMORAN:3.3.9&#39;</span>
 <span class="p">}</span>
-</pre>
-                                        </div>
-                                    </div>
-                                    <p>이렇게 구성된 <a class="reference external"
-                                                  href="https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-gradle/build.gradle">build.gralde
-                                        파일</a> 을
-                                        확인해보실 수 있습니다.</p>
-                                </div>
-                                <div class="section" id="sbt">
-                                    <h3>sbt 이용하기<a class="headerlink" href="#sbt"
-                                                   title="Permalink to this headline">¶</a></h3>
-                                    <p>먼저, <code class="docutils literal notranslate"><span class="pre">build.sbt</span></code>
-                                        파일 내에 다음과 같이 저장소(resolver)를 추가합니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span class="n">resolvers</span> <span
-                                                class="o">+=</span> <span class="s2">&quot;jitpack&quot;</span> <span
-                                                class="n">at</span> <span
-                                                class="s2">&quot;https://jitpack.io&quot;</span>
-</pre>
-                                        </div>
-                                    </div>
-                                    <p>이후, 다음과 같이 의존성(dependency)을 추가합니다. 다음은 <code
-                                            class="docutils literal notranslate"><span class="pre">3.3.4</span></code>
-                                        버전을 추가하는 예시입니다.</p>
-                                    <div class="highlight-default notranslate">
-                                        <div class="highlight"><pre><span></span><span
-                                                class="n">libraryDependencies</span> <span class="o">+=</span> <span
-                                                class="s2">&quot;com.github.shin285&quot;</span> <span
-                                                class="o">%</span> <span class="s2">&quot;KOMORAN&quot;</span> <span
-                                                class="o">%</span> <span class="s2">&quot;3.3.4&quot;</span>
-</pre>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="section" id="id6">
-                                <h2>소스코드 다운로드<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a>
-                                </h2>
-                                <p>KOMORAN 소스코드를 분석하시거나, 수동으로 KOMORAN을 프로젝트에 포함하시고자 할 때 사용하시기를 권장하는 방법입니다.
-                                    꾸준한 업그레이드를 위해 Git 도구를 이용하여 GitHub 저장소에서 복제받는 방법을 권장합니다.</p>
-                                <div class="highlight-default notranslate">
-                                    <div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span
-                                            class="n">https</span><span class="p">:</span><span class="o">//</span><span
-                                            class="n">github</span><span class="o">.</span><span
-                                            class="n">com</span><span class="o">/</span><span
-                                            class="n">shin285</span><span class="o">/</span><span
-                                            class="n">KOMORAN</span>
-</pre>
-                                    </div>
-                                </div>
-                                <p>다운로드 후에는 해당 디렉토리 내에서 <cite>git pull</cite> 명령어를 통해 최신 소스를 받아올 수 있습니다.</p>
-                                <div class="highlight-default notranslate">
-                                    <div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">KOMORAN</span>
+</pre></div>
+</div>
+<p>이렇게 구성된 <a class="reference external" href="https://github.com/shineware/tutorials/blob/master/KOMORAN/bootstrap-gradle/build.gradle">build.gralde 파일</a> 을
+확인해보실 수 있습니다.</p>
+</div>
+<div class="section" id="sbt">
+<h3>sbt 이용하기<a class="headerlink" href="#sbt" title="Permalink to this headline">¶</a></h3>
+<p>먼저, <code class="docutils literal notranslate"><span class="pre">build.sbt</span></code> 파일 내에 다음과 같이 저장소(resolver)를 추가합니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">resolvers</span> <span class="o">+=</span> <span class="s2">&quot;jitpack&quot;</span> <span class="n">at</span> <span class="s2">&quot;https://jitpack.io&quot;</span>
+</pre></div>
+</div>
+<p>이후, 다음과 같이 의존성(dependency)을 추가합니다. 다음은 <code class="docutils literal notranslate"><span class="pre">3.3.9</span></code> 버전을 추가하는 예시입니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s2">&quot;com.github.shin285&quot;</span> <span class="o">%</span> <span class="s2">&quot;KOMORAN&quot;</span> <span class="o">%</span> <span class="s2">&quot;3.3.9&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="section-5">
+<h2>소스코드 다운로드<a class="headerlink" href="#section-5" title="Permalink to this headline">¶</a></h2>
+<p>KOMORAN 소스코드를 분석하시거나, 수동으로 KOMORAN을 프로젝트에 포함하시고자 할 때 사용하시기를 권장하는 방법입니다.
+꾸준한 업그레이드를 위해 Git 도구를 이용하여 GitHub 저장소에서 복제받는 방법을 권장합니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">shin285</span><span class="o">/</span><span class="n">KOMORAN</span>
+</pre></div>
+</div>
+<p>다운로드 후에는 해당 디렉토리 내에서 <cite>git pull</cite> 명령어를 통해 최신 소스를 받아올 수 있습니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">KOMORAN</span>
 <span class="n">git</span> <span class="n">pull</span>
-</pre>
-                                    </div>
-                                </div>
-                                <div class="admonition seealso">
-                                    <p class="first admonition-title">See also</p>
-                                    <p class="last">Git 도구 홈페이지에서 <a class="reference external"
-                                                                     href="https://git-scm.com/book/ko/">사용법</a> 을 익히실 수
-                                        있습니다.</p>
-                                </div>
-                                <div class="admonition note">
-                                    <p class="first admonition-title">Note</p>
-                                    <p class="last">특정 버전의 KOMORAN을 다운로드 받으실 때는 <a class="reference external"
-                                                                                   href="https://github.com/shin285/KOMORAN/releases">GitHub
-                                        저장소의 배포 메뉴</a>
-                                        를 이용하시면 버전별로 압축된 소스코드를 다운로드 받으실 수 있습니다.</p>
-                                </div>
-                            </div>
-                            <div class="section" id="jar">
-                                <h2>Jar 파일 만들기<a class="headerlink" href="#jar" title="Permalink to this headline">¶</a>
-                                </h2>
-                                <p>수동으로 KOMORAN을 프로젝트에 포함하거나, 기타 다른 용도로 KOMORAN의 Jar 파일이 필요할 때 사용하시기를 권장하는 방법입니다.
-                                    <a class="reference internal" href="#id6">소스코드 다운로드</a> 후, KOMORAN을 다운로드 받은 디렉토리 내에서
-                                    다음과 같은 명령어를 실행합니다.</p>
-                                <blockquote>
-                                    <div>./gradlew jar</div>
-                                </blockquote>
-                                <div class="admonition note">
-                                    <p class="first admonition-title">Note</p>
-                                    <p class="last">윈도우를 사용하고 계실 경우 다음의 명령어를 실행해주세요.
-                                        <code class="docutils literal notranslate"><span class="pre">gradlew.bat</span>
-                                            <span class="pre">jar</span></code></p>
-                                </div>
-                                <p>이제, <code class="docutils literal notranslate"><span
-                                        class="pre">build/libs</span></code> 디렉토리 내에서 <code
-                                        class="docutils literal notranslate"><span class="pre">KOMORAN.jar</span></code>
-                                    파일을 확인하실 수 있습니다.</p>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                </div>
-                <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-                        <a href="tutorial.html" class="btn btn-neutral float-right" title="3분 만에 형태소 분석 따라하기"
-                           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-
-
-                        <a href="../index.html" class="btn btn-neutral" title="KOMORAN 문서" accesskey="p"
-                           rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
-
-
-                    <hr/>
-
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2019, SHINEWARE TEAM
-
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
-
-                </footer>
-
-            </div>
-        </div>
-
-    </section>
-
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Git 도구 홈페이지에서 <a class="reference external" href="https://git-scm.com/book/ko/">사용법</a> 을 익히실 수 있습니다.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">특정 버전의 KOMORAN을 다운로드 받으실 때는 <a class="reference external" href="https://github.com/shin285/KOMORAN/releases">GitHub 저장소의 배포 메뉴</a>
+를 이용하시면 버전별로 압축된 소스코드를 다운로드 받으실 수 있습니다.</p>
+</div>
+</div>
+<div class="section" id="jar">
+<h2>Jar 파일 만들기<a class="headerlink" href="#jar" title="Permalink to this headline">¶</a></h2>
+<p>수동으로 KOMORAN을 프로젝트에 포함하거나, 기타 다른 용도로 KOMORAN의 Jar 파일이 필요할 때 사용하시기를 권장하는 방법입니다.
+<a class="reference internal" href="#section-5">소스코드 다운로드</a> 후, KOMORAN을 다운로드 받은 디렉토리 내에서 다음과 같은 명령어를 실행합니다.</p>
+<blockquote>
+<div>./gradlew jar</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">윈도우를 사용하고 계실 경우 다음의 명령어를 실행해주세요.
+<code class="docutils literal notranslate"><span class="pre">gradlew.bat</span> <span class="pre">jar</span></code></p>
+</div>
+<p>이제, <code class="docutils literal notranslate"><span class="pre">build/libs</span></code> 디렉토리 내에서 <code class="docutils literal notranslate"><span class="pre">KOMORAN.jar</span></code> 파일을 확인하실 수 있습니다.</p>
+</div>
 </div>
 
 
-<script type="text/javascript" id="documentation_options" data-url_root="../"
-        src="../_static/documentation_options.js"></script>
-<script type="text/javascript" src="../_static/jquery.js"></script>
-<script type="text/javascript" src="../_static/underscore.js"></script>
-<script type="text/javascript" src="../_static/doctools.js"></script>
-<script type="text/javascript" src="../_static/language_data.js"></script>
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="3분 만에 형태소 분석 따라하기" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="KOMORAN 문서" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2023, SHINEWARE TEAM
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
 
 
-<script type="text/javascript" src="../_static/js/theme.js"></script>
+  
 
-<script type="text/javascript">
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-
-</script>
-
+  </script>
+ 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

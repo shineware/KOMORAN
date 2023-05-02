@@ -65,7 +65,7 @@
   }
 
   dependencies {
-      implementation 'com.github.shin285:KOMORAN:3.3.4'
+      implementation 'com.github.shin285:KOMORAN:3.3.9'
   }
 
 :doc:`installation` 에서 살펴봤던 것과 같이, 13번째 줄과 15번째 줄에 저장소와 의존성을 추가하였습니다.

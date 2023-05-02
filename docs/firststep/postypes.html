@@ -1,409 +1,388 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>품사표 (PoS Table) &mdash; KOMORAN 3.3.9 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>품사표 (PoS Table) &mdash; KOMORAN 3.3.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css"/>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
-    <link rel="index" title="Index" href="../genindex.html"/>
-    <link rel="search" title="Search" href="../search.html"/>
-    <link rel="next" title="분석 예제" href="../examples/analyze.html"/>
-    <link rel="prev" title="Gradle/Maven 없이 형태소 분석 따라하기" href="tutorial-java.html"/>
+  
 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="분석 예제" href="../examples/analyze.html" />
+    <link rel="prev" title="Gradle/Maven 없이 형태소 분석 따라하기" href="tutorial-java.html" /> 
 
-    <script src="../_static/js/modernizr.min.js"></script>
+  
+  <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="../index.html" class="icon icon-home"> KOMORAN
+          
 
-                <a href="../index.html" class="icon icon-home"> KOMORAN
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                3.3.9
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    3.3.4
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="installation.html">설치하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="tutorial.html">3분 만에 형태소 분석 따라하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="tutorial-java.html">Gradle/Maven 없이 형태소
-                        분석 따라하기</a></li>
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">품사표 (PoS Table)</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/analyze.html">분석 예제</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/train-model.html">모델 학습
-                        예제</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석
-                        예제 (Scala)</a></li>
-                </ul>
-                <p class="caption"><span class="caption-text">API</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a>
-                    </li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">설치하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">3분 만에 형태소 분석 따라하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-java.html">Gradle/Maven 없이 형태소 분석 따라하기</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">품사표 (PoS Table)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analyze.html">분석 예제</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/train-model.html">모델 학습 예제</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/spark2-scala.html">Spark2 분석 예제 (Scala)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">models</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/models.html">STABLE, EXP Model 차이</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/packages.html">KOMORAN API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="../index.html">KOMORAN</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KOMORAN</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="../index.html">Docs</a> &raquo;</li>
-
-                        <li>품사표 (PoS Table)</li>
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="../_sources/firststep/postypes.rst.txt" rel="nofollow"> View page source</a>
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
-
-                        <div class="section" id="pos-table">
-                            <h1>품사표 (PoS Table)<a class="headerlink" href="#pos-table"
-                                                  title="Permalink to this headline">¶</a></h1>
-                            <p>이 문서에서는 KOMORAN의 형태소 품사 종류를 살펴보겠습니다.</p>
-                            <div class="admonition note">
-                                <p class="first admonition-title">Note</p>
-                                <p class="last">문서의 내용 중 지원되지 않거나 잘못된 내용을 발견하실 경우,
-                                    <a class="reference external"
-                                       href="https://github.com/shineware/KOMORANDocs/issues">KOMORAN 문서 프로젝트에 이슈</a> 를
-                                    남겨주세요.</p>
-                            </div>
-                            <hr class="docutils"/>
-                            <p>KOMORAN은 <a class="reference external"
-                                           href="https://ithub.korean.go.kr/user/introductionManager.do">21세기 세종계획</a> 의
-                                품사 기준 <a class="footnote-reference" href="#f1" id="id2">[1]</a> 을 따르고 있습니다.
-                                전체 품사들은 아래 표와 같으며, 세분류를 기준으로 출력됩니다.</p>
-                            <table border="1" class="docutils">
-                                <colgroup>
-                                    <col width="18%"/>
-                                    <col width="41%"/>
-                                    <col width="41%"/>
-                                </colgroup>
-                                <thead valign="bottom">
-                                <tr class="row-odd">
-                                    <th class="head">대분류</th>
-                                    <th class="head">소분류</th>
-                                    <th class="head">세분류</th>
-                                </tr>
-                                </thead>
-                                <tbody valign="top">
-                                <tr class="row-even">
-                                    <td rowspan="5">체언</td>
-                                    <td rowspan="3">명사NN</td>
-                                    <td>일반명사NNG</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>고유명사NNP</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>의존명사NNB</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td rowspan="2">대명사NP</td>
-                                    <td>대명사NP</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>수사NR</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td rowspan="5">용언</td>
-                                    <td>동사VV</td>
-                                    <td>동사VV</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>형용사VA</td>
-                                    <td>형용사VA</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>보조용언VX</td>
-                                    <td>보조용언VX</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td rowspan="2">지정사VC</td>
-                                    <td>긍정지정사VCP</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>부정지정사VCN</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td rowspan="3">수식언</td>
-                                    <td>관형사MM</td>
-                                    <td>관형사MM</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td rowspan="2">부사MA</td>
-                                    <td>일반부사MAG</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>접속부사MAJ</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>독립언</td>
-                                    <td>감탄사IC</td>
-                                    <td>감탄사IC</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td rowspan="9">관계언</td>
-                                    <td rowspan="7">격조사JK</td>
-                                    <td>주격조사JKS</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>보격조사JKC</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>관형격조사JKG</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>목적격조사JKO</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>부사격조사JKB</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>호격조사JKV</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>인용격조사JKQ</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>보조사JX</td>
-                                    <td>보조사JX</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>접속조사JC</td>
-                                    <td>접속조사JC</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td rowspan="10">의존형태</td>
-                                    <td rowspan="5">어미E</td>
-                                    <td>선어말어미EP</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>종결어미EF</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>연결어미EC</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>명사형전성어미ETN</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>관형형전성어미ETM</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>접두사XP</td>
-                                    <td>체언접두사XPN</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td rowspan="3">접미사XS</td>
-                                    <td>명사파생접미사XSN</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>동사파생접미사XSV</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>형용사파생접미사XSA</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>어근XR</td>
-                                    <td>어근XR</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td rowspan="12">기호</td>
-                                    <td>마침표,물음표,느낌표SF</td>
-                                    <td>마침표,물음표,느낌표SF</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>쉼표,가운뎃점,콜론,빗금SP</td>
-                                    <td>쉼표,가운뎃점,콜론,빗금SP</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>따옴표,괄호표,줄표SS</td>
-                                    <td>따옴표,괄호표,줄표SS</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>줄임표SE</td>
-                                    <td>줄임표SE</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>붙임표(물결,숨김,빠짐)SO</td>
-                                    <td>붙임표(물결,숨김,빠짐)SO</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>외국어SL</td>
-                                    <td>외국어SL</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>한자SH</td>
-                                    <td>한자SH</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>기타기호(논리수학기호,화폐기호)SW</td>
-                                    <td>기타기호(논리수학기호,화폐기호)SW</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>명사추정범주NF</td>
-                                    <td>명사추정범주NF</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>용언추정범주NV</td>
-                                    <td>용언추정범주NV</td>
-                                </tr>
-                                <tr class="row-odd">
-                                    <td>숫자SN</td>
-                                    <td>숫자SN</td>
-                                </tr>
-                                <tr class="row-even">
-                                    <td>분석불능범주NA</td>
-                                    <td>분석불능범주NA</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <table class="docutils footnote" frame="void" id="f1" rules="none">
-                                <colgroup>
-                                    <col class="label"/>
-                                    <col/>
-                                </colgroup>
-                                <tbody valign="top">
-                                <tr>
-                                    <td class="label"><a class="fn-backref" href="#id2">[1]</a></td>
-                                    <td>김홍규 외, 『<a class="reference external"
-                                                   href="http://www.korean.go.kr/common/download.do;front=B949B55881C893BDB988D7EBCAB12CD8?file_path=reportData&amp;c_file_name=b077cde8-d034-47fe-8788-9aa505289660_0.pdf&amp;o_file_name=(21%EC%84%B8%EA%B8%B0%20%EC%84%B8%EC%A2%85%EA%B3%84%ED%9A%8D)%EA%B5%AD%EC%96%B4%20%EA%B8%B0%EC%B4%88%EC%9E%90%EB%A3%8C%20%EA%B5%AC%EC%B6%95.pdf&amp;downGubun=reportDataViewForm&amp;report_seq=356">21세기
-                                        세종계획 국어 기초자료 구축</a>』, 문화관광부(2004), p.126
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
 
 
-                    </div>
-
-                </div>
-                <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-                        <a href="../examples/analyze.html" class="btn btn-neutral float-right" title="분석 예제"
-                           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-                        <a href="tutorial-java.html" class="btn btn-neutral" title="Gradle/Maven 없이 형태소 분석 따라하기"
-                           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
 
 
-                    <hr/>
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2019, SHINEWARE TEAM
+<div role="navigation" aria-label="breadcrumbs navigation">
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>품사표 (PoS Table)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/firststep/postypes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
 
-                </footer>
-
-            </div>
-        </div>
-
-    </section>
-
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pos-table">
+<h1>품사표 (PoS Table)<a class="headerlink" href="#pos-table" title="Permalink to this headline">¶</a></h1>
+<p>이 문서에서는 KOMORAN의 형태소 품사 종류를 살펴보겠습니다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">문서의 내용 중 지원되지 않거나 잘못된 내용을 발견하실 경우,
+<a class="reference external" href="https://github.com/shineware/KOMORANDocs/issues">KOMORAN 문서 프로젝트에 이슈</a> 를 남겨주세요.</p>
+</div>
+<hr class="docutils" />
+<p>KOMORAN은 <a class="reference external" href="https://ithub.korean.go.kr/user/introductionManager.do">21세기 세종계획</a> 의 품사 기준 <a class="footnote-reference" href="#f1" id="footnote-reference-1">[1]</a> 을 따르고 있습니다.
+전체 품사들은 아래 표와 같으며, 세분류를 기준으로 출력됩니다.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="41%" />
+<col width="41%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">대분류</th>
+<th class="head">소분류</th>
+<th class="head">세분류</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="5">체언</td>
+<td rowspan="3">명사NN</td>
+<td>일반명사NNG</td>
+</tr>
+<tr class="row-odd"><td>고유명사NNP</td>
+</tr>
+<tr class="row-even"><td>의존명사NNB</td>
+</tr>
+<tr class="row-odd"><td rowspan="2">대명사NP</td>
+<td>대명사NP</td>
+</tr>
+<tr class="row-even"><td>수사NR</td>
+</tr>
+<tr class="row-odd"><td rowspan="5">용언</td>
+<td>동사VV</td>
+<td>동사VV</td>
+</tr>
+<tr class="row-even"><td>형용사VA</td>
+<td>형용사VA</td>
+</tr>
+<tr class="row-odd"><td>보조용언VX</td>
+<td>보조용언VX</td>
+</tr>
+<tr class="row-even"><td rowspan="2">지정사VC</td>
+<td>긍정지정사VCP</td>
+</tr>
+<tr class="row-odd"><td>부정지정사VCN</td>
+</tr>
+<tr class="row-even"><td rowspan="3">수식언</td>
+<td>관형사MM</td>
+<td>관형사MM</td>
+</tr>
+<tr class="row-odd"><td rowspan="2">부사MA</td>
+<td>일반부사MAG</td>
+</tr>
+<tr class="row-even"><td>접속부사MAJ</td>
+</tr>
+<tr class="row-odd"><td>독립언</td>
+<td>감탄사IC</td>
+<td>감탄사IC</td>
+</tr>
+<tr class="row-even"><td rowspan="9">관계언</td>
+<td rowspan="7">격조사JK</td>
+<td>주격조사JKS</td>
+</tr>
+<tr class="row-odd"><td>보격조사JKC</td>
+</tr>
+<tr class="row-even"><td>관형격조사JKG</td>
+</tr>
+<tr class="row-odd"><td>목적격조사JKO</td>
+</tr>
+<tr class="row-even"><td>부사격조사JKB</td>
+</tr>
+<tr class="row-odd"><td>호격조사JKV</td>
+</tr>
+<tr class="row-even"><td>인용격조사JKQ</td>
+</tr>
+<tr class="row-odd"><td>보조사JX</td>
+<td>보조사JX</td>
+</tr>
+<tr class="row-even"><td>접속조사JC</td>
+<td>접속조사JC</td>
+</tr>
+<tr class="row-odd"><td rowspan="10">의존형태</td>
+<td rowspan="5">어미E</td>
+<td>선어말어미EP</td>
+</tr>
+<tr class="row-even"><td>종결어미EF</td>
+</tr>
+<tr class="row-odd"><td>연결어미EC</td>
+</tr>
+<tr class="row-even"><td>명사형전성어미ETN</td>
+</tr>
+<tr class="row-odd"><td>관형형전성어미ETM</td>
+</tr>
+<tr class="row-even"><td>접두사XP</td>
+<td>체언접두사XPN</td>
+</tr>
+<tr class="row-odd"><td rowspan="3">접미사XS</td>
+<td>명사파생접미사XSN</td>
+</tr>
+<tr class="row-even"><td>동사파생접미사XSV</td>
+</tr>
+<tr class="row-odd"><td>형용사파생접미사XSA</td>
+</tr>
+<tr class="row-even"><td>어근XR</td>
+<td>어근XR</td>
+</tr>
+<tr class="row-odd"><td rowspan="12">기호</td>
+<td>마침표,물음표,느낌표SF</td>
+<td>마침표,물음표,느낌표SF</td>
+</tr>
+<tr class="row-even"><td>쉼표,가운뎃점,콜론,빗금SP</td>
+<td>쉼표,가운뎃점,콜론,빗금SP</td>
+</tr>
+<tr class="row-odd"><td>따옴표,괄호표,줄표SS</td>
+<td>따옴표,괄호표,줄표SS</td>
+</tr>
+<tr class="row-even"><td>줄임표SE</td>
+<td>줄임표SE</td>
+</tr>
+<tr class="row-odd"><td>붙임표(물결,숨김,빠짐)SO</td>
+<td>붙임표(물결,숨김,빠짐)SO</td>
+</tr>
+<tr class="row-even"><td>외국어SL</td>
+<td>외국어SL</td>
+</tr>
+<tr class="row-odd"><td>한자SH</td>
+<td>한자SH</td>
+</tr>
+<tr class="row-even"><td>기타기호(논리수학기호,화폐기호)SW</td>
+<td>기타기호(논리수학기호,화폐기호)SW</td>
+</tr>
+<tr class="row-odd"><td>명사추정범주NF</td>
+<td>명사추정범주NF</td>
+</tr>
+<tr class="row-even"><td>용언추정범주NV</td>
+<td>용언추정범주NV</td>
+</tr>
+<tr class="row-odd"><td>숫자SN</td>
+<td>숫자SN</td>
+</tr>
+<tr class="row-even"><td>분석불능범주NA</td>
+<td>분석불능범주NA</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-1">[1]</a></td><td>김홍규 외, 『<a class="reference external" href="http://www.korean.go.kr/common/download.do;front=B949B55881C893BDB988D7EBCAB12CD8?file_path=reportData&amp;c_file_name=b077cde8-d034-47fe-8788-9aa505289660_0.pdf&amp;o_file_name=(21%EC%84%B8%EA%B8%B0%20%EC%84%B8%EC%A2%85%EA%B3%84%ED%9A%8D)%EA%B5%AD%EC%96%B4%20%EA%B8%B0%EC%B4%88%EC%9E%90%EB%A3%8C%20%EA%B5%AC%EC%B6%95.pdf&amp;downGubun=reportDataViewForm&amp;report_seq=356">21세기 세종계획 국어 기초자료 구축</a>』, 문화관광부(2004), p.126</td></tr>
+</tbody>
+</table>
 </div>
 
 
-<script type="text/javascript" id="documentation_options" data-url_root="../"
-        src="../_static/documentation_options.js"></script>
-<script type="text/javascript" src="../_static/jquery.js"></script>
-<script type="text/javascript" src="../_static/underscore.js"></script>
-<script type="text/javascript" src="../_static/doctools.js"></script>
-<script type="text/javascript" src="../_static/language_data.js"></script>
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../examples/analyze.html" class="btn btn-neutral float-right" title="분석 예제" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial-java.html" class="btn btn-neutral" title="Gradle/Maven 없이 형태소 분석 따라하기" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2023, SHINEWARE TEAM
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
 
 
-<script type="text/javascript" src="../_static/js/theme.js"></script>
+  
 
-<script type="text/javascript">
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-
-</script>
-
+  </script>
+ 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
