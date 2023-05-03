@@ -1,369 +1,333 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ModelBuilder &mdash; KOMORAN 3.3.9 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>ModelBuilder &mdash; KOMORAN 3.3.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="../../../../../../../../_static/css/theme.css" type="text/css"/>
-    <link rel="stylesheet" href="../../../../../../../../_static/pygments.css" type="text/css"/>
-    <link rel="index" title="Index" href="../../../../../../../../genindex.html"/>
-    <link rel="search" title="Search" href="../../../../../../../../search.html"/>
-    <link rel="prev" title="kr.co.shineware.nlp.komoran.modeler.builder" href="package-index.html"/>
+  
 
+  <link rel="stylesheet" href="../../../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../../search.html" />
+    <link rel="prev" title="kr.co.shineware.nlp.komoran.modeler.builder" href="package-index.html" /> 
 
-    <script src="../../../../../../../../_static/js/modernizr.min.js"></script>
+  
+  <script src="../../../../../../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="../../../../../../../../index.html" class="icon icon-home"> KOMORAN
+          
 
-                <a href="../../../../../../../../index.html" class="icon icon-home"> KOMORAN
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                3.3.9
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    3.3.4
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="../../../../../../../../search.html"
-                          method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../firststep/installation.html">설치하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../firststep/tutorial.html">3분 만에 형태소 분석
-                        따라하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../firststep/tutorial-java.html">Gradle/Maven
-                        없이 형태소 분석 따라하기</a></li>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../firststep/postypes.html">품사표 (PoS Table)</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../examples/analyze.html">분석 예제</a></li>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../examples/train-model.html">모델 학습 예제</a></li>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../../../../../../examples/spark2-scala.html">Spark2 분석 예제
-                        (Scala)</a></li>
-                </ul>
-                <p class="caption"><span class="caption-text">API</span></p>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal"
-                                                      href="../../../../../../../packages.html">KOMORAN API</a>
-                        <ul class="current">
-                            <li class="toctree-l2"><a class="reference internal" href="../../core/package-index.html">kr.co.shineware.nlp.komoran.core</a>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal"
-                                                      href="../../corpus/builder/package-index.html">kr.co.shineware.nlp.komoran.corpus.builder</a>
-                            </li>
-                            <li class="toctree-l2"><a class="reference internal" href="../../model/package-index.html">kr.co.shineware.nlp.komoran.model</a>
-                            </li>
-                            <li class="toctree-l2 current"><a class="reference internal" href="package-index.html">kr.co.shineware.nlp.komoran.modeler.builder</a>
-                                <ul class="current">
-                                    <li class="toctree-l3 current"><a class="current reference internal" href="#">ModelBuilder</a>
-                                        <ul>
-                                            <li class="toctree-l4"><a class="reference internal"
-                                                                      href="#methods">Methods</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">KOMORAN 시작하기</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../firststep/installation.html">설치하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../firststep/tutorial.html">3분 만에 형태소 분석 따라하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../firststep/tutorial-java.html">Gradle/Maven 없이 형태소 분석 따라하기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../firststep/postypes.html">품사표 (PoS Table)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">KOMORAN 사용 예시</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../examples/analyze.html">분석 예제</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../examples/train-model.html">모델 학습 예제</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../examples/spark2-scala.html">Spark2 분석 예제 (Scala)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">models</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../../models/models.html">STABLE, EXP Model 차이</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../../../packages.html">KOMORAN API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core/package-index.html">kr.co.shineware.nlp.komoran.core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../corpus/builder/package-index.html">kr.co.shineware.nlp.komoran.corpus.builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/package-index.html">kr.co.shineware.nlp.komoran.model</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="package-index.html">kr.co.shineware.nlp.komoran.modeler.builder</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ModelBuilder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="../../../../../../../../index.html">KOMORAN</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../../../index.html">KOMORAN</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="../../../../../../../../index.html">Docs</a> &raquo;</li>
-
-                        <li><a href="../../../../../../../packages.html">KOMORAN API</a> &raquo;</li>
-
-                        <li><a href="package-index.html">kr.co.shineware.nlp.komoran.modeler.builder</a> &raquo;</li>
-
-                        <li>ModelBuilder</li>
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="../../../../../../../../_sources/api/kr/co/shineware/nlp/komoran/modeler/builder/ModelBuilder.rst.txt"
-                               rel="nofollow"> View page source</a>
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
-
-                        <div class="section" id="modelbuilder">
-                            <h1>ModelBuilder<a class="headerlink" href="#modelbuilder"
-                                               title="Permalink to this headline">¶</a></h1>
-                            <dl class="type">
-                                <dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder">
-                                    public class <code class="descname">ModelBuilder</code><a class="headerlink"
-                                                                                              href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder"
-                                                                                              title="Permalink to this definition">¶</a>
-                                </dt>
-                                <dd><p>코퍼스 빌드 결과물로 모델 생성 생성되는 데이터는 아래와 같음 - 관측 확률(observation.model) - 전이
-                                    확률(transition.model) - 불규칙 모델(irregular.model) - 품사 테이블(pos.table)</p>
-                                    <table class="docutils field-list" frame="void" rules="none">
-                                        <col class="field-name"/>
-                                        <col class="field-body"/>
-                                        <tbody valign="top">
-                                        <tr class="field-odd field">
-                                            <th class="field-name">Author:</th>
-                                            <td class="field-body">Junsoo Shin</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </dd>
-                            </dl>
-
-                            <div class="section" id="methods">
-                                <h2>Methods<a class="headerlink" href="#methods"
-                                              title="Permalink to this headline">¶</a></h2>
-                                <div class="section" id="buildpath">
-                                    <h3>buildPath<a class="headerlink" href="#buildpath"
-                                                    title="Permalink to this headline">¶</a></h3>
-                                    <dl class="method">
-                                        <dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.buildPath(String)">
-                                            public void <code class="descname">buildPath</code><span
-                                                class="sig-paren">(</span><a class="reference external"
-                                                                             href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
-                                                                             title="java.lang.String">String</a><em>
-                                            path</em><span class="sig-paren">)</span><a class="headerlink"
-                                                                                        href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.buildPath(String)"
-                                                                                        title="Permalink to this definition">¶</a>
-                                        </dt>
-                                        <dd><p>입력된 path에 저장된 데이터로 부터 model 빌드 path 내에는 아래와 같은 데이터들이 포함되어 있어야함 - 단어 사전 파일
-                                            : dic.word - 불규칙 사전 파일 : dic.irregular - 품사 간 문법 사전 : grammar.in</p>
-                                            <table class="docutils field-list" frame="void" rules="none">
-                                                <col class="field-name"/>
-                                                <col class="field-body"/>
-                                                <tbody valign="top">
-                                                <tr class="field-odd field">
-                                                    <th class="field-name">Parameters:</th>
-                                                    <td class="field-body">
-                                                        <ul class="first last simple">
-                                                            <li><strong>path</strong> – 모델을 생성하기 위한 트레이닝 데이터 위치</li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </dd>
-                                    </dl>
-
-                                </div>
-                                <div class="section" id="load">
-                                    <h3>load<a class="headerlink" href="#load" title="Permalink to this headline">¶</a>
-                                    </h3>
-                                    <dl class="method">
-                                        <dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.load(String)">
-                                            public void <code class="descname">load</code><span
-                                                class="sig-paren">(</span><a class="reference external"
-                                                                             href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
-                                                                             title="java.lang.String">String</a><em>
-                                            path</em><span class="sig-paren">)</span><a class="headerlink"
-                                                                                        href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.load(String)"
-                                                                                        title="Permalink to this definition">¶</a>
-                                        </dt>
-                                        <dd></dd>
-                                    </dl>
-
-                                </div>
-                                <div class="section" id="save">
-                                    <h3>save<a class="headerlink" href="#save" title="Permalink to this headline">¶</a>
-                                    </h3>
-                                    <dl class="method">
-                                        <dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.save(String)">
-                                            public void <code class="descname">save</code><span
-                                                class="sig-paren">(</span><a class="reference external"
-                                                                             href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
-                                                                             title="java.lang.String">String</a><em>
-                                            path</em><span class="sig-paren">)</span><a class="headerlink"
-                                                                                        href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.save(String)"
-                                                                                        title="Permalink to this definition">¶</a>
-                                        </dt>
-                                        <dd><p>본 메소드 호출 전에 반드시 buildPath 메소드를 실행해야합니다.</p>
-                                            <p>build된 모델들(transition, observation, pos_table)을 path 디렉토리에 저장합니다. path
-                                                디렉토리에는 irregular.model, observation.model, pos.table, transition.model
-                                                파일이 생성됩니다.</p>
-                                            <table class="docutils field-list" frame="void" rules="none">
-                                                <col class="field-name"/>
-                                                <col class="field-body"/>
-                                                <tbody valign="top">
-                                                <tr class="field-odd field">
-                                                    <th class="field-name">Parameters:</th>
-                                                    <td class="field-body">
-                                                        <ul class="first last simple">
-                                                            <li><strong>path</strong> – 빌드된 데이터가 저장될 디렉토리</li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </dd>
-                                    </dl>
-
-                                </div>
-                                <div class="section" id="setexternaldic">
-                                    <h3>setExternalDic<a class="headerlink" href="#setexternaldic"
-                                                         title="Permalink to this headline">¶</a></h3>
-                                    <dl class="method">
-                                        <dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.setExternalDic(String)">
-                                            public void <code class="descname">setExternalDic</code><span
-                                                class="sig-paren">(</span><a class="reference external"
-                                                                             href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
-                                                                             title="java.lang.String">String</a><em>
-                                            externalDic</em><span class="sig-paren">)</span><a class="headerlink"
-                                                                                               href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.setExternalDic(String)"
-                                                                                               title="Permalink to this definition">¶</a>
-                                        </dt>
-                                        <dd><p>본 메소드는 반드시 buildPath 메소드 호출 전에만 사용가능합니다.</p>
-                                            <p>externalDic 경로에 있는 외부 사전을 추가하여 모델을 빌드합니다. 외부 사전에 등록된 단어들의 빈도수는 50으로 초기화되어
-                                                모델에 반영됩니다.</p>
-                                            <table class="docutils field-list" frame="void" rules="none">
-                                                <col class="field-name"/>
-                                                <col class="field-body"/>
-                                                <tbody valign="top">
-                                                <tr class="field-odd field">
-                                                    <th class="field-name">Parameters:</th>
-                                                    <td class="field-body">
-                                                        <ul class="first last simple">
-                                                            <li><strong>externalDic</strong> –</li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </dd>
-                                    </dl>
-
-                                </div>
-                            </div>
-                        </div>
 
 
-                    </div>
-
-                </div>
-                <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
 
-                        <a href="package-index.html" class="btn btn-neutral"
-                           title="kr.co.shineware.nlp.komoran.modeler.builder" accesskey="p" rel="prev"><span
-                                class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
 
 
-                    <hr/>
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2019, SHINEWARE TEAM
+<div role="navigation" aria-label="breadcrumbs navigation">
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../../../../packages.html">KOMORAN API</a> &raquo;</li>
+        
+          <li><a href="package-index.html">kr.co.shineware.nlp.komoran.modeler.builder</a> &raquo;</li>
+        
+      <li>ModelBuilder</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../../../../../_sources/api/kr/co/shineware/nlp/komoran/modeler/builder/ModelBuilder.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
 
-                </footer>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modelbuilder">
+<h1>ModelBuilder<a class="headerlink" href="#modelbuilder" title="Permalink to this headline">¶</a></h1>
+<dl class="type">
+<dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder">
+public class <code class="descname">ModelBuilder</code><a class="headerlink" href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>코퍼스 빌드 결과물로 모델 생성 생성되는 데이터는 아래와 같음 - 관측 확률(observation.model) - 전이 확률(transition.model) - 불규칙 모델(irregular.model) - 품사 테이블(pos.table)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Junsoo Shin</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-            </div>
-        </div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="buildpath">
+<h3>buildPath<a class="headerlink" href="#buildpath" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.buildPath(String)">
+public void <code class="descname">buildPath</code><span class="sig-paren">(</span><a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="java.lang.String">String</a><em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.buildPath(String)" title="Permalink to this definition">¶</a></dt>
+<dd><p>입력된 path에 저장된 데이터로 부터 model 빌드  path 내에는 아래와 같은 데이터들이 포함되어 있어야함  - 단어 사전 파일 : dic.word - 불규칙 사전 파일 : dic.irregular - 품사 간 문법 사전 : grammar.in</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> – 모델을 생성하기 위한 트레이닝 데이터 위치</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-    </section>
+</div>
+<div class="section" id="load">
+<h3>load<a class="headerlink" href="#load" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.load(String)">
+public void <code class="descname">load</code><span class="sig-paren">(</span><a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="java.lang.String">String</a><em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.load(String)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
+</div>
+<div class="section" id="save">
+<h3>save<a class="headerlink" href="#save" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.save(String)">
+public void <code class="descname">save</code><span class="sig-paren">(</span><a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="java.lang.String">String</a><em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.save(String)" title="Permalink to this definition">¶</a></dt>
+<dd><p>본 메소드 호출 전에 반드시 buildPath 메소드를 실행해야합니다.</p>
+<p>build된 모델들(transition, observation, pos_table)을 path 디렉토리에 저장합니다. path 디렉토리에는 irregular.model, observation.model, pos.table, transition.model 파일이 생성됩니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> – 빌드된 데이터가 저장될 디렉토리</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="setexternaldic">
+<h3>setExternalDic<a class="headerlink" href="#setexternaldic" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.setExternalDic(String)">
+public void <code class="descname">setExternalDic</code><span class="sig-paren">(</span><a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="java.lang.String">String</a><em> externalDic</em><span class="sig-paren">)</span><a class="headerlink" href="#kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder.setExternalDic(String)" title="Permalink to this definition">¶</a></dt>
+<dd><p>본 메소드는 반드시 buildPath 메소드 호출 전에만 사용가능합니다.</p>
+<p>externalDic 경로에 있는 외부 사전을 추가하여 모델을 빌드합니다. 외부 사전에 등록된 단어들의 빈도수는 50으로 초기화되어 모델에 반영됩니다.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>externalDic</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
 </div>
 
 
-<script type="text/javascript" id="documentation_options" data-url_root="../../../../../../../../"
-        src="../../../../../../../../_static/documentation_options.js"></script>
-<script type="text/javascript" src="../../../../../../../../_static/jquery.js"></script>
-<script type="text/javascript" src="../../../../../../../../_static/underscore.js"></script>
-<script type="text/javascript" src="../../../../../../../../_static/doctools.js"></script>
-<script type="text/javascript" src="../../../../../../../../_static/language_data.js"></script>
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="package-index.html" class="btn btn-neutral" title="kr.co.shineware.nlp.komoran.modeler.builder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2023, SHINEWARE TEAM
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
 
 
-<script type="text/javascript" src="../../../../../../../../_static/js/theme.js"></script>
+  
 
-<script type="text/javascript">
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../../../" src="../../../../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-
-</script>
-
+  </script>
+ 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
