@@ -1,4 +1,4 @@
-name: Java CI
+name: Java CI with Gradle
 
 on:
   push:
@@ -8,27 +8,25 @@ on:
     
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        os: [ubuntu-16.04, ubuntu-latest, windows-latest, macos-latest]
-        java: [8, 9, 10, 11]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        java: [8, 11, 17]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ matrix.java }}
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Cache Gradle packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-    - name: Build with Gradle
-      run: ./gradlew build
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@749f47bda3e44aa060e82d7b3ef7e40d953bd629
+        with:
+          arguments: build
