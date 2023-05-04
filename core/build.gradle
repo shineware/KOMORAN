@@ -6,7 +6,7 @@
 group = 'com.github.shineware'
 
 
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -39,9 +39,9 @@ repositories {
 //}
 
 dependencies {
-    compile 'com.github.shineware:commons:1.0.1'
-    compile 'com.github.shineware:aho-corasick:1.1.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.github.shineware:commons:1.0.1'
+    implementation 'com.github.shineware:aho-corasick:1.1.0'
+    testImplementation 'junit:junit:4.12'
 }
 
 task uberJar(type: Jar) {
