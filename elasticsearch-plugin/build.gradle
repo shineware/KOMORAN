@@ -46,8 +46,8 @@ task makePlugin(type: Zip) {
     from("src/main/resources/") {
         include "*"
     }
-    archiveName('komoran-tokenizer.zip')
-    destinationDir(file('.'))
+    archiveFileName = 'komoran-tokenizer' + '.zip'
+    destinationDirectory = file('.')
 }
 
 
@@ -59,7 +59,7 @@ dependencies {
     testImplementation group: 'org.apache.lucene', name: 'lucene-test-framework', version: '8.4.0'
     implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.6.2'
     includeCompile project(':core')
-    configurations.compile.extendsFrom(configurations.includeCompile)
+    configurations.implementation.extendsFrom(configurations.includeCompile)
 }
 
 compileJava.options.encoding = "UTF-8"
