@@ -5,11 +5,9 @@ plugins {
 group 'shineware'
 version '1.0-SNAPSHOT'
 
-def javaVersion = JavaVersion.current()
-
 java {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.current()
 }
 
 repositories {
