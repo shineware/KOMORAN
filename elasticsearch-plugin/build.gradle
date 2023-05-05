@@ -5,8 +5,12 @@ plugins {
 group 'shineware'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_11
+def javaVersion = JavaVersion.current()
+
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
 
 repositories {
     mavenCentral()
