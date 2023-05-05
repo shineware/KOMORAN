@@ -45,7 +45,7 @@ dependencies {
 }
 
 task uberJar(type: Jar) {
-    appendix = 'uber'
+    archiveAppendix = 'uber'
 
     from sourceSets.main.output
     from configurations.runtimeClasspath

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.2.RELEASE'
+        springBootVersion = '2.6.14'
     }
     repositories {
         mavenCentral()
@@ -16,7 +16,9 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'kr.co.shineware.nlp.komoran'
 version = '1.0.0-SNAPSHOT'
-sourceCompatibility = '1.8'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_17
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
