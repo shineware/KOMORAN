@@ -112,10 +112,8 @@ public class Grammar implements FileAccessible {
 
     @Override
     public void save(String filename) {
-        try {
-            BufferedWriter bw = new BufferedWriter(
-                    (new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8)));
-//			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))) {
             Set<Entry<String, Map<String, Integer>>> entrySet = grammar.entrySet();
             for (Entry<String, Map<String, Integer>> entry : entrySet) {
 
@@ -137,7 +135,6 @@ public class Grammar implements FileAccessible {
                 }
                 bw.newLine();
             }
-            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

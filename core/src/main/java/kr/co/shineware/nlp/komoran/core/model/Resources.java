@@ -58,11 +58,6 @@ public class Resources {
 	}
 	
 	public void init(){
-		this.table = null;
-		this.observation = null;
-		this.transition = null;
-		this.irrTrie = null;
-
 		this.table = new PosTable();
 		this.observation = new Observation();
 		this.transition = new Transition();

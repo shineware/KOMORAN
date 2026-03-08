@@ -86,11 +86,8 @@ public class CorpusBuilder {
     public void save(String savePathName) {
         File savePath = new File(savePathName);
         if (savePath.exists() && !savePath.isDirectory()) {
-            System.err.println("CorpusBuilder.save error!");
-            System.err
-                    .println("savePathName is exists, but it's not a directory.");
-            System.err.println("please check path name to save");
-            System.exit(1);
+            throw new IllegalArgumentException(
+                    "CorpusBuilder.save error: savePathName exists but is not a directory: " + savePathName);
         }
         savePath.mkdirs();
         wordDic.save(savePathName + File.separator + FILENAME.WORD_DIC);
@@ -248,13 +245,12 @@ public class CorpusBuilder {
      * @param filename 빌드 대상 파일 경로
      */
     public void build(String filename) {
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 appendResources(line);
             }
-            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,12 +262,11 @@ public class CorpusBuilder {
             return;
         }
 
-        ProblemAnswerPair paPair = null;
+        ProblemAnswerPair paPair;
         try {
             paPair = this.corpusParser.parse(line);
         } catch (FileFormatException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException("Corpus parsing failed for line: " + line, e);
         }
         this.appendWordDictionary(paPair.getAnswerList());
 
@@ -444,21 +439,20 @@ public class CorpusBuilder {
     public void setExclusiveIrrRule(String filename) {
         try {
             this.irrExclusiveSet = new HashSet<>();
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-//            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.length() == 0) continue;
-                //key :
-                //remove :
-                String key = line.substring(6);
-                line = br.readLine();
-                String remove = line.substring(9);
-                this.irrExclusiveSet.add(key + "\t" + remove);
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() == 0) continue;
+                    //key :
+                    //remove :
+                    String key = line.substring(6);
+                    line = br.readLine();
+                    String remove = line.substring(9);
+                    this.irrExclusiveSet.add(key + "\t" + remove);
+                }
             }
-            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -471,20 +465,16 @@ public class CorpusBuilder {
      * @param filename 사용자 사전 경로
      */
     public void appendUserDic(String filename) {
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-//            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line = null;
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+            String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (line.length() == 0 || line.charAt(0) == '#') continue;
                 if (this.wordDic.getPosList(line) == null) {
                     this.wordDic.append(line, "NNP");
-                } else {
                 }
             }
-            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -115,39 +115,73 @@ public class KomoranResult {
      */
     public List<Token> getTokenList() {
         List<Pair<Integer, Integer>> syllableAreaList = parser.getSyllableAreaList(this.jasoUnits);
+
+        // Build index maps for O(1) lookup
+        int maxJasoIdx = this.jasoUnits.length();
+        int[] beginMap = new int[maxJasoIdx + 1];
+        int[] endMap = new int[maxJasoIdx + 1];
+        Arrays.fill(beginMap, -1);
+        Arrays.fill(endMap, -1);
+
+        for (int i = 0; i < syllableAreaList.size(); i++) {
+            Pair<Integer, Integer> area = syllableAreaList.get(i);
+            int first = area.getFirst();
+            int second = area.getSecond();
+            // For beginMap: always overwrite to match original behavior (last match wins at boundaries)
+            for (int j = first; j <= Math.min(second, maxJasoIdx); j++) {
+                beginMap[j] = i;
+            }
+            // For endMap: map jaso end index to syllable index + 1 (last match wins)
+            if (second <= maxJasoIdx) {
+                endMap[second] = i + 1;
+            }
+        }
+
         List<Token> tokenList = new ArrayList<>();
         int prevBeginIdx = 0;
         for (LatticeNode latticeNode : resultNodeList) {
             if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
-            //불규칙이거나 multi token 기분석 사전인 경우
             if (latticeNode.getBeginIdx() < 0) {
                 latticeNode.setBeginIdx(prevBeginIdx);
             }
-            Pair<Integer, Integer> syllableArea = this.getSyllableArea(latticeNode.getBeginIdx(), latticeNode.getEndIdx(), syllableAreaList);
+
+            int jasoBeginIdx = latticeNode.getBeginIdx();
+            int jasoEndIdx = latticeNode.getEndIdx();
+
+            // Fallback to linear scan if index out of range
+            int syllableBegin = (jasoBeginIdx >= 0 && jasoBeginIdx < beginMap.length && beginMap[jasoBeginIdx] != -1)
+                    ? beginMap[jasoBeginIdx]
+                    : findSyllableBegin(jasoBeginIdx, syllableAreaList);
+            int syllableEnd = (jasoEndIdx >= 0 && jasoEndIdx < endMap.length && endMap[jasoEndIdx] != -1)
+                    ? endMap[jasoEndIdx]
+                    : findSyllableEnd(jasoEndIdx, syllableAreaList);
 
             tokenList.add(new Token(parser.combine(latticeNode.getMorphTag().getMorph()),
-                    parser.combine(latticeNode.getTag()), syllableArea.getFirst(), syllableArea.getSecond()));
+                    parser.combine(latticeNode.getTag()), syllableBegin, syllableEnd));
 
             prevBeginIdx = latticeNode.getBeginIdx();
         }
         return tokenList;
     }
 
-    private Pair<Integer, Integer> getSyllableArea(int jasoBeginIdx, int jasoEndIdx,
-                                                   List<Pair<Integer, Integer>> syllableAreaList) {
-        Pair<Integer, Integer> syllableAreaPair = new Pair<>();
+    private int findSyllableBegin(int jasoBeginIdx, List<Pair<Integer, Integer>> syllableAreaList) {
         for (int i = 0; i < syllableAreaList.size(); i++) {
-
             if (syllableAreaList.get(i).getFirst() <= jasoBeginIdx && jasoBeginIdx <= syllableAreaList.get(i).getSecond()) {
-                syllableAreaPair.setFirst(i);
-            }
-            if (syllableAreaList.get(i).getFirst() < jasoEndIdx && jasoEndIdx <= syllableAreaList.get(i).getSecond()) {
-                syllableAreaPair.setSecond(i + 1);
+                return i;
             }
         }
-        return syllableAreaPair;
+        return 0;
+    }
+
+    private int findSyllableEnd(int jasoEndIdx, List<Pair<Integer, Integer>> syllableAreaList) {
+        for (int i = 0; i < syllableAreaList.size(); i++) {
+            if (syllableAreaList.get(i).getFirst() < jasoEndIdx && jasoEndIdx <= syllableAreaList.get(i).getSecond()) {
+                return i + 1;
+            }
+        }
+        return 0;
     }
 
     /**

@@ -69,11 +69,9 @@ public class FWDBuilder {
     }
 
     public void build(String filename) {
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-//			BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line = null;
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+            String line;
 
             while ((line = br.readLine()) != null) {
                 line = this.refineFormat(line);
@@ -85,9 +83,6 @@ public class FWDBuilder {
                 String answer = problemAnswerPair.getAnswer();
                 this.insertFWDMap(problem, answer);
             }
-
-            br.close();
-            br = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,10 +120,8 @@ public class FWDBuilder {
     }
 
     private void save(String filename) {
-        try {
-            BufferedWriter bw = new BufferedWriter(
-                    (new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8)));
-//			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))) {
             Set<Entry<String, Map<String, Integer>>> fwdEntrySet = fwdMap.entrySet();
             for (Entry<String, Map<String, Integer>> fwdEntry : fwdEntrySet) {
                 String problem = fwdEntry.getKey();
@@ -143,7 +136,6 @@ public class FWDBuilder {
                     }
                 }
             }
-            bw.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

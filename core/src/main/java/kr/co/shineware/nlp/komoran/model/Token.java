@@ -54,12 +54,14 @@ public class Token {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Token token = (Token) o;
-		return Objects.equals(morph, token.morph) &&
+		return beginIndex == token.beginIndex &&
+				endIndex == token.endIndex &&
+				Objects.equals(morph, token.morph) &&
 				Objects.equals(pos, token.pos);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(morph, pos);
+		return Objects.hash(morph, pos, beginIndex, endIndex);
 	}
 }

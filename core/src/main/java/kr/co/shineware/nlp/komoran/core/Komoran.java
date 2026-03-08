@@ -17,7 +17,6 @@
  *******************************************************************************/
 package kr.co.shineware.nlp.komoran.core;
 
-import kr.co.shineware.ds.aho_corasick.FindContext;
 import kr.co.shineware.nlp.komoran.constant.*;
 import kr.co.shineware.nlp.komoran.core.model.*;
 import kr.co.shineware.nlp.komoran.core.model.combinationrules.CombinationRuleChecker;
@@ -38,14 +37,14 @@ import kr.co.shineware.util.common.string.StringUtil;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * KOMORAN core 클래스입니다.
  */
-public class Komoran implements Cloneable {
+public class Komoran {
 
     private CombinationRuleChecker combinationRuleChecker;
     private Resources resources;
@@ -90,19 +89,22 @@ public class Komoran implements Cloneable {
         }
 
         String delimiter = "/";
-        InputStream posTableFile =
-                this.getResourceStream(modelPath + delimiter + FILENAME.POS_TABLE);
-        InputStream irrModelFile =
-                this.getResourceStream(modelPath + delimiter + FILENAME.IRREGULAR_MODEL);
-        InputStream observationFile =
-                this.getResourceStream(modelPath + delimiter + FILENAME.OBSERVATION);
-        InputStream transitionFile =
-                this.getResourceStream(modelPath + delimiter + FILENAME.TRANSITION);
+        try (InputStream posTableFile =
+                     this.getResourceStream(modelPath + delimiter + FILENAME.POS_TABLE);
+             InputStream irrModelFile =
+                     this.getResourceStream(modelPath + delimiter + FILENAME.IRREGULAR_MODEL);
+             InputStream observationFile =
+                     this.getResourceStream(modelPath + delimiter + FILENAME.OBSERVATION);
+             InputStream transitionFile =
+                     this.getResourceStream(modelPath + delimiter + FILENAME.TRANSITION)) {
 
-        this.resources.loadPosTable(posTableFile);
-        this.resources.loadIrregular(irrModelFile);
-        this.resources.loadObservation(observationFile);
-        this.resources.loadTransition(transitionFile);
+            this.resources.loadPosTable(posTableFile);
+            this.resources.loadIrregular(irrModelFile);
+            this.resources.loadObservation(observationFile);
+            this.resources.loadTransition(transitionFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load model resources: " + modelPath, e);
+        }
         this.unitParser = new KoreanUnitParser();
 
         MorphUtil morphUtil = new MorphUtil();
@@ -123,13 +125,12 @@ public class Komoran implements Cloneable {
      */
     public void analyzeTextFile(String inputFilename, String outputFilename, int thread) {
 
-        try {
-            List<String> lines = FileUtil.load2List(inputFilename);
+        ExecutorService executor = Executors.newFixedThreadPool(thread);
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(outputFilename), StandardCharsets.UTF_8))) {
 
-            BufferedWriter bw = new BufferedWriter(
-                    (new OutputStreamWriter(new FileOutputStream(outputFilename), StandardCharsets.UTF_8)));
+            List<String> lines = FileUtil.load2List(inputFilename);
             List<Future<KomoranResult>> komoranResultList = new ArrayList<>();
-            ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
 
             for (String line : lines) {
                 KomoranCallable komoranCallable = new KomoranCallable(this, line);
@@ -141,11 +142,11 @@ public class Komoran implements Cloneable {
                 bw.write(komoranResult.getPlainText());
                 bw.newLine();
             }
-            bw.close();
-            executor.shutdown();
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            executor.shutdown();
         }
 
     }
@@ -160,10 +161,10 @@ public class Komoran implements Cloneable {
     public List<KomoranResult> analyze(List<String> sentences, int thread) {
 
         List<KomoranResult> komoranResultList = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(thread);
 
         try {
             List<Future<KomoranResult>> komoranResultFutureList = new ArrayList<>();
-            ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(thread);
 
             for (String line : sentences) {
                 KomoranCallable komoranCallable = new KomoranCallable(this, line);
@@ -173,10 +174,11 @@ public class Komoran implements Cloneable {
             for (Future<KomoranResult> komoranResultFuture : komoranResultFutureList) {
                 komoranResultList.add(komoranResultFuture.get());
             }
-            executor.shutdown();
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            executor.shutdown();
         }
 
         return komoranResultList;
@@ -200,7 +202,7 @@ public class Komoran implements Cloneable {
         for(int i=0;i<analyzePosList.size();i++){
             String currentMorph = analyzeResultList.get(i);
             String currentPos = analyzePosList.get(i);
-            FindContext<List<ScoredTag>> findContext = this.resources.getObservation().getTrieDictionary().newFindContext();
+            DoubleArrayAhoCorasick.DAFindContext findContext = this.resources.getObservation().getTrieDictionary().newFindContext();
             String jasoUnits = unitParser.parse(currentMorph);
             ScoredTag scoredTag = getScoredTag(jasoUnits, findContext, currentPos);
             score += getScore(currentMorph, scoredTag, prevPos, currentPos);
@@ -211,16 +213,17 @@ public class Komoran implements Cloneable {
 
     private double getScore(String currentMorph, ScoredTag scoredTag, String prevPos, String currentPos) {
         int prevId = this.resources.getTable().getId(prevPos);
-        int currentId= this.resources.getTable().getId(currentPos);
-        double transitionScore = this.resources.getTransition().get(prevId, currentId);
-        System.out.println(prevPos+"->"+currentPos+":"+transitionScore);
-        System.out.println(currentMorph+ " : "+scoredTag);
+        int currentId = this.resources.getTable().getId(currentPos);
+        double transitionScore = this.resources.getTransition().getScore(prevId, currentId);
 
+        if (scoredTag == null) {
+            return transitionScore;
+        }
         return transitionScore + scoredTag.getScore();
 
     }
 
-    private ScoredTag getScoredTag(String jasoUnits, FindContext<List<ScoredTag>> findContext, String posResult) {
+    private ScoredTag getScoredTag(String jasoUnits, DoubleArrayAhoCorasick.DAFindContext findContext, String posResult) {
 
         for(int i=0;i<jasoUnits.length();i++){
             Map<String, List<ScoredTag>> keyScoreTagMap = this.resources.getObservation().getTrieDictionary().get(findContext, jasoUnits.charAt(i));
@@ -256,9 +259,13 @@ public class Komoran implements Cloneable {
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
         ContinuousSymbolBuffer continuousSymbolBuffer = new ContinuousSymbolBuffer();
 
-        //자소 단위로 분할
-        String jasoUnits = unitParser.parse(sentence);
+        //자소 단위로 분할 (parseWithType에서 결과를 재사용하여 jasoUnits 생성)
         List<Pair<Character, KoreanUnitParser.UnitType>> jasoUnitsWithType = unitParser.parseWithType(sentence);
+        StringBuilder jasoBuilder = new StringBuilder(jasoUnitsWithType.size());
+        for (Pair<Character, KoreanUnitParser.UnitType> pair : jasoUnitsWithType) {
+            jasoBuilder.append(pair.getFirst());
+        }
+        String jasoUnits = jasoBuilder.toString();
 
         int length = jasoUnits.length();
         //start 노드 또는 end 노드의 바로 다음 인덱스
@@ -275,23 +282,23 @@ public class Komoran implements Cloneable {
                 continue;
             }
 
+            char curJaso = jasoUnits.charAt(curJasoIndex);
+
             //띄어쓰기인 경우
-            if (jasoUnits.charAt(curJasoIndex) == ' ') {
+            if (curJaso == ' ') {
                 this.consumeContiniousSymbolParserBuffer(lattice, curJasoIndex, continuousSymbolBuffer);
                 this.bridgeToken(lattice, curJasoIndex, jasoUnits, whitespaceIndex, jasoUnitsWithType);
                 whitespaceIndex = curJasoIndex + 1;
             }
 
-            //이 부분도 조금 더 깔끔한 방법으로 처리 할 수 없을지 고민해보자
-            this.continuousSymbolParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex, continuousSymbolBuffer); //숫자, 영어, 외래어 파싱
-
-            //기타 기호인 경우
-            this.symbolParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); // 기타 심볼 파싱
-            this.userDicParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //사용자 사전 적용
-
-            this.regularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //일반규칙 파싱
-            this.irregularParsing(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 파싱
-            this.irregularExtends(lattice, jasoUnits.charAt(curJasoIndex), curJasoIndex); //불규칙 확장
+            this.continuousSymbolParsing(lattice, curJaso, curJasoIndex, continuousSymbolBuffer);
+            this.symbolParsing(lattice, curJaso, curJasoIndex);
+            if (this.userDic != null) {
+                this.userDicParsing(lattice, curJaso, curJasoIndex);
+            }
+            this.regularParsing(lattice, curJaso, curJasoIndex);
+            this.irregularParsing(lattice, curJaso, curJasoIndex);
+            this.irregularExtends(lattice, curJaso, curJasoIndex);
         }
 
 
@@ -353,15 +360,15 @@ public class Komoran implements Cloneable {
         if (StringUtil.isNumeric(jaso)) {
         } else if (unicodeBlock == Character.UnicodeBlock.BASIC_LATIN) {
             if (!isEnglishCharacter(jaso) && !isWhitespaceCharacter(jaso) && !isDictionaryEntryCharacter(jaso)) {
-                lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, SEJONGTAGS.SW_ID, SCORE.SW);
+                lattice.put(idx, idx + 1, String.valueOf(jaso), SYMBOL.SW, SEJONGTAGS.SW_ID, SCORE.SW);
             }
         } else if (!StringUtil.isKorean(jaso) && !StringUtil.isJapanese(jaso) && !StringUtil.isChinese(jaso)) {
-            lattice.put(idx, idx + 1, "" + jaso, SYMBOL.SW, SEJONGTAGS.SW_ID, SCORE.SW);
+            lattice.put(idx, idx + 1, String.valueOf(jaso), SYMBOL.SW, SEJONGTAGS.SW_ID, SCORE.SW);
         }
     }
 
     private boolean isDictionaryEntryCharacter(char jaso) {
-        return this.resources.getObservation().getTrieDictionary().getValue("" + jaso) != null;
+        return this.resources.getObservation().getTrieDictionary().getValue(jaso) != null;
     }
 
     private boolean isWhitespaceCharacter(char jaso) {
@@ -444,6 +451,15 @@ public class Komoran implements Cloneable {
         return fwdMorphs.toString().equals(targetWord);
     }
 
+    private static double getScoreForPos(String pos) {
+        switch (pos) {
+            case "SL": return SCORE.SL;
+            case "SN": return SCORE.SN;
+            case "SH": return SCORE.SH;
+            default: return Double.NEGATIVE_INFINITY;
+        }
+    }
+
     private void continuousSymbolParsing(Lattice lattice, char charAt, int i, ContinuousSymbolBuffer continuousSymbolBuffer) {
         String curPos = "";
         if (StringUtil.isEnglish(charAt)) {
@@ -456,92 +472,35 @@ public class Komoran implements Cloneable {
             curPos = "SL";
         }
 
-        //현재 기호의 품사가 이전 기호의 품사와 같은 경우에는 갱신하여 추가
         if (curPos.equals(continuousSymbolBuffer.getPrevPos())) {
             continuousSymbolBuffer.setPrevMorph(continuousSymbolBuffer.getPrevMorph() + charAt);
         } else {
-            switch (continuousSymbolBuffer.getPrevPos()) {
-                case "SL":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), i,
-                            continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(),
-                            this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()),
-                            SCORE.SL
-                    );
-                    break;
-                case "SN":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), i,
-                            continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(),
-                            this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()),
-                            SCORE.SN
-                    );
-                    break;
-                case "SH":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), i,
-                            continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(),
-                            this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()),
-                            SCORE.SH
-                    );
-                    break;
+            String prevPos = continuousSymbolBuffer.getPrevPos();
+            double score = getScoreForPos(prevPos);
+            if (score != Double.NEGATIVE_INFINITY) {
+                lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), i,
+                        continuousSymbolBuffer.getPrevMorph(),
+                        prevPos,
+                        this.resources.getTable().getId(prevPos),
+                        score);
             }
             continuousSymbolBuffer.setPrevBeginIdx(i);
-            continuousSymbolBuffer.setPrevMorph("" + charAt);
+            continuousSymbolBuffer.setPrevMorph(String.valueOf(charAt));
             continuousSymbolBuffer.setPrevPos(curPos);
         }
     }
 
     private void consumeContiniousSymbolParserBuffer(Lattice lattice, String in, ContinuousSymbolBuffer continuousSymbolBuffer) {
-        if (continuousSymbolBuffer.getPrevPos().trim().length() != 0) {
-            switch (continuousSymbolBuffer.getPrevPos()) {
-                case "SL":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(),
-                            in.length(),
-                            continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(),
-                            this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()),
-                            SCORE.SL
-                    );
-                    break;
-                case "SH":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(),
-                            in.length(),
-                            continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(),
-                            this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()),
-                            SCORE.SH
-                    );
-                    break;
-                case "SN":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(),
-                            in.length(),
-                            continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(),
-                            this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()),
-                            SCORE.SN
-                    );
-                    break;
-            }
-        }
+        this.consumeContiniousSymbolParserBuffer(lattice, in.length(), continuousSymbolBuffer);
     }
 
     private void consumeContiniousSymbolParserBuffer(Lattice lattice, int endIdx, ContinuousSymbolBuffer continuousSymbolBuffer) {
-        if (continuousSymbolBuffer.getPrevPos().trim().length() != 0) {
-            switch (continuousSymbolBuffer.getPrevPos()) {
-                case "SL":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), endIdx, continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(), this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()), SCORE.SL);
-                    break;
-                case "SH":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), endIdx, continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(), this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()), SCORE.SH);
-                    break;
-                case "SN":
-                    lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), endIdx, continuousSymbolBuffer.getPrevMorph(),
-                            continuousSymbolBuffer.getPrevPos(), this.resources.getTable().getId(continuousSymbolBuffer.getPrevPos()), SCORE.SN);
-                    break;
-            }
+        String prevPos = continuousSymbolBuffer.getPrevPos();
+        if (prevPos.isEmpty()) return;
+        double score = getScoreForPos(prevPos);
+        if (score != Double.NEGATIVE_INFINITY) {
+            lattice.put(continuousSymbolBuffer.getPrevBeginIdx(), endIdx, continuousSymbolBuffer.getPrevMorph(),
+                    prevPos, this.resources.getTable().getId(prevPos), score);
         }
     }
 
@@ -551,30 +510,31 @@ public class Komoran implements Cloneable {
             Set<LatticeNode> extendedIrrNodeList = new HashSet<>();
 
             for (LatticeNode prevLatticeNode : prevLatticeNodes) {
-                //불규칙 태그인 경우에 대해서만
                 if (prevLatticeNode.getMorphTag().getTagId() == SYMBOL.IRREGULAR_ID) {
-                    //마지막 형태소 정보를 얻어옴
                     String lastMorph = prevLatticeNode.getMorphTag().getMorph();
 
-                    //불규칙의 마지막 형태소에 현재 자소 단위를 합쳤을 때 자식 노드가 있다면 계속 탐색 가능 후보로 처리 해야함
-                    if (this.resources.getObservation().getTrieDictionary().hasChild((lastMorph + jaso).toCharArray())) {
+                    // char[] 버퍼를 한번만 생성하여 재사용
+                    char[] morphWithJaso = new char[lastMorph.length() + 1];
+                    lastMorph.getChars(0, lastMorph.length(), morphWithJaso, 0);
+                    morphWithJaso[lastMorph.length()] = jaso;
+                    String morphJasoStr = new String(morphWithJaso);
+
+                    if (this.resources.getObservation().getTrieDictionary().hasChild(morphWithJaso)) {
                         LatticeNode extendedIrregularNode = new LatticeNode();
                         extendedIrregularNode.setBeginIdx(prevLatticeNode.getBeginIdx());
                         extendedIrregularNode.setEndIdx(curIndex + 1);
-                        extendedIrregularNode.setMorphTag(new MorphTag(prevLatticeNode.getMorphTag().getMorph() + jaso, SYMBOL.IRREGULAR, SYMBOL.IRREGULAR_ID));
+                        extendedIrregularNode.setMorphTag(new MorphTag(morphJasoStr, SYMBOL.IRREGULAR, SYMBOL.IRREGULAR_ID));
                         extendedIrregularNode.setPrevNodeIdx(prevLatticeNode.getPrevNodeIdx());
                         extendedIrregularNode.setScore(prevLatticeNode.getScore());
                         extendedIrrNodeList.add(extendedIrregularNode);
                     }
-                    //불규칙의 마지막 형태소에 현재 자소 단위를 합쳐 점수를 얻어옴
-                    List<ScoredTag> lastScoredTags = this.resources.getObservation().getTrieDictionary().getValue(lastMorph + jaso);
+                    List<ScoredTag> lastScoredTags = this.resources.getObservation().getTrieDictionary().getValue(morphJasoStr);
                     if (lastScoredTags == null) {
                         continue;
                     }
 
-                    //얻어온 점수를 토대로 lattice에 넣음
                     for (ScoredTag scoredTag : lastScoredTags) {
-                        lattice.put(prevLatticeNode.getBeginIdx(), curIndex + 1, prevLatticeNode.getMorphTag().getMorph() + jaso,
+                        lattice.put(prevLatticeNode.getBeginIdx(), curIndex + 1, morphJasoStr,
                                 scoredTag.getTag(), scoredTag.getTagId(), scoredTag.getScore());
                     }
                 }
@@ -582,7 +542,6 @@ public class Komoran implements Cloneable {
             for (LatticeNode extendedIrrNode : extendedIrrNodeList) {
                 lattice.appendNode(extendedIrrNode);
             }
-
         }
     }
 
@@ -614,27 +573,21 @@ public class Komoran implements Cloneable {
     }
 
     private void regularParsing(Lattice lattice, char jaso, int curIndex) {
-        //TRIE 기반의 사전 검색하여 형태소와 품사 및 품사 점수(observation)를 얻어옴
         Map<String, List<ScoredTag>> morphScoredTagsMap = lattice.retrievalObservation(jaso);
 
         if (morphScoredTagsMap == null || morphScoredTagsMap.size() == 0) {
             return;
         }
 
-        //형태소 정보만 얻어옴
-        Set<String> morphes = morphScoredTagsMap.keySet();
-
-        //각 형태소와 품사 정보를 lattice에 삽입
-        for (String morph : morphes) {
+        int endIdx = curIndex + 1;
+        for (Map.Entry<String, List<ScoredTag>> entry : morphScoredTagsMap.entrySet()) {
+            String morph = entry.getKey();
             int beginIdx = curIndex - morph.length() + 1;
-            int endIdx = curIndex + 1;
 
-            //형태소에 대한 품사 및 점수(observation) 정보를 List 형태로 가져옴
-            List<ScoredTag> scoredTags = morphScoredTagsMap.get(morph);
+            List<ScoredTag> scoredTags = entry.getValue();
             for (ScoredTag scoredTag : scoredTags) {
                 lattice.put(beginIdx, endIdx, morph, scoredTag.getTag(), scoredTag.getTagId(), scoredTag.getScore());
-                //품사가 EC인 경우에 품사를 EF로 변환하여 lattice에 추가
-                if (scoredTag.getTag().equals(SYMBOL.EC)) {
+                if (scoredTag.getTagId() == SEJONGTAGS.EC_ID) {
                     lattice.put(beginIdx, endIdx, morph, SYMBOL.EF, SEJONGTAGS.EF_ID, scoredTag.getScore());
                 }
             }
@@ -659,28 +612,27 @@ public class Komoran implements Cloneable {
     public void setFWDic(String filename) {
         try {
             CorpusParser corpusParser = new CorpusParser();
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-//            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line;
             this.fwd = new HashMap<>();
-            while ((line = br.readLine()) != null) {
-                String[] tmp = line.split("\t");
-                //주석이거나 format에 안 맞는 경우는 skip
-                if (tmp.length != 2 || tmp[0].charAt(0) == '#') {
-                    continue;
-                }
-                ProblemAnswerPair problemAnswerPair = corpusParser.parse(line);
-                List<Pair<String, String>> convertAnswerList = new ArrayList<>();
-                for (Pair<String, String> pair : problemAnswerPair.getAnswerList()) {
-                    convertAnswerList.add(
-                            new Pair<>(pair.getFirst(), pair.getSecond()));
-                }
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] tmp = line.split("\t");
+                    //주석이거나 format에 안 맞는 경우는 skip
+                    if (tmp.length != 2 || tmp[0].charAt(0) == '#') {
+                        continue;
+                    }
+                    ProblemAnswerPair problemAnswerPair = corpusParser.parse(line);
+                    List<Pair<String, String>> convertAnswerList = new ArrayList<>();
+                    for (Pair<String, String> pair : problemAnswerPair.getAnswerList()) {
+                        convertAnswerList.add(
+                                new Pair<>(pair.getFirst(), pair.getSecond()));
+                    }
 
-                this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
-                        convertAnswerList);
+                    this.fwd.put(this.unitParser.parse(problemAnswerPair.getProblem()),
+                            convertAnswerList);
+                }
             }
-            br.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -702,27 +654,27 @@ public class Komoran implements Cloneable {
         try {
 
             this.userDic = new Observation();
-            BufferedReader br = new BufferedReader(new FileReader(userDic));
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.length() == 0 || line.charAt(0) == '#') continue;
-                int lastIdx = line.lastIndexOf("\t");
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(userDic), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() == 0 || line.charAt(0) == '#') continue;
+                    int lastIdx = line.lastIndexOf("\t");
 
-                String morph;
-                String pos;
-                //사용자 사전에 태그가 없는 경우에는 고유 명사로 태깅
-                if (lastIdx == -1) {
-                    morph = line.trim();
-                    pos = "NNP";
-                } else {
-                    morph = line.substring(0, lastIdx);
-                    pos = line.substring(lastIdx + 1);
+                    String morph;
+                    String pos;
+                    //사용자 사전에 태그가 없는 경우에는 고유 명사로 태깅
+                    if (lastIdx == -1) {
+                        morph = line.trim();
+                        pos = "NNP";
+                    } else {
+                        morph = line.substring(0, lastIdx);
+                        pos = line.substring(lastIdx + 1);
+                    }
+                    this.userDic.put(morph, pos, this.resources.getTable().getId(pos), 0.0);
                 }
-                this.userDic.put(morph, pos, this.resources.getTable().getId(pos), 0.0);
-
             }
-            br.close();
 
             //init
             this.userDic.getTrieDictionary().buildFailLink();

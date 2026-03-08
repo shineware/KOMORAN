@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package kr.co.shineware.nlp.komoran.parser;
 
 import kr.co.shineware.nlp.komoran.interfaces.UnitParser;
@@ -22,8 +22,9 @@ import kr.co.shineware.util.common.model.Pair;
 
 import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KoreanUnitParser implements UnitParser {
     public static char[] ChoSung = {0x3131, 0x3132, 0x3134, 0x3137, 0x3138,
@@ -36,6 +37,38 @@ public class KoreanUnitParser implements UnitParser {
             0x3135, 0x3136, 0x3137, 0x3139, 0x313a, 0x313b, 0x313c, 0x313d,
             0x313e, 0x313f, 0x3140, 0x3141, 0x3142, 0x3144, 0x3145, 0x3146,
             0x3147, 0x3148, 0x314a, 0x314b, 0x314c, 0x314d, 0x314e};
+
+    // HashMap-based reverse lookups (replacing binarySearch)
+    private static final Map<Character, Integer> choSungIndex = new HashMap<>();
+    private static final Map<Character, Integer> jungSungIndex = new HashMap<>();
+    private static final Map<Character, Integer> jongSungIndex = new HashMap<>();
+
+    static {
+        for (int i = 0; i < ChoSung.length; i++) {
+            choSungIndex.put(ChoSung[i], i);
+        }
+        for (int i = 0; i < JungSung.length; i++) {
+            jungSungIndex.put(JungSung[i], i);
+        }
+        for (int i = 0; i < JongSung.length; i++) {
+            jongSungIndex.put(JongSung[i], i);
+        }
+    }
+
+    private static int getChoSungIndex(char ch) {
+        Integer idx = choSungIndex.get(ch);
+        return idx != null ? idx : -1;
+    }
+
+    private static int getJungSungIndex(char ch) {
+        Integer idx = jungSungIndex.get(ch);
+        return idx != null ? idx : -1;
+    }
+
+    private static int getJongSungIndex(char ch) {
+        Integer idx = jongSungIndex.get(ch);
+        return idx != null ? idx : -1;
+    }
 
 
     public enum UnitType {
@@ -85,13 +118,13 @@ public class KoreanUnitParser implements UnitParser {
                     jungsung = 0;
                     jongsung = 0;
                 }
-                chosung = Arrays.binarySearch(ChoSung, characterUnitTypePair.getFirst());
+                chosung = getChoSungIndex(characterUnitTypePair.getFirst());
                 hasBuffer = true;
             } else if (characterUnitTypePair.getSecond() == UnitType.JUNGSUNG) {
-                jungsung = Arrays.binarySearch(JungSung, characterUnitTypePair.getFirst());
+                jungsung = getJungSungIndex(characterUnitTypePair.getFirst());
                 hasBuffer = true;
             } else if (characterUnitTypePair.getSecond() == UnitType.JONGSUNG) {
-                jongsung = Arrays.binarySearch(JongSung, characterUnitTypePair.getFirst());
+                jongsung = getJongSungIndex(characterUnitTypePair.getFirst());
                 hasBuffer = true;
             } else {
                 if (hasBuffer) {
@@ -114,11 +147,10 @@ public class KoreanUnitParser implements UnitParser {
     @Override
     public String parse(String str) {
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
-        int i = 0;
         int length = str.length();
-        for (i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             char ch = str.charAt(i);
             UnicodeBlock block = UnicodeBlock.of(ch);
             if (block == UnicodeBlock.HANGUL_SYLLABLES) {
@@ -141,44 +173,34 @@ public class KoreanUnitParser implements UnitParser {
     }
 
     public List<Pair<Integer, Integer>> getSyllableAreaList(String str) {
-        List<Pair<Integer, Integer>> syllableAreaList = new ArrayList<Pair<Integer, Integer>>();
-        StringBuffer result = new StringBuffer();
-        int i = 0;
+        List<Pair<Integer, Integer>> syllableAreaList = new ArrayList<>();
+        StringBuilder result = new StringBuilder();
         int length = str.length();
-        //0xAC00+cho*588+jung*28+jong
         int prevIdx = 0;
-        for (i = 1; i < length; i++) {
+        for (int i = 1; i < length; i++) {
             char ch = str.charAt(i);
-            int jungsung = Arrays.binarySearch(JungSung, ch);
-            if (jungsung >= 0) { //if current character is jungsung
+            int jungsung = getJungSungIndex(ch);
+            if (jungsung >= 0) {
 
-                //i-1 = 초성 인덱스
-                int chosung = Arrays.binarySearch(ChoSung, str.charAt(i - 1)); //find chosung
+                int chosung = getChoSungIndex(str.charAt(i - 1));
                 if (chosung < 0) {
                     continue;
                 }
 
-                //append not combined string to result
-                //prevIdx ~ i-1 = 자소 조합이 안된 스트링 구
                 result.append(str, prevIdx, i - 1);
-                if (str.substring(prevIdx, i - 1).length() != 0) {
+                if (i - 1 - prevIdx > 0) {
                     this.appendSplitedSyllableList(prevIdx, i - 1, syllableAreaList);
                 }
 
                 int jongsung = 0;
 
-                //i+1 = 종성 인덱스
                 if (i + 1 < length) {
-                    jongsung = Arrays.binarySearch(JongSung, str.charAt(i + 1));
+                    jongsung = getJongSungIndex(str.charAt(i + 1));
                 }
 
-                //i+2가 중성인지 찾는 분기
-                //i+2가 중성이라면 현재 i+1은 종성이 아닌 초성이 됨
-                //이 때는 (i-1)~i까지가 하나의 음절로 구성됨
-                if (i + 2 < length && Arrays.binarySearch(JungSung, str.charAt(i + 2)) >= 0) {
+                if (i + 2 < length && getJungSungIndex(str.charAt(i + 2)) >= 0) {
                     jongsung = 0;
                 }
-                //종성이 없는 경우
                 if (jongsung < 0) {
                     jongsung = 0;
                 }
@@ -191,7 +213,7 @@ public class KoreanUnitParser implements UnitParser {
                     i++;
                 }
                 int endIndex = i;
-                syllableAreaList.add(new Pair<Integer, Integer>(beginIndex, endIndex + 1));
+                syllableAreaList.add(new Pair<>(beginIndex, endIndex + 1));
                 prevIdx = i + 1;
             }
         }
@@ -206,57 +228,43 @@ public class KoreanUnitParser implements UnitParser {
     private void appendSplitedSyllableList(int prevIdx,
                                            int endIdx, List<Pair<Integer, Integer>> targetList) {
         for (int i = prevIdx; i < endIdx; i++) {
-            targetList.add(new Pair<Integer, Integer>(i, i + 1));
+            targetList.add(new Pair<>(i, i + 1));
         }
     }
 
     @Override
     public String combine(String str) {
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
-        int i = 0;
         int length = str.length();
-        //0xAC00+cho*588+jung*28+jong
         int prevIdx = 0;
-        for (i = 1; i < length; i++) {
+        for (int i = 1; i < length; i++) {
             char ch = str.charAt(i);
-            int jungsung = Arrays.binarySearch(JungSung, ch);
-            if (jungsung >= 0) { //if current character is jungsung
+            int jungsung = getJungSungIndex(ch);
+            if (jungsung >= 0) {
 
-                //i-1 = 초성 인덱스
-                int chosung = Arrays.binarySearch(ChoSung, str.charAt(i - 1)); //find chosung
+                int chosung = getChoSungIndex(str.charAt(i - 1));
                 if (chosung < 0) {
                     continue;
                 }
 
-                //append not combined string to result
-                //prevIdx ~ i-1 = 자소 조합이 안된 스트링 구
                 result.append(str, prevIdx, i - 1);
-//				if(str.substring(prevIdx, i-1).length() != 0){
-//					System.out.println("["+prevIdx+","+(i-2)+"] : "+str.substring(prevIdx, i-1));
-//				}
 
                 int jongsung = 0;
 
-                //i+1 = 종성 인덱스
                 if (i + 1 < length) {
-                    jongsung = Arrays.binarySearch(JongSung, str.charAt(i + 1));
+                    jongsung = getJongSungIndex(str.charAt(i + 1));
                 }
 
-                //i+2가 중성인지 찾는 분기
-                //i+2가 중성이라면 현재 i+1은 종성이 아닌 초성이 됨
-                //이 때는 (i-1)~i까지가 하나의 음절로 구성됨
-                if (i + 2 < length && Arrays.binarySearch(JungSung, str.charAt(i + 2)) >= 0) {
+                if (i + 2 < length && getJungSungIndex(str.charAt(i + 2)) >= 0) {
                     jongsung = 0;
                 }
-                //종성이 없는 경우
                 if (jongsung < 0) {
                     jongsung = 0;
                 }
                 char syllable = (char) (0xac00 + chosung * 588 + jungsung * 28 + jongsung);
                 result.append(syllable);
-                //i는 중성
                 if (jongsung > 0) {
                     i++;
                 }

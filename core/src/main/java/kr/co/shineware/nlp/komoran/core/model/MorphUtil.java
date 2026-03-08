@@ -3,19 +3,10 @@ package kr.co.shineware.nlp.komoran.core.model;
 public class MorphUtil {
 
     public MorphUtil() {
-        ;
     }
 
     public boolean isSameJaso(String sourceMorph, String compareMorphJaso) {
-        if (sourceMorph.length() == compareMorphJaso.length()) {
-            for (int i = 0; i < compareMorphJaso.length(); i++) {
-                if (sourceMorph.charAt(i) != compareMorphJaso.charAt(i)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+        return sourceMorph.equals(compareMorphJaso);
     }
 
     public boolean hasJongsung(String morph) {

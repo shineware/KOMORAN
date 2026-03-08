@@ -308,18 +308,16 @@ public class ModelBuilder {
 		this.externalDic = externalDic;
 	}
 	private void addExternalDic(String filename) {
-		try {
-			if(filename != null) {
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-//				BufferedReader br = new BufferedReader(new FileReader(filename));
-				String line = null;
-				while ((line = br.readLine()) != null) {
-					line = line.trim();
-					if (line.length() == 0 || line.charAt(0) == '#') continue;
-					this.wordDic.append(line, "NNP",50);
-				}
-				br.close();
+		if (filename == null) {
+			return;
+		}
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				line = line.trim();
+				if (line.length() == 0 || line.charAt(0) == '#') continue;
+				this.wordDic.append(line, "NNP", 50);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

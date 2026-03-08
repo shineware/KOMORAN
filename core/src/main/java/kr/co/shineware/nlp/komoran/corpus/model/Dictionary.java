@@ -82,9 +82,8 @@ public class Dictionary implements FileAccessible {
 
     @Override
     public void save(String filename) {
-        try {
-            BufferedWriter bw = new BufferedWriter
-                    (new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8));
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))) {
             Set<Entry<String, Map<String, Integer>>> entrySet = dictionary.entrySet();
             for (Entry<String, Map<String, Integer>> entry : entrySet) {
 
@@ -105,7 +104,6 @@ public class Dictionary implements FileAccessible {
                 }
                 bw.newLine();
             }
-            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,11 +112,9 @@ public class Dictionary implements FileAccessible {
     @Override
     public void load(String filename) {
         this.init();
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-//            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line = null;
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+            String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 String[] tokens = line.split("\t");
@@ -126,7 +122,7 @@ public class Dictionary implements FileAccessible {
                 String word = tokens[0];
 
                 //품사 및 빈도 정보
-                Map<String, Integer> posTfMap = new HashMap<String, Integer>();
+                Map<String, Integer> posTfMap = new HashMap<>();
                 for (int i = 1; i < tokens.length; i++) {
                     String token = tokens[i];
                     int separatorIdx = token.lastIndexOf(':');
@@ -136,7 +132,6 @@ public class Dictionary implements FileAccessible {
                 }
                 dictionary.put(word, posTfMap);
             }
-            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

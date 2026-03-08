@@ -35,8 +35,13 @@ public class TagUtil {
 
     private boolean[] buildMask(Set<String> symbolSet) {
         Set<Map.Entry<Integer, String>> idPosSet = this.posTable.getIdPosTable().entrySet();
-        int maxIdSize = idPosSet.size();
-        boolean[] mask = new boolean[maxIdSize];
+        int maxId = 0;
+        for (Map.Entry<Integer, String> idPosEntry : idPosSet) {
+            if (idPosEntry.getKey() > maxId) {
+                maxId = idPosEntry.getKey();
+            }
+        }
+        boolean[] mask = new boolean[maxId + 1];
         for (Map.Entry<Integer, String> idPosEntry : idPosSet) {
             Integer id = idPosEntry.getKey();
             mask[id] = hasTagName(id, symbolSet);
@@ -62,17 +67,17 @@ public class TagUtil {
     }
 
     public boolean isJosa(int tagId) {
+        if (tagId < 0 || tagId >= josaMask.length) return false;
         return josaMask[tagId];
-//        return hasTagName(tagId, SYMBOL.JOSA_SET);
     }
 
     public boolean isNoun(int tagId) {
+        if (tagId < 0 || tagId >= nounMask.length) return false;
         return nounMask[tagId];
-//        return hasTagName(tagId, SYMBOL.NOUN_SET);
     }
 
     public boolean isEomi(int tagId) {
+        if (tagId < 0 || tagId >= eomiMask.length) return false;
         return eomiMask[tagId];
-//        return hasTagName(tagId, SYMBOL.EOMI_SET);
     }
 }

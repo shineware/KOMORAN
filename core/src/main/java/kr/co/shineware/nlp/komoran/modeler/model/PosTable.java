@@ -46,10 +46,8 @@ public class PosTable implements FileAccessible {
     }
 
     private void init() {
-        this.posIdTable = null;
-        this.idPosTable = null;
-        this.posIdTable = new HashMap<String, Integer>();
-        this.idPosTable = new HashMap<Integer, String>();
+        this.posIdTable = new HashMap<>();
+        this.idPosTable = new HashMap<>();
     }
 
     public void put(String pos) {
@@ -60,9 +58,12 @@ public class PosTable implements FileAccessible {
         }
     }
 
-    //TODO : getId를 쓰는 친구들을 찾아서 죄다 SEJONGTAG로 변경하자..hash 함수 제거해서 속도 올리자
     public int getId(String pos) {
-        return posIdTable.get(pos);
+        Integer id = posIdTable.get(pos);
+        if (id == null) {
+            return -1;
+        }
+        return id;
     }
 
     public String getPos(int id) {
@@ -75,17 +76,13 @@ public class PosTable implements FileAccessible {
 
     @Override
     public void save(String filename) {
-        try {
-            BufferedWriter bw = new BufferedWriter(
-                    (new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8)));
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))) {
             Set<Entry<String, Integer>> posIdEntrySet = posIdTable.entrySet();
             for (Entry<String, Integer> entry : posIdEntrySet) {
                 bw.write(entry.getKey() + "\t" + entry.getValue());
                 bw.newLine();
             }
-            bw.close();
-            bw = null;
-            posIdEntrySet = null;
             buildSejongTagId();
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,16 +93,15 @@ public class PosTable implements FileAccessible {
     public void load(String filename) {
         try {
             this.init();
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.split("\t");
-                this.posIdTable.put(tokens[0], Integer.parseInt(tokens[1]));
-                this.idPosTable.put(Integer.parseInt(tokens[1]), tokens[0]);
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] tokens = line.split("\t");
+                    this.posIdTable.put(tokens[0], Integer.parseInt(tokens[1]));
+                    this.idPosTable.put(Integer.parseInt(tokens[1]), tokens[0]);
+                }
             }
-            br.close();
-            br = null;
             buildSejongTagId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,14 +119,14 @@ public class PosTable implements FileAccessible {
     public void load(Reader reader) {
         try {
             this.init();
-            BufferedReader br = new BufferedReader(reader);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.split("\t");
-                this.posIdTable.put(tokens[0], Integer.parseInt(tokens[1]));
-                this.idPosTable.put(Integer.parseInt(tokens[1]), tokens[0]);
+            try (BufferedReader br = new BufferedReader(reader)) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] tokens = line.split("\t");
+                    this.posIdTable.put(tokens[0], Integer.parseInt(tokens[1]));
+                    this.idPosTable.put(Integer.parseInt(tokens[1]), tokens[0]);
+                }
             }
-            br.close();
             buildSejongTagId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,7 +135,7 @@ public class PosTable implements FileAccessible {
 
     public void load(File file) {
         try {
-            this.load(new FileReader(file));
+            this.load(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,6 +145,7 @@ public class PosTable implements FileAccessible {
         for (SEJONGTAGS value : SEJONGTAGS.values()) {
             SEJONGTAGS.SET_ID(value, this.getId(value.name()));
         }
+        SEJONGTAGS.publishIds();
     }
 
 }

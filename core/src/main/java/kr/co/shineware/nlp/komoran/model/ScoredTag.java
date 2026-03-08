@@ -26,6 +26,8 @@ public class ScoredTag extends Tag{
 		long temp;
 		temp = Double.doubleToLongBits(score);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + getTagId();
+		result = prime * result + (getTag() == null ? 0 : getTag().hashCode());
 		return result;
 	}
 
@@ -38,8 +40,14 @@ public class ScoredTag extends Tag{
 		if (getClass() != obj.getClass())
 			return false;
 		ScoredTag other = (ScoredTag) obj;
-        return Double.doubleToLongBits(score) == Double
-                .doubleToLongBits(other.score);
+		if (Double.doubleToLongBits(score) != Double.doubleToLongBits(other.score))
+			return false;
+		if (getTagId() != other.getTagId())
+			return false;
+		if (getTag() == null) {
+			return other.getTag() == null;
+		}
+		return getTag().equals(other.getTag());
     }
 
 	/**

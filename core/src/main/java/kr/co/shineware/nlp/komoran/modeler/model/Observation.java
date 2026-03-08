@@ -18,6 +18,7 @@
 package kr.co.shineware.nlp.komoran.modeler.model;
 
 import kr.co.shineware.ds.aho_corasick.AhoCorasickDictionary;
+import kr.co.shineware.nlp.komoran.core.model.DoubleArrayAhoCorasick;
 import kr.co.shineware.nlp.komoran.interfaces.FileAccessible;
 import kr.co.shineware.nlp.komoran.interfaces.UnitParser;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
@@ -30,21 +31,21 @@ import java.util.List;
 
 public class Observation implements FileAccessible {
 
-	private AhoCorasickDictionary<List<ScoredTag>> observation;
+	private DoubleArrayAhoCorasick<List<ScoredTag>> daTrie;
 	private UnitParser parser;
 
 	public Observation() {
 		this.init();
 	}
-	
+
 	private void init() {
-		this.observation = new AhoCorasickDictionary<>();
+		this.daTrie = new DoubleArrayAhoCorasick<>();
 		this.parser = new KoreanUnitParser();
 	}
 
 	public void put(String word, String tag, int tagId, double observationScore) {
 		String koreanUnits = parser.parse(word);
-		List<ScoredTag> scoredTagList = this.observation.getValue(koreanUnits);
+		List<ScoredTag> scoredTagList = this.daTrie.getValue(koreanUnits);
 		if(scoredTagList == null){
 			scoredTagList = new ArrayList<>();
 			scoredTagList.add(new ScoredTag(tag, tagId, observationScore));
@@ -59,28 +60,36 @@ public class Observation implements FileAccessible {
 				scoredTagList.add(new ScoredTag(tag, tagId, observationScore));
 			}
 		}
-		this.observation.put(koreanUnits, scoredTagList);
+		this.daTrie.put(koreanUnits, scoredTagList);
 	}
-	
-	public AhoCorasickDictionary<List<ScoredTag>> getTrieDictionary(){
-		return observation;
+
+	public DoubleArrayAhoCorasick<List<ScoredTag>> getTrieDictionary(){
+		return daTrie;
+	}
+
+	/**
+	 * @deprecated Legacy 호환용. getTrieDictionary()를 사용할 것.
+	 */
+	@Deprecated
+	public AhoCorasickDictionary<List<ScoredTag>> getLegacyTrieDictionary(){
+		return daTrie.getLegacyDictionary();
 	}
 
 	@Override
 	public void save(String filename) {
-		observation.save(filename);
+		daTrie.save(filename);
 	}
 
 	@Override
 	public void load(String filename) {
-		observation.load(filename);	
+		daTrie.load(filename);
 	}
 
 	public void load(File file) {
-		observation.load(file);
+		daTrie.load(file);
 	}
 
 	public void load(InputStream is) {
-		observation.load(is);
+		daTrie.load(is);
 	}
 }

@@ -18,6 +18,7 @@
 package kr.co.shineware.nlp.komoran.modeler.model;
 
 import kr.co.shineware.ds.aho_corasick.AhoCorasickDictionary;
+import kr.co.shineware.nlp.komoran.core.model.DoubleArrayAhoCorasick;
 import kr.co.shineware.nlp.komoran.interfaces.FileAccessible;
 
 import java.io.File;
@@ -26,19 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IrregularTrie implements FileAccessible{
-	private AhoCorasickDictionary<List<IrregularNode>> dic;
-	
+	private DoubleArrayAhoCorasick<List<IrregularNode>> daTrie;
+
 	public IrregularTrie(){
 		this.init();
 	}
 
 	public void init(){
-		this.dic = null;
-		this.dic = new AhoCorasickDictionary<>();
+		this.daTrie = new DoubleArrayAhoCorasick<>();
 	}
 
 	public void put(String irr,IrregularNode irrNode){
-		List<IrregularNode> irrNodeList = this.dic.getValue(irr);
+		List<IrregularNode> irrNodeList = this.daTrie.getValue(irr);
 		if(irrNodeList == null){
 			irrNodeList = new ArrayList<>();
 			irrNodeList.add(irrNode);
@@ -54,28 +54,28 @@ public class IrregularTrie implements FileAccessible{
 				irrNodeList.add(irrNode);
 			}
 		}
-		this.dic.put(irr, irrNodeList);
+		this.daTrie.put(irr, irrNodeList);
 	}
-	
-	public AhoCorasickDictionary<List<IrregularNode>> getTrieDictionary(){
-		return dic;
+
+	public DoubleArrayAhoCorasick<List<IrregularNode>> getTrieDictionary(){
+		return daTrie;
 	}
 
 	@Override
 	public void save(String filename) {
-		this.dic.save(filename);
+		this.daTrie.save(filename);
 	}
 
 	@Override
 	public void load(String filename) {
-		this.dic.load(filename);		
+		this.daTrie.load(filename);
 	}
 
 	public void load(File file) {
-		this.dic.load(file);
+		this.daTrie.load(file);
 	}
 
 	public void load(InputStream inputStream) {
-		this.dic.load(inputStream);
+		this.daTrie.load(inputStream);
 	}
 }

@@ -48,9 +48,13 @@ public class IrregularParser {
 	 * @return
 	 */
 	public List<Pair<String, String>> parse(String problem, List<Pair<String,String>> answerList){
+		this.answerBeginIndex = -1;
+		this.problemBeginIndex = -1;
+		this.answerEndIndex = -1;
+		this.problemEndIndex = -1;
 		this.setBeginIdx(problem,answerList);
 		this.setEndIdx(problem,answerList);
-		
+
 		return getIrregularRules(problem,answerList);
 	}
 	private Pair<String,String> expandIrregularRule(String problem,List<Pair<String,String>> answerList,int problemBeginIndex,int problemEndIndex,int answerBeginIndex,int answerEndIndex)

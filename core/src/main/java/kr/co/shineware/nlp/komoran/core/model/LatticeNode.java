@@ -26,7 +26,7 @@ public class LatticeNode {
     public String toString() {
         return "LatticeNode [beginIdx=" + beginIdx + ", endIdx=" + endIdx
                 + ", morphTag=" + morphTag + ", score=" + score
-                + ", prevNodeIdx=" + prevNodeIdx + ", morph=" + morph + "]";
+                + ", prevNodeIdx=" + prevNodeIdx + "]";
     }
 
     private int beginIdx;
@@ -34,7 +34,6 @@ public class LatticeNode {
     private MorphTag morphTag;
     private double score;
     private int prevNodeIdx = -1;
-    private String morph;
 
     public LatticeNode() {
     }
@@ -49,8 +48,10 @@ public class LatticeNode {
     public LatticeNode(LatticeNode latticeNode) {
         this.beginIdx = latticeNode.getBeginIdx();
         this.endIdx = latticeNode.getEndIdx();
-        this.morphTag = latticeNode.getMorphTag();
+        this.morphTag = new MorphTag(latticeNode.getMorphTag().getMorph(),
+                latticeNode.getMorphTag().getTag(), latticeNode.getMorphTag().getTagId());
         this.score = latticeNode.getScore();
+        this.prevNodeIdx = latticeNode.getPrevNodeIdx();
     }
 
     public int getBeginIdx() {
