@@ -1,6 +1,5 @@
 package kr.co.shineware.nlp.komoran.run;
 
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
 import kr.co.shineware.util.common.file.FileUtil;
@@ -12,7 +11,7 @@ public class NewKomoranConsoleRunner {
 
         int thread = Integer.parseInt(args[0]);
 
-        Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+        Komoran komoran = new Komoran();
         ElapsedTimeChecker.checkBeginTime("FILE_ANALYSIS");
         komoran.analyzeTextFile("wiki.titles", "wiki.titles.out", thread);
         ElapsedTimeChecker.checkEndTime("FILE_ANALYSIS");

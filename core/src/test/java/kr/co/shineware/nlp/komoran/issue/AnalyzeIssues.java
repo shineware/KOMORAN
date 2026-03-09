@@ -1,6 +1,5 @@
 package kr.co.shineware.nlp.komoran.issue;
 
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import org.junit.Assert;
@@ -13,7 +12,7 @@ public class AnalyzeIssues {
 
     @Before
     public void initKomoran() {
-        this.komoran = new Komoran(DEFAULT_MODEL.STABLE);
+        this.komoran = new Komoran();
     }
 
     @Test

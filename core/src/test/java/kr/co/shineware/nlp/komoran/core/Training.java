@@ -5,7 +5,6 @@ import kr.co.shineware.nlp.komoran.modeler.builder.ModelBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
 
 @Ignore
 public class Training {
@@ -21,13 +20,8 @@ public class Training {
         corpusBuilder.save("corpus_build");
 
         ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.setExternalDic("user_data" + File.separator + "wiki.titles");
         modelBuilder.buildPath("corpus_build");
-        modelBuilder.save("models_full");
-
-        modelBuilder = new ModelBuilder();
-        modelBuilder.buildPath("corpus_build");
-        modelBuilder.save("models_light");
+        modelBuilder.save("models");
 
     }
 }

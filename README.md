@@ -63,11 +63,10 @@ dependencies {
 ### 기본 형태소 분석
 
 ```java
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 
-Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+Komoran komoran = new Komoran();
 KomoranResult result = komoran.analyze("대한민국은 민주공화국이다.");
 
 // 형태소/품사 쌍 출력
@@ -114,7 +113,7 @@ for (Token token : tokens) {
 대용량 텍스트를 병렬로 처리하여 분석 속도를 높일 수 있습니다.
 
 ```java
-Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+Komoran komoran = new Komoran();
 
 // 방법 1: 문장 리스트를 멀티스레드로 분석
 List<String> sentences = Arrays.asList(
@@ -131,7 +130,7 @@ komoran.analyzeTextFile("input.txt", "output.txt", 4);  // 4 threads
 ### 사용자 사전 적용
 
 ```java
-Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+Komoran komoran = new Komoran();
 
 // 사용자 사전 설정 (한 줄에 하나의 단어, 탭으로 품사 구분)
 // 예: dic.user 파일 내용
@@ -148,7 +147,7 @@ System.out.println(komoran.analyze("싸이는 가수다").getPlainText());
 특정 단어에 대해 원하는 분석 결과를 강제할 수 있습니다.
 
 ```java
-Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+Komoran komoran = new Komoran();
 
 // 기분석 사전 설정 (한 줄에 하나의 규칙, 탭으로 구분)
 // 예: fwd.user 파일 내용

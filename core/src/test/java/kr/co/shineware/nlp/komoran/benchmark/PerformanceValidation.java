@@ -1,6 +1,5 @@
 package kr.co.shineware.nlp.komoran.benchmark;
 
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.corpus.model.Dictionary;
 import kr.co.shineware.util.common.file.FileUtil;
@@ -19,7 +18,7 @@ import java.util.Objects;
 @Ignore
 public class PerformanceValidation {
 
-    private static final Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+    private static final Komoran komoran = new Komoran();
 
     @Test
     //from https://github.com/shineware/KOMORAN/issues/96

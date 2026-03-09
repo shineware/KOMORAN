@@ -113,4 +113,5 @@ AdminDB.*.db
 bin/
 uploads/
 models/
+!core/src/main/resources/models/
 diff_logs/

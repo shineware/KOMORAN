@@ -27,7 +27,7 @@ public class KomoranTest {
 
 	public static void main(String[] args) throws Exception {
 
-		Komoran komoran = new Komoran("models_full");
+		Komoran komoran = new Komoran();
 		komoran.setFWDic("user_data/fwd.user");
 		komoran.setUserDic("user_data/dic.user");
 

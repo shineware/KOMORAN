@@ -1,6 +1,5 @@
 package kr.co.shineware.nlp.komoran.core;
 
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
 import kr.co.shineware.nlp.komoran.util.ElapsedTimeChecker;
@@ -24,12 +23,12 @@ public class KomoranTest {
 
     @Before
     public void init() {
-        this.komoran = new Komoran(DEFAULT_MODEL.STABLE);
+        this.komoran = new Komoran();
     }
 
     @Test
     public void speedTest() throws Exception {
-        Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+        Komoran komoran = new Komoran();
         int totalTestCount = 10;
         int totalElapsedTime = 0;
         int step = 0;

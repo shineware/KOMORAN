@@ -70,23 +70,12 @@ public class Komoran {
     }
 
     /**
-     * Komoran에서 기본으로 제공되는 모델을 로딩하여 객체를 생성합니다. </p>
-     * 별도의 경로를 지정할 필요가 없습니다.
-     *
-     * @param modelType 기본으로 제공되는 모델의 타입
+     * 기본 내장 모델을 로딩하여 객체를 생성합니다.
      */
-    public Komoran(DEFAULT_MODEL modelType) {
-
+    public Komoran() {
         this.resources = new Resources();
         this.resources.init();
-        String modelPath;
-        if (modelType == DEFAULT_MODEL.EXPERIMENT) {
-            modelPath = FILENAME.EXPERIMENT_MODEL;
-        } else if (modelType == DEFAULT_MODEL.STABLE) {
-            modelPath = FILENAME.STABLE_MODEL;
-        } else {
-            modelPath = FILENAME.STABLE_MODEL;
-        }
+        String modelPath = FILENAME.DEFAULT_MODEL_PATH;
 
         String delimiter = "/";
         try (InputStream posTableFile =
@@ -430,25 +419,7 @@ public class Komoran {
     private void insertLatticeForFwd(Lattice lattice, int beginIdx, int endIdx,
                                      List<Pair<String, String>> fwdResultList, String targetWord) {
 
-        //기분석 사전과 targetWord의 문자열이 일치하는 경우
-//        if (hasRegularFWDValues(fwdResultList, targetWord)) {
-//            for (Pair<String, String> morphPosPair : fwdResultList) {
-//                lattice.put(beginIdx, beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length(), morphPosPair.getFirst(), morphPosPair.getSecond(), this.resources.getTable().getId(morphPosPair.getSecond()), 0.0);
-//                beginIdx += beginIdx + this.unitParser.parse(morphPosPair.getFirst()).length();
-//            }
-//        } else {
         lattice.put(beginIdx, endIdx, fwdResultList);
-//        }
-    }
-
-    private boolean hasRegularFWDValues(List<Pair<String, String>> fwdResultList, String targetWord) {
-        StringBuilder fwdMorphs = new StringBuilder();
-
-        for (Pair<String, String> morphPosPair : fwdResultList) {
-            fwdMorphs.append(this.unitParser.parse(morphPosPair.getFirst()));
-        }
-
-        return fwdMorphs.toString().equals(targetWord);
     }
 
     private static double getScoreForPos(String pos) {
@@ -561,15 +532,9 @@ public class Komoran {
 
             List<IrregularNode> irrNodes = morphIrrNodesMap.get(morph);
             for (IrregularNode irregularNode : irrNodes) {
-//                lattice.put(beginIdx, endIdx, irregularNode);
-                this.insertLattice(lattice, beginIdx, endIdx, irregularNode);
+                lattice.put(beginIdx, endIdx, irregularNode);
             }
         }
-    }
-
-    private void insertLattice(Lattice lattice, int beginIdx, int endIdx,
-                               IrregularNode irregularNode) {
-        lattice.put(beginIdx, endIdx, irregularNode);
     }
 
     private void regularParsing(Lattice lattice, char jaso, int curIndex) {
@@ -602,7 +567,7 @@ public class Komoran {
      * 형태소 분석 시 사용될 기분석 사전을 로드합니다. </p>
      * 형태소 분석 진행 전에 로드되어야 합니다. </p>
      * <pre>
-     *     Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+     *     Komoran komoran = new Komoran();
      *     komoran.setFWDic("user_data/fwd.user");
      *     KomoranResult komoranResult = komoran.analyze("감기는 자주 걸리는 병이다");
      * </pre>
@@ -643,7 +608,7 @@ public class Komoran {
      * 형태소 분석 시 사용될 사용자 사전을 로드합니다. </p>
      * 형태소 분석 진행 전에 로드되어야 합니다.
      * <pre>
-     *     Komoran komoran = new Komoran(DEFAULT_MODEL.STABLE);
+     *     Komoran komoran = new Komoran();
      *     komoran.setUserDic("user_date/dic.user");
      *     KomoranResult komoranResult = komoran.analyze("바람과 함께 사라지다를 봤어");
      * </pre>
