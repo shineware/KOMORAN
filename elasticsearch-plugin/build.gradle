@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group 'shineware'
-version '1.0-SNAPSHOT'
+group = 'shineware'
+version = '1.0-SNAPSHOT'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -12,7 +12,7 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url = uri('https://jitpack.io') }
 }
 
 configurations {
@@ -23,7 +23,7 @@ project.ext {
     elist = new HashSet<File>()
 }
 
-task makePlugin(type: Zip) {
+tasks.register('makePlugin', Zip) {
     println "Making Elasticsearch Plugin"
     dependsOn(":elasticsearch-plugin:build")
     from {
@@ -52,7 +52,6 @@ task makePlugin(type: Zip) {
     archiveFileName = 'komoran-tokenizer' + '.zip'
     destinationDirectory = file('.')
 }
-
 
 dependencies {
     includeCompile 'com.github.shineware:commons:1.0.1'

@@ -1,43 +1,15 @@
-//plugins {
-//    id 'net.saliman.cobertura' version '2.3.1'
-//    id 'com.github.kt3k.coveralls' version '2.6.3'
-//}
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
 
 group = 'com.github.shineware'
-
-
-apply plugin: 'maven-publish'
-apply plugin: 'java'
-apply plugin: 'eclipse'
-
-//cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
-
 
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://jitpack.io" }
-
+    maven { url = uri("https://jitpack.io") }
 }
-
-//jar {
-//    from {
-//
-//        configurations.compile.collect {
-//            it.isDirectory() ? it : zipTree(it)
-//        }
-//
-//        configurations.runtime.collect {
-//            it.isDirectory() ? it : zipTree(it)
-//        }
-//
-//    }
-//
-//    manifest {
-//        attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.NewKomoranConsoleRunner2'
-//    }
-//    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-//}
 
 dependencies {
     implementation 'com.github.shineware:commons:1.0.1'
@@ -45,7 +17,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-task uberJar(type: Jar) {
+tasks.register('uberJar', Jar) {
     archiveAppendix = 'uber'
 
     from sourceSets.main.output
@@ -61,8 +33,4 @@ test {
     testLogging {
         showStandardStreams = true
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '7.3.3'
 }
