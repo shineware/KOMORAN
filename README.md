@@ -1,6 +1,10 @@
 # KOMORAN
 
 ![GitHub Stars](https://img.shields.io/github/stars/shineware/KOMORAN)
+![GitHub Forks](https://img.shields.io/github/forks/shineware/KOMORAN)
+![License](https://img.shields.io/github/license/shineware/KOMORAN)
+![Java](https://img.shields.io/badge/Java-17%2B-blue)
+![Gradle](https://img.shields.io/badge/Gradle-9.0-blue)
 ![Downloads/month (shin285)](https://jitpack.io/v/shin285/KOMORAN/month.svg)
 ![Downloads/week (shin285)](https://jitpack.io/v/shin285/KOMORAN/week.svg)
 ![Downloads/month (shineware)](https://jitpack.io/v/shineware/KOMORAN/month.svg)
@@ -204,6 +208,31 @@ KOMORAN은 세종 품사 태그셋을 사용합니다.
 | | SH | 한자 |
 | | SN | 숫자 |
 | 분석 불능 | NA | 분석 불능 |
+
+## 성능 벤치마크
+
+`stress.test` 20,000문장(실제 한국어 텍스트) 기준 측정 결과입니다.
+
+### 분석 속도
+
+| 항목 | 결과 |
+|------|------|
+| **단일 스레드** | 20,000문장 / 545ms (문장당 0.027ms) |
+| **멀티 스레드 (4 threads)** | 20,000문장 / 172ms (문장당 0.009ms) |
+
+### 스레드 수에 따른 처리량
+
+| 스레드 수 | 총 소요 시간 | 초당 처리 문장 수 |
+|----------|-------------|-----------------|
+| 1 | 545ms | ~36,700 문장/초 |
+| 4 | 172ms | ~116,300 문장/초 |
+
+> 측정 환경: OpenJDK 17 (Corretto), Apple Silicon, 5회 반복 평균 (warmup 1회 제외)
+
+### 메모리 사용량
+
+- 사전 로딩 후 약 **50MB** 수준에서 동작
+- 멀티스레드 사용 시에도 사전은 공유되므로 스레드 수에 비례한 메모리 증가 없음
 
 ## 빌드
 
