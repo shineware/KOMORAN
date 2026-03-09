@@ -1,8 +1,10 @@
 # KOMORAN
 
 ![GitHub Stars](https://img.shields.io/github/stars/shineware/KOMORAN)
-![Downloads/month](https://jitpack.io/v/shin285/KOMORAN/month.svg)
-![Downloads/week](https://jitpack.io/v/shin285/KOMORAN/week.svg)
+![Downloads/month (shin285)](https://jitpack.io/v/shin285/KOMORAN/month.svg)
+![Downloads/week (shin285)](https://jitpack.io/v/shin285/KOMORAN/week.svg)
+![Downloads/month (shineware)](https://jitpack.io/v/shineware/KOMORAN/month.svg)
+![Downloads/week (shineware)](https://jitpack.io/v/shineware/KOMORAN/week.svg)
 
 **KOMORAN**은 **KO**rean **MOR**phological **AN**alyzer의 약자로, Java로 구현한 한국어 형태소 분석기입니다.
 
