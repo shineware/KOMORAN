@@ -24,7 +24,6 @@ import kr.co.shineware.nlp.komoran.core.model.combinationrules.MergedCombination
 import kr.co.shineware.nlp.komoran.corpus.parser.CorpusParser;
 import kr.co.shineware.nlp.komoran.corpus.parser.model.ProblemAnswerPair;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
-import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.IrregularNode;
 import kr.co.shineware.nlp.komoran.modeler.model.Observation;
@@ -236,6 +235,16 @@ public class Komoran {
      * @return 형태소 분석 결과 중 nbest 수 만큼의 결과
      */
     public List<KomoranResult> analyze(String sentence, int nbest) {
+        return analyze(sentence, nbest, 0);
+    }
+
+    /**
+     * beam width를 지정하여 형태소 분석을 수행합니다.
+     * @param sentence 분석 대상 문장
+     * @param nbest n-best 결과 수
+     * @param beamWidth beam 크기 (0 = full Viterbi, 양수 = beam search)
+     */
+    public List<KomoranResult> analyze(String sentence, int nbest, int beamWidth) {
 
         if(sentence == null || sentence.length() == 0){
             return new ArrayList<>(
@@ -243,7 +252,7 @@ public class Komoran {
             );
         }
 
-        Lattice lattice = new Lattice(this.resources, this.userDic, nbest, combinationRuleChecker);
+        Lattice lattice = new Lattice(this.resources, this.userDic, nbest, combinationRuleChecker, beamWidth);
 
         //연속된 숫자, 외래어, 기호 등을 파싱 하기 위한 버퍼
         ContinuousSymbolBuffer continuousSymbolBuffer = new ContinuousSymbolBuffer();
@@ -301,7 +310,7 @@ public class Komoran {
                 NAPenaltyScore += lattice.getNodeList(whitespaceIndex).get(0).getScore();
             }
             String combinedWord = unitParser.combineWithType(jasoUnitsWithType.subList(whitespaceIndex, jasoUnits.length()));
-            LatticeNode latticeNode = new LatticeNode(whitespaceIndex, jasoUnits.length(), new MorphTag(combinedWord, SYMBOL.NA, SEJONGTAGS.NA_ID), NAPenaltyScore);
+            LatticeNode latticeNode = new LatticeNode(whitespaceIndex, jasoUnits.length(), combinedWord, SYMBOL.NA, SEJONGTAGS.NA_ID, NAPenaltyScore);
             latticeNode.setPrevNodeIdx(0);
             lattice.appendNode(latticeNode);
             lattice.appendEndNode();
@@ -314,7 +323,7 @@ public class Komoran {
         //입력 문장 전체가 미분석인 경우
         if (nBestPath == null) {
             List<LatticeNode> resultList = new ArrayList<>();
-            resultList.add(new LatticeNode(0, jasoUnits.length(), new MorphTag(sentence, "NA", -1), SCORE.NA));
+            resultList.add(new LatticeNode(0, jasoUnits.length(), sentence, "NA", -1, SCORE.NA));
             nbestResultList.add(new KomoranResult(resultList, jasoUnits));
         } else {
             for (List<LatticeNode> shortestPath : nBestPath) {
@@ -481,8 +490,8 @@ public class Komoran {
             Set<LatticeNode> extendedIrrNodeList = new HashSet<>();
 
             for (LatticeNode prevLatticeNode : prevLatticeNodes) {
-                if (prevLatticeNode.getMorphTag().getTagId() == SYMBOL.IRREGULAR_ID) {
-                    String lastMorph = prevLatticeNode.getMorphTag().getMorph();
+                if (prevLatticeNode.getTagId() == SYMBOL.IRREGULAR_ID) {
+                    String lastMorph = prevLatticeNode.getMorph();
 
                     // char[] 버퍼를 한번만 생성하여 재사용
                     char[] morphWithJaso = new char[lastMorph.length() + 1];
@@ -491,12 +500,11 @@ public class Komoran {
                     String morphJasoStr = new String(morphWithJaso);
 
                     if (this.resources.getObservation().getTrieDictionary().hasChild(morphWithJaso)) {
-                        LatticeNode extendedIrregularNode = new LatticeNode();
-                        extendedIrregularNode.setBeginIdx(prevLatticeNode.getBeginIdx());
-                        extendedIrregularNode.setEndIdx(curIndex + 1);
-                        extendedIrregularNode.setMorphTag(new MorphTag(morphJasoStr, SYMBOL.IRREGULAR, SYMBOL.IRREGULAR_ID));
+                        LatticeNode extendedIrregularNode = new LatticeNode(
+                                prevLatticeNode.getBeginIdx(), curIndex + 1,
+                                morphJasoStr, SYMBOL.IRREGULAR, SYMBOL.IRREGULAR_ID,
+                                prevLatticeNode.getScore());
                         extendedIrregularNode.setPrevNodeIdx(prevLatticeNode.getPrevNodeIdx());
-                        extendedIrregularNode.setScore(prevLatticeNode.getScore());
                         extendedIrrNodeList.add(extendedIrregularNode);
                     }
                     List<ScoredTag> lastScoredTags = this.resources.getObservation().getTrieDictionary().getValue(morphJasoStr);

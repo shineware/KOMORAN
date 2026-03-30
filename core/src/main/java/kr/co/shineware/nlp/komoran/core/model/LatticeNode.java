@@ -21,17 +21,12 @@ import kr.co.shineware.nlp.komoran.model.MorphTag;
 
 public class LatticeNode {
 
-
-    @Override
-    public String toString() {
-        return "LatticeNode [beginIdx=" + beginIdx + ", endIdx=" + endIdx
-                + ", morphTag=" + morphTag + ", score=" + score
-                + ", prevNodeIdx=" + prevNodeIdx + "]";
-    }
-
     private int beginIdx;
     private int endIdx;
-    private MorphTag morphTag;
+    // 핫 패스용 인라인 필드 (MorphTag 포인터 체이싱 제거)
+    private String morph;
+    private String tag;
+    private int tagId;
     private double score;
     private int prevNodeIdx = -1;
 
@@ -41,60 +36,78 @@ public class LatticeNode {
     public LatticeNode(int beginIdx, int endIdx, MorphTag morphTag, double score) {
         this.beginIdx = beginIdx;
         this.endIdx = endIdx;
-        this.morphTag = morphTag;
+        this.morph = morphTag.getMorph();
+        this.tag = morphTag.getTag();
+        this.tagId = morphTag.getTagId();
         this.score = score;
     }
 
-    public LatticeNode(LatticeNode latticeNode) {
-        this.beginIdx = latticeNode.getBeginIdx();
-        this.endIdx = latticeNode.getEndIdx();
-        this.morphTag = new MorphTag(latticeNode.getMorphTag().getMorph(),
-                latticeNode.getMorphTag().getTag(), latticeNode.getMorphTag().getTagId());
-        this.score = latticeNode.getScore();
-        this.prevNodeIdx = latticeNode.getPrevNodeIdx();
-    }
-
-    public int getBeginIdx() {
-        return beginIdx;
-    }
-
-    public void setBeginIdx(int beginIdx) {
+    public LatticeNode(int beginIdx, int endIdx, String morph, String tag, int tagId, double score) {
         this.beginIdx = beginIdx;
-    }
-
-    public int getEndIdx() {
-        return endIdx;
-    }
-
-    public void setEndIdx(int endIdx) {
         this.endIdx = endIdx;
-    }
-
-    public MorphTag getMorphTag() {
-        return morphTag;
-    }
-
-    public void setMorphTag(MorphTag morphTag) {
-        this.morphTag = morphTag;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
+        this.morph = morph;
+        this.tag = tag;
+        this.tagId = tagId;
         this.score = score;
     }
 
-    public int getPrevNodeIdx() {
-        return prevNodeIdx;
+    public LatticeNode(LatticeNode other) {
+        this.beginIdx = other.beginIdx;
+        this.endIdx = other.endIdx;
+        this.morph = other.morph;
+        this.tag = other.tag;
+        this.tagId = other.tagId;
+        this.score = other.score;
+        this.prevNodeIdx = other.prevNodeIdx;
     }
 
-    public void setPrevNodeIdx(int prevNodeIdx) {
+    /** 풀링: 기존 노드 객체의 필드를 재설정하여 재사용 */
+    public void reset(int beginIdx, int endIdx, String morph, String tag, int tagId, double score, int prevNodeIdx) {
+        this.beginIdx = beginIdx;
+        this.endIdx = endIdx;
+        this.morph = morph;
+        this.tag = tag;
+        this.tagId = tagId;
+        this.score = score;
         this.prevNodeIdx = prevNodeIdx;
     }
 
-    public String getTag() {
-        return this.morphTag.getTag();
+    public int getBeginIdx() { return beginIdx; }
+    public void setBeginIdx(int beginIdx) { this.beginIdx = beginIdx; }
+
+    public int getEndIdx() { return endIdx; }
+    public void setEndIdx(int endIdx) { this.endIdx = endIdx; }
+
+    public String getMorph() { return morph; }
+    public void setMorph(String morph) { this.morph = morph; }
+
+    public String getTag() { return tag; }
+    public void setTag(String tag) { this.tag = tag; }
+
+    public int getTagId() { return tagId; }
+    public void setTagId(int tagId) { this.tagId = tagId; }
+
+    public double getScore() { return score; }
+    public void setScore(double score) { this.score = score; }
+
+    public int getPrevNodeIdx() { return prevNodeIdx; }
+    public void setPrevNodeIdx(int prevNodeIdx) { this.prevNodeIdx = prevNodeIdx; }
+
+    /** 하위 호환용. MorphTag를 필요 시 생성하여 반환. */
+    public MorphTag getMorphTag() {
+        return new MorphTag(morph, tag, tagId);
+    }
+
+    public void setMorphTag(MorphTag morphTag) {
+        this.morph = morphTag.getMorph();
+        this.tag = morphTag.getTag();
+        this.tagId = morphTag.getTagId();
+    }
+
+    @Override
+    public String toString() {
+        return "LatticeNode [beginIdx=" + beginIdx + ", endIdx=" + endIdx
+                + ", morph=" + morph + ", tag=" + tag + ", tagId=" + tagId
+                + ", score=" + score + ", prevNodeIdx=" + prevNodeIdx + "]";
     }
 }

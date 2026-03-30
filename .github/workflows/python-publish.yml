@@ -1,0 +1,230 @@
+name: Publish Python Wheels
+
+# ──────────────────────────────────────────────────────────────
+# 배포 전략:
+#   1. workflow_dispatch → 빌드 + 테스트 + TestPyPI 배포 (리허설)
+#   2. v* 태그 push    → 빌드 + 테스트 + PyPI 본배포
+#
+# 권장 절차:
+#   1) Actions 탭에서 수동 실행 → TestPyPI에서 검증
+#   2) 검증 완료 후 git tag v4.0.0 && git push origin v4.0.0
+# ──────────────────────────────────────────────────────────────
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      publish_target:
+        description: '배포 대상 (testpypi / none)'
+        required: true
+        default: 'testpypi'
+        type: choice
+        options:
+          - testpypi
+          - none
+
+permissions:
+  contents: read
+
+jobs:
+  # ──────────────────────────────────────────────
+  # 1. OS별 × Python 버전별 wheel 전체 빌드
+  # ──────────────────────────────────────────────
+  build:
+    name: Build wheels (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-13, macos-14, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels (Linux x86_64)
+        if: runner.os == 'Linux'
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64
+          args: --release --out dist --interpreter 3.8 3.9 3.10 3.11 3.12 3.13
+          manylinux: auto
+          working-directory: rust/komoran-rs
+
+      - name: Build wheels (Linux aarch64)
+        if: runner.os == 'Linux'
+        uses: PyO3/maturin-action@v1
+        with:
+          target: aarch64-unknown-linux-gnu
+          args: --release --out dist --interpreter 3.8 3.9 3.10 3.11 3.12 3.13
+          manylinux: auto
+          working-directory: rust/komoran-rs
+
+      - name: Build wheels (macOS)
+        if: runner.os == 'macOS'
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --out dist --interpreter 3.8 3.9 3.10 3.11 3.12 3.13
+          working-directory: rust/komoran-rs
+
+      - name: Build wheels (Windows)
+        if: runner.os == 'Windows'
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --out dist --interpreter 3.8 3.9 3.10 3.11 3.12 3.13
+          working-directory: rust/komoran-rs
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: rust/komoran-rs/dist/*.whl
+
+  # ──────────────────────────────────────────────
+  # 2. sdist 빌드
+  # ──────────────────────────────────────────────
+  sdist:
+    name: Build sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+          working-directory: rust/komoran-rs
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-sdist
+          path: rust/komoran-rs/dist/*.tar.gz
+
+  # ──────────────────────────────────────────────
+  # 3. 빌드된 wheel 설치 후 테스트
+  # ──────────────────────────────────────────────
+  test:
+    name: Test (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-13, macos-14, windows-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: dist
+
+      - name: Install wheel
+        run: pip install komoran --find-links dist --no-index
+
+      - name: Run tests
+        run: |
+          python -c "
+          from komoran import Komoran
+
+          k = Komoran()
+
+          # analyze
+          result = k.analyze('아버지가방에들어가신다')
+          assert '아버지/NNG' in result, f'analyze failed: {result}'
+
+          # nouns
+          nouns = k.nouns('서울특별시는 대한민국의 수도이다')
+          assert len(nouns) > 0, f'nouns failed: {nouns}'
+
+          # pos
+          pos = k.pos('나는 밥을 먹었다')
+          assert ('나', 'NP') in pos, f'pos failed: {pos}'
+
+          # tokens
+          tokens = k.tokens('대한민국은 민주공화국이다')
+          assert tokens[0].morph == '대한민국', f'tokens failed: {tokens[0].morph}'
+          assert tokens[0].begin_index == 0
+          assert tokens[0].end_index == 4
+
+          # batch
+          results = k.analyze_batch(['오늘 날씨가 좋다', '내일은 비가 온다'])
+          assert len(results) == 2, f'batch failed: {len(results)}'
+
+          # tokens_batch
+          token_results = k.tokens_batch(['나는 밥을 먹었다'])
+          assert len(token_results) == 1
+          assert token_results[0][0].morph == '나'
+
+          print('All tests passed!')
+          "
+
+  # ──────────────────────────────────────────────
+  # 4-a. TestPyPI 배포 (수동 실행 시)
+  # ──────────────────────────────────────────────
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: [build, sdist, test]
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.publish_target == 'testpypi'
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/komoran
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist
+
+      - name: List dist contents
+        run: ls -lh dist/
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  # ──────────────────────────────────────────────
+  # 4-b. PyPI 본배포 (태그 push 시)
+  # ──────────────────────────────────────────────
+  publish-pypi:
+    name: Publish to PyPI
+    needs: [build, sdist, test]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment:
+      name: pypi
+      url: https://pypi.org/p/komoran
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist
+
+      - name: List dist contents
+        run: ls -lh dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

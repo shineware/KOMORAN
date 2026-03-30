@@ -73,7 +73,7 @@ public class KomoranResult {
         List<String> morphList = new ArrayList<>();
         for (LatticeNode latticeNode : resultNodeList) {
             if (targetPosSet.contains(latticeNode.getTag())) {
-                morphList.add(parser.combine(latticeNode.getMorphTag().getMorph()));
+                morphList.add(parser.combine(latticeNode.getMorph()));
             }
         }
         return morphList;
@@ -90,13 +90,13 @@ public class KomoranResult {
     public String getPlainText() {
         StringBuilder result = new StringBuilder();
         for (LatticeNode latticeNode : resultNodeList) {
-            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
+            if (latticeNode.getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
             if (latticeNode.getTag().equals(SYMBOL.NA)) {
-                result.append(latticeNode.getMorphTag().getMorph()).append("/").append(latticeNode.getMorphTag().getTag()).append(" ");
+                result.append(latticeNode.getMorph()).append("/").append(latticeNode.getTag()).append(" ");
             } else {
-                result.append(parser.combine(latticeNode.getMorphTag().getMorph())).append("/").append(latticeNode.getTag()).append(" ");
+                result.append(parser.combine(latticeNode.getMorph())).append("/").append(latticeNode.getTag()).append(" ");
             }
         }
         return result.toString().trim();
@@ -140,7 +140,7 @@ public class KomoranResult {
         List<Token> tokenList = new ArrayList<>();
         int prevBeginIdx = 0;
         for (LatticeNode latticeNode : resultNodeList) {
-            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
+            if (latticeNode.getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
             if (latticeNode.getBeginIdx() < 0) {
@@ -158,7 +158,7 @@ public class KomoranResult {
                     ? endMap[jasoEndIdx]
                     : findSyllableEnd(jasoEndIdx, syllableAreaList);
 
-            tokenList.add(new Token(parser.combine(latticeNode.getMorphTag().getMorph()),
+            tokenList.add(new Token(parser.combine(latticeNode.getMorph()),
                     parser.combine(latticeNode.getTag()), syllableBegin, syllableEnd));
 
             prevBeginIdx = latticeNode.getBeginIdx();
@@ -191,10 +191,10 @@ public class KomoranResult {
     public List<Pair<String, String>> getList() {
         List<Pair<String, String>> resultList = new ArrayList<>();
         for (LatticeNode latticeNode : resultNodeList) {
-            if (latticeNode.getMorphTag().getTag().equals(SYMBOL.EOE)) {
+            if (latticeNode.getTag().equals(SYMBOL.EOE)) {
                 continue;
             }
-            resultList.add(new Pair<>(parser.combine(latticeNode.getMorphTag().getMorph()), latticeNode.getTag()));
+            resultList.add(new Pair<>(parser.combine(latticeNode.getMorph()), latticeNode.getTag()));
         }
         return resultList;
     }

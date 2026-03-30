@@ -3,7 +3,6 @@ package kr.co.shineware.nlp.komoran.core.model;
 import kr.co.shineware.nlp.komoran.constant.SEJONGTAGS;
 import kr.co.shineware.nlp.komoran.constant.SYMBOL;
 import kr.co.shineware.nlp.komoran.core.model.combinationrules.CombinationRuleChecker;
-import kr.co.shineware.nlp.komoran.model.MorphTag;
 import kr.co.shineware.nlp.komoran.model.ScoredTag;
 import kr.co.shineware.nlp.komoran.modeler.model.*;
 import kr.co.shineware.util.common.collection.MapUtil;
@@ -44,6 +43,7 @@ public class Lattice {
     private LatticeNode prevMaxNode;
     private int prevMaxIdx;
     private int nbest;
+    private int beamWidth; // 0 = no pruning (full Viterbi)
 
     public Lattice(Resources resource, Observation userDic) {
         this(resource, userDic, 1, (prevMorph, prevTagId, morph, tagId) -> true);
@@ -51,6 +51,11 @@ public class Lattice {
 
     @SuppressWarnings("unchecked")
     public Lattice(Resources resource, Observation userDic, int nbest, CombinationRuleChecker combinationRuleChecker) {
+        this(resource, userDic, nbest, combinationRuleChecker, 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Lattice(Resources resource, Observation userDic, int nbest, CombinationRuleChecker combinationRuleChecker, int beamWidth) {
         this.setPosTable(resource.getTable());
         this.setTransition(resource.getTransition());
         this.setObservation(resource.getObservation());
@@ -63,6 +68,7 @@ public class Lattice {
         this.makeNewContexts();
         this.nbest = nbest;
         this.combinationRuleChecker = combinationRuleChecker;
+        this.beamWidth = beamWidth;
     }
 
     private void setUserDicObservation(Observation userDic) {
@@ -113,7 +119,7 @@ public class Lattice {
     }
 
     private LatticeNode makeStartNode() {
-        return new LatticeNode(-1, 0, new MorphTag(SYMBOL.BOE, SYMBOL.BOE, SEJONGTAGS.BOE_ID), 0);
+        return new LatticeNode(-1, 0, SYMBOL.BOE, SYMBOL.BOE, SEJONGTAGS.BOE_ID, 0);
     }
 
     @SuppressWarnings("unchecked")
@@ -291,10 +297,11 @@ public class Lattice {
             String morph, String tag, int tagId, double score, int nbest) {
 
         List<LatticeNode> nbestPrevNodeList = new ArrayList<>();
-        int latticeNodeIdx = -1;
-        for (LatticeNode prevLatticeNode : prevLatticeNodes) {
-            latticeNodeIdx++;
-            int prevLatticeTagId = prevLatticeNode.getMorphTag().getTagId();
+        double[] colScores = transition.getColumnScores(tagId);
+        int size = prevLatticeNodes.size();
+        for (int i = 0; i < size; i++) {
+            LatticeNode prevLatticeNode = prevLatticeNodes.get(i);
+            int prevLatticeTagId = prevLatticeNode.getTagId();
             if (prevLatticeTagId == -1) {
                 continue;
             }
@@ -305,9 +312,9 @@ public class Lattice {
                 prevMorph = SYMBOL.BOE;
             } else {
                 prevTagId = prevLatticeTagId;
-                prevMorph = prevLatticeNode.getMorphTag().getMorph();
+                prevMorph = prevLatticeNode.getMorph();
             }
-            double transitionScore = transition.getScore(prevTagId, tagId);
+            double transitionScore = colScores[prevTagId];
             if (transitionScore == Double.NEGATIVE_INFINITY) {
                 continue;
             }
@@ -316,11 +323,11 @@ public class Lattice {
                 continue;
             }
 
-            double prevObservationScore = prevLatticeNode.getScore();
+            double total = transitionScore + prevLatticeNode.getScore() + score;
 
             if (nbestPrevNodeList.size() < nbest) {
                 nbestPrevNodeList.add(
-                        this.makeNode(beginIdx, endIdx, morph, tag, tagId, transitionScore + prevObservationScore + score, latticeNodeIdx)
+                        this.makeNode(beginIdx, endIdx, morph, tag, tagId, total, i)
                 );
                 continue;
             }
@@ -328,17 +335,17 @@ public class Lattice {
             int nbestMinIndex = 0;
             double nbestMinScore = nbestPrevNodeList.get(0).getScore();
 
-            for (int i = 1; i < nbestPrevNodeList.size(); i++) {
-                if (nbestMinScore > nbestPrevNodeList.get(i).getScore()) {
-                    nbestMinIndex = i;
-                    nbestMinScore = nbestPrevNodeList.get(i).getScore();
+            for (int j = 1; j < nbestPrevNodeList.size(); j++) {
+                if (nbestMinScore > nbestPrevNodeList.get(j).getScore()) {
+                    nbestMinIndex = j;
+                    nbestMinScore = nbestPrevNodeList.get(j).getScore();
                 }
             }
 
-            if (nbestMinScore < transitionScore + prevObservationScore + score) {
+            if (nbestMinScore < total) {
                 nbestPrevNodeList.set(
                         nbestMinIndex,
-                        this.makeNode(beginIdx, endIdx, morph, tag, tagId, transitionScore + prevObservationScore + score, latticeNodeIdx)
+                        this.makeNode(beginIdx, endIdx, morph, tag, tagId, total, i)
                 );
             }
         }
@@ -357,12 +364,12 @@ public class Lattice {
             String morph, String tag, int tagId, double score) {
 
         double prevMaxScore = Double.NEGATIVE_INFINITY;
-        LatticeNode prevMaxNode = null;
-        int latticeNodeIdx = -1;
         int prevLatticeNodeIdx = -1;
-        for (LatticeNode prevLatticeNode : prevLatticeNodes) {
-            latticeNodeIdx++;
-            int prevLatticeTagId = prevLatticeNode.getMorphTag().getTagId();
+        double[] colScores = transition.getColumnScores(tagId);
+        int size = prevLatticeNodes.size();
+        for (int i = 0; i < size; i++) {
+            LatticeNode prevLatticeNode = prevLatticeNodes.get(i);
+            int prevLatticeTagId = prevLatticeNode.getTagId();
             if (prevLatticeTagId == -1) {
                 continue;
             }
@@ -373,9 +380,9 @@ public class Lattice {
                 prevMorph = SYMBOL.BOE;
             } else {
                 prevTagId = prevLatticeTagId;
-                prevMorph = prevLatticeNode.getMorphTag().getMorph();
+                prevMorph = prevLatticeNode.getMorph();
             }
-            double transitionScore = transition.getScore(prevTagId, tagId);
+            double transitionScore = colScores[prevTagId];
             if (transitionScore == Double.NEGATIVE_INFINITY) {
                 continue;
             }
@@ -384,24 +391,23 @@ public class Lattice {
                 continue;
             }
 
-            double prevObservationScore = prevLatticeNode.getScore();
+            double total = transitionScore + prevLatticeNode.getScore();
 
-            if (prevMaxScore < transitionScore + prevObservationScore) {
-                prevMaxScore = transitionScore + prevObservationScore;
-                prevMaxNode = prevLatticeNode;
-                prevLatticeNodeIdx = latticeNodeIdx;
+            if (prevMaxScore < total) {
+                prevMaxScore = total;
+                prevLatticeNodeIdx = i;
             }
         }
-        if (prevMaxNode != null) {
+        if (prevLatticeNodeIdx != -1) {
             return this.makeNode(beginIdx, endIdx, morph, tag, tagId, prevMaxScore + score, prevLatticeNodeIdx);
         }
         return null;
     }
 
     public LatticeNode makeNode(int beginIdx, int endIdx, String morph,
-                                String tag, int tagId, double score, int prevNodeHash) {
-        LatticeNode latticeNode = new LatticeNode(beginIdx, endIdx, new MorphTag(morph, tag, tagId), score);
-        latticeNode.setPrevNodeIdx(prevNodeHash);
+                                String tag, int tagId, double score, int prevNodeIdx) {
+        LatticeNode latticeNode = new LatticeNode(beginIdx, endIdx, morph, tag, tagId, score);
+        latticeNode.setPrevNodeIdx(prevNodeIdx);
         return latticeNode;
     }
 
@@ -412,7 +418,28 @@ public class Lattice {
         }
         latticeNodeList.add(latticeNode);
         this.putNodeList(latticeNode.getEndIdx(), latticeNodeList);
+
+        // Beam pruning: 양수 인덱스에서만 적용 (음수 = 불규칙 중간 노드)
+        if (beamWidth > 0 && latticeNode.getEndIdx() >= 0 && latticeNodeList.size() > beamWidth) {
+            pruneToBeamWidth(latticeNodeList);
+        }
+
         return latticeNodeList.size() - 1;
+    }
+
+    private void pruneToBeamWidth(List<LatticeNode> nodeList) {
+        while (nodeList.size() > beamWidth) {
+            int minIdx = 0;
+            double minScore = nodeList.get(0).getScore();
+            for (int i = 1; i < nodeList.size(); i++) {
+                double s = nodeList.get(i).getScore();
+                if (s < minScore) {
+                    minScore = s;
+                    minIdx = i;
+                }
+            }
+            nodeList.remove(minIdx);
+        }
     }
 
     private void getMaxTransitionIdxFromPrevNodes(List<LatticeNode> prevLatticeNodes, int tagId) {
@@ -421,10 +448,11 @@ public class Lattice {
 
     private void getMaxTransitionInfoFromPrevNodes(List<LatticeNode> prevLatticeNodes, int tagId) {
 
-        int prevMaxNodeIdx = -1;
-        for (LatticeNode prevLatticeNode : prevLatticeNodes) {
-            prevMaxNodeIdx++;
-            int prevLatticeTagId = prevLatticeNode.getMorphTag().getTagId();
+        double[] colScores = transition.getColumnScores(tagId);
+        int size = prevLatticeNodes.size();
+        for (int i = 0; i < size; i++) {
+            LatticeNode prevLatticeNode = prevLatticeNodes.get(i);
+            int prevLatticeTagId = prevLatticeNode.getTagId();
             if (prevLatticeTagId == -1) {
                 continue;
             }
@@ -434,17 +462,17 @@ public class Lattice {
             } else {
                 prevTagId = prevLatticeTagId;
             }
-            double transitionScore = transition.getScore(prevTagId, tagId);
+            double transitionScore = colScores[prevTagId];
             if (transitionScore == Double.NEGATIVE_INFINITY) {
                 continue;
             }
 
-            double prevObservationScore = prevLatticeNode.getScore();
+            double total = transitionScore + prevLatticeNode.getScore();
 
-            if (this.prevMaxScore < transitionScore + prevObservationScore) {
-                this.prevMaxScore = transitionScore + prevObservationScore;
+            if (this.prevMaxScore < total) {
+                this.prevMaxScore = total;
                 this.prevMaxNode = prevLatticeNode;
-                this.prevMaxIdx = prevMaxNodeIdx;
+                this.prevMaxIdx = i;
             }
         }
     }

@@ -26,6 +26,9 @@ import java.util.zip.GZIPOutputStream;
 public class Transition implements FileAccessible{
 
 	private double[][] scoreMatrix;
+	// 전치 행렬: columnScores[curId][prevId] = scoreMatrix[prevId][curId]
+	// Viterbi에서 동일 curId에 대해 여러 prevId를 순회할 때 캐시 친화적 접근
+	private double[][] columnScores;
 
 	public Transition(){
     }
@@ -54,8 +57,28 @@ public class Transition implements FileAccessible{
 		return scoreMatrix[prevId][curId];
 	}
 
+	/**
+	 * 특정 curId에 대한 모든 prevId의 전이 점수 배열을 반환.
+	 * Viterbi 루프에서 동일 tagId에 대해 여러 prev 노드를 순회할 때
+	 * 연속 메모리 접근으로 캐시 효율을 높인다.
+	 */
+	public double[] getColumnScores(int curId) {
+		return columnScores[curId];
+	}
+
 	public boolean hasTransition(int prevId, int curId){
 		return scoreMatrix[prevId][curId] != Double.NEGATIVE_INFINITY;
+	}
+
+	private void buildColumnScores() {
+		if (scoreMatrix == null) return;
+		int size = scoreMatrix.length;
+		columnScores = new double[size][size];
+		for (int prev = 0; prev < size; prev++) {
+			for (int cur = 0; cur < size; cur++) {
+				columnScores[cur][prev] = scoreMatrix[prev][cur];
+			}
+		}
 	}
 
 	@Override
@@ -72,6 +95,7 @@ public class Transition implements FileAccessible{
 		try (ObjectInputStream dis = new ObjectInputStream(
 				new BufferedInputStream(new GZIPInputStream(new FileInputStream(filename))))) {
 			scoreMatrix = (double[][]) dis.readObject();
+			buildColumnScores();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,6 +105,7 @@ public class Transition implements FileAccessible{
 		try (ObjectInputStream dis = new ObjectInputStream(
 				new BufferedInputStream(new GZIPInputStream(new FileInputStream(file))))) {
 			scoreMatrix = (double[][]) dis.readObject();
+			buildColumnScores();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -90,6 +115,7 @@ public class Transition implements FileAccessible{
 		try (ObjectInputStream dis = new ObjectInputStream(
 				new BufferedInputStream(new GZIPInputStream(inputStream)))) {
 			scoreMatrix = (double[][]) dis.readObject();
+			buildColumnScores();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
